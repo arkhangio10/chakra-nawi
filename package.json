@@ -1,0 +1,14 @@
+{
+  "name": "chakra-nawi",
+  "private": true,
+  "description": "Monorepo JS de Chakra Ñawi: motor de triaje (packages/motor) y PWA de campo (apps/campo).",
+  "workspaces": [
+    "packages/*",
+    "apps/campo"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "dev": "npm run dev -w apps/campo",
+    "build": "npm run build -w apps/campo"
+  }
+}
