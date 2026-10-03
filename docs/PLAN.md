@@ -33,7 +33,7 @@ Antes de empezar cualquier tarea, responder las cinco preguntas. Si alguna da "n
 | Opciones de la pregunta de granos | **0 / 1–2 / 3 o más**, con dibujos y "no sé" | Agrónomo y UX (el tech lead proponía 0/1/2+) | 1 de 20 tiene mucho ruido de muestreo (ver §5.3). Los dibujos de UX encajan con estos cortes |
 | Estacionalidad | `config.json` por mes que cambia **el peso** de cada evidencia, nunca apaga causas. Mismas 3 pantallas | Consenso | El 3 de octubre las trampas se están retirando, y un jurado agrónomo lo notaría. El demo se presenta como "caso de agosto" |
 | Causas | 4 causas + "otra causa" → técnico. Sin alternancia ni abono como causas | Juez y UX (el agrónomo pedía más) | Cada causa sin datos agrega supuestos. La edad y la alternancia se preguntan una vez, en la inscripción |
-| NASA y satélite | En el motor: **CHIRPS v3** (lluvia) + **NASA POWER solo temperatura** corregida por altitud. Fuera del motor: NDVI. Opcional: MODIS (NASA) para la lámina de 2013 | Consenso | Cumple "cruzar NASA y satélite" de forma defendible. La humedad de NASA POWER (celdas de ~55 km) no se sostiene, y el NDVI bajo sombra con 80–90% de nubes tampoco |
+| NASA y satélite | En el motor: **CHIRPS v3** (lluvia) + **NASA POWER solo temperatura** corregida por altitud (actualización: la anomalía de días de lluvia también usa `PRECTOTCORR` de NASA POWER, ver §5.1). Fuera del motor: NDVI. Opcional: MODIS (NASA) para la lámina de 2013 | Consenso | Cumple "cruzar NASA y satélite" de forma defendible. La humedad de NASA POWER (celdas de ~55 km) no se sostiene, y el NDVI bajo sombra con 80–90% de nubes tampoco |
 | Noticias | `alertas_activas.json` **hecho a mano**: 3–5 alertas oficiales con URL y cita literal. Sin extractor LLM | Consenso | Saca un LLM del sistema y una semana de trabajo del camino crítico. La idea de usar noticias se conserva |
 | Llamada al teléfono básico | **Obligatoria**, en su forma mínima: un `<Play>` disparado por un botón. Cuenta de Twilio pagada en H0 | Consenso (el tech lead la subió de extra a obligatoria) | Es el único canal que llega directo a Noor. Sin ella, la usuaria real es la hija |
 | Cámara | `<input capture="environment">` + **tarjeta A5 con 4 esquinas negras** | Tech lead y UX | Foto nativa a resolución completa (la broca mide 1,7 mm). Las esquinas dan escala, recorte y control de calidad |
@@ -104,8 +104,8 @@ Cambiar los contratos después de H1 sin acuerdo de los cuatro · agregar pantal
 | `E_TRAMPA_TENDENCIA` (conteo frente al anterior) | YOLO | broca | media | **plena**, con LR ≤ 2 | ≈ 1 (ignorar) |
 | `E_GRANOS` (0 / 1–2 / 3+) | Pregunta | broca | plena | plena si hay fruto atacable | plena desde ene |
 | `E_POLVO_NARANJA` | Pregunta | roya | media | baja | **plena** |
-| `E_LLUVIA_DIAS` (días ≥ 1 mm, nov–abr) | CHIRPS v3 | roya | baja | baja | plena |
-| `E_TEMP_ROYA` (T2M corregida por altitud en 17–25 °C) | NASA POWER | roya | media | media | plena |
+| `E_LLUVIA_DIAS` (anomalía de días ≥ 1 mm en nov–abr frente a 1991–2020) | NASA POWER `PRECTOTCORR` | roya | baja | baja | plena |
+| `E_TEMP_ROYA` (anomalía de días con T2M corregida por altitud en 17–25 °C, últimos 90, frente a la misma ventana en 1991–2020) | NASA POWER | roya | media | media | plena |
 | `E_LLUVIA_FLORACION` (anomalía sep–nov de la campaña anterior, por falta o por exceso) | CHIRPS v3 | clima | plena | plena | media |
 | `E_CALOR_FLORACION` (Tmax en floración) | NASA POWER | clima | plena | plena | media |
 | `E_EDAD` (> 20 años y sin recepa; dato de la inscripción) | Registro | plantas viejas | prior | prior | prior |
@@ -113,6 +113,7 @@ Cambiar los contratos después de H1 sin acuerdo de los cuatro · agregar pantal
 
 - **Tope de LR combinado por causa: 10**, para no contar dos veces evidencias que dependen entre sí.
 - Corrección por altitud: −6,5 °C por km desde la cota de la celda de NASA POWER.
+- La roya usa **anomalías, no valores absolutos**: La Convención es húmeda todos los años (140–156 días ≥ 1 mm en las 5 fincas), así que lo que informa es si este año se sale de lo normal. Cada anomalía compara una serie consigo misma; cortes de ≈ +1 desviación estándar interanual (`rules.json`, `python -m pipeline.ficha.historico`). Es una **señal regional del año**: las 5 fincas comparten una celda de NASA POWER.
 - Floración y cosecha de La Convención según literatura regional (±1 mes por altitud). Hay que confirmarlo con COCLA.
 
 ### 5.2 Decisión
@@ -134,7 +135,7 @@ Muestra de 20 granos, distribución binomial:
 | 5% (umbral INIA) | 36% | 57% | 8% |
 | 15% | 4% | 37% | 60% |
 
-Con 0 de 20, la infestación real todavía puede llegar al 14% (límite superior al 95%). **Por eso "0" nunca da verde solo.** Esta tabla va tal cual en el README y en una lámina.
+Con 0 de 20, la infestación real todavía puede llegar al **16,8%** (límite superior de Clopper-Pearson, bilateral al 95%; el unilateral al 95% da 13,9%). **Por eso "0" nunca da verde solo.** Esta tabla va tal cual en el README y en una lámina.
 
 ---
 
@@ -144,9 +145,9 @@ Con 0 de 20, la infestación real todavía puede llegar al 14% (límite superior
 |---|---|---|---|
 | Contador | YOLOv8n/11n (no YOLO26: su salida es distinta), mosaicos de 640, ONNX | Solo el contador clásico de manchas | AGPL-3.0 → repositorio público |
 | Datos de entrenamiento | Fotos propias de gorgojos sobre la tarjeta, contados a mano, + montajes sintéticos | Pipeline probado con Yellow Sticky Traps (CC0), declarado como prueba del pipeline | Propias / CC0 |
-| Prueba con broca real | 3 fotos completas de CIRAD (GitHub SVMendoza), **solo con permiso** | Solo resultados con el sustituto, declarados como tales | Pedir por correo en H0 |
-| Contactos para el futuro | CIRAD; laboratorio TESLA de UNSAAC (dataset de frutos de Chaullay) | — | — |
-| Lluvia | CHIRPS v3, COG mensuales, leyendo solo el recorte de Cusco | PISCO de SENAMHI | Pública |
+| Prueba con broca real | 3 fotos completas de CATIE (con CIRAD; GitHub SVMendoza), **solo con permiso** | Solo resultados con el sustituto, declarados como tales | Pedir por correo en H0 |
+| Contactos para el futuro | CATIE (con CIRAD); laboratorio TESLA de UNSAAC (dataset de frutos de Chaullay) | — | — |
+| Lluvia | CHIRPS v3, COG mensuales, leyendo solo el recorte de Cusco. Anomalía de días de lluvia: NASA POWER `PRECTOTCORR` (CHIRPS diario no tiene una climatología 1991–2020 que se pueda leer a tiempo) | PISCO de SENAMHI | Pública |
 | Temperatura | NASA POWER API diaria `T2M`, `T2M_MAX`, `T2M_MIN` | — | Pública |
 | Alertas | 3–5 alertas oficiales a mano (SENASA, SENAMHI, ENFEN) con URL y cita literal | Ninguna; el motor funciona igual | Citadas |
 | Voz | Grabación humana | `mms-tts-quz`, rotulado "sintético" | CC-BY-NC (uso no comercial) |
@@ -183,7 +184,7 @@ Con 3 personas: P2 hace la ficha mientras entrena el modelo, y P4 se queda con T
 
 | Bloque | P1 App | P2 ML | P3 Datos/API | P4 Producto | Hecho cuando… |
 |---|---|---|---|---|---|
-| **H0–1** | Contratos (con P3) | Elegir datos; conseguir gorgojos | Contratos; **Twilio pagado + Perú habilitado** | Correos a CIRAD y UNSAAC; buscar el dato de la ENA; ubicar al hablante | `contracts/` con ejemplos válidos; entrada y salida del ONNX congeladas |
+| **H0–1** | Contratos (con P3) | Elegir datos; conseguir gorgojos | Contratos; **Twilio pagado + Perú habilitado** | Correos a CATIE (con CIRAD) y UNSAAC; buscar el dato de la ENA; ubicar al hablante | `contracts/` con ejemplos válidos; entrada y salida del ONNX congeladas |
 | **H1–4** | PWA de 3 pantallas + `onnxruntime-web` con YOLO COCO de prueba; COOP/COEP; límite de precache aumentado | Fotos sobre la tarjeta + conteo manual + sintéticos; mosaicos | Ficha de 5 fincas (CHIRPS v3 + POWER) | Tarjeta A5 y dibujos; guion de audios congelado (H2) | **El Android real infiere en modo avión y muestra ms por mosaico** |
 | **H4–8** | Motor TS + `rules.json` + `config.json` de temporadas + tests | Entrenar (Colab/Kaggle T4) → ONNX → error de conteo | API de 2 endpoints desplegada; `alertas_activas.json` | Audios → Opus, `mensajes.json`; escribir 20 casos independientes | Tests del motor en verde · modelo exportado con su error · **el teléfono básico ya sonó (≤ H6)** |
 | **H8–12** | Integrar modelo, mosaicos, NMS, cajas progresivas, cola y audio | Contador clásico; medir cuánto difiere del YOLO; umbral de "dudoso" | Panel de 1 página + botón de llamada | README, FUENTES, LIMITES; agendar la prueba de usabilidad | **Flujo completo: offline → sincroniza → panel → teléfono suena. FEATURE FREEZE** |
@@ -257,7 +258,8 @@ Con 3 personas: P2 hace la ficha mientras entrena el modelo, y P4 se queda con T
 | "Dataset de broca de *Sensors* 2026" | Son **frutos**, no trampas, y **no es público** | PMC13075308 |
 | "NDVI detecta roya o envejecimiento" | No es defendible bajo sombra; nubes del 79–90% de noviembre a marzo | Medición propia en Planetary Computer |
 | "Plantas > 15 años" | No discrimina: el 70–75% del área cafetalera ya supera esa edad. Se usa "> 20 años y sin recepa" | Junta Nacional del Café |
-| "Humedad de NASA POWER" | Celda de ~55 km: no sirve para el microclima. Solo se usa la temperatura | NASA POWER |
+| "Humedad de NASA POWER" | Celda de ~55 km: no sirve para el microclima. Solo se usan la temperatura y, para la anomalía de días de lluvia de la región, `PRECTOTCORR` | NASA POWER |
+| "Días de lluvia ≥ 100 y días en 17–25 °C ≥ 45 → roya" | Se activaban en las 5 fincas todos los años. Ahora se usa la anomalía frente a 1991–2020 | `pipeline/ficha/historico.py` |
 
 **Frase del problema (borrador):**
 
@@ -272,7 +274,7 @@ Los corchetes los llena P4 en H0–1 con fuentes verificadas.
 | Pendiente | Responsable | Bloquea |
 |---|---|---|
 | Pagar Twilio (≈20 USD) y habilitar Perú en los permisos geográficos | P3 | La llamada |
-| Correos a CIRAD (permiso para las fotos y los pesos) y a TESLA-UNSAAC | P4 | La prueba con broca real |
+| Correos a CATIE (con CIRAD) (permiso para las fotos y los pesos) y a TESLA-UNSAAC | P4 | La prueba con broca real |
 | Conseguir escarabajos pequeños oscuros (gorgojos de arroz, harina o menestras) | P2 | Los datos |
 | Imprimir la tarjeta A5 (marco 10×10 cm + 20 círculos + 4 esquinas) | P4 | Las fotos |
 | Ubicar a un hablante de quechua cusqueño y a un segundo validador | P4 | Los audios |
@@ -291,4 +293,4 @@ Porque lo que falta no es el consejo, sino el monitoreo por finca. Nadie cuenta 
 Lo citamos con ese matiz. Por eso proponemos medir el piloto con dos indicadores: el % de socias que hacen repase en ≤ 2 semanas y el % de grano brocado en el acopio.
 
 **"¿Su modelo ha visto broca peruana?"**
-No. Lo declaramos, y pedimos los datos a CIRAD y a UNSAAC. Mientras tanto, el conteo solo marca la tendencia y la pregunta de los granos es la que decide.
+No. Lo declaramos, y pedimos los datos a CATIE (con CIRAD) y a UNSAAC. Mientras tanto, el conteo solo marca la tendencia y la pregunta de los granos es la que decide.

@@ -16,7 +16,10 @@
     "clima": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["lluvia_floracion_anom_pct", "dias_lluvia_nov_abr", "dias_temp_roya_90d", "tmax_floracion_anom_c", "fuentes"],
+      "required": [
+        "lluvia_floracion_anom_pct", "dias_lluvia_nov_abr", "dias_lluvia_nov_abr_normal", "dias_lluvia_nov_abr_anom",
+        "dias_temp_roya_90d", "dias_temp_roya_90d_normal", "dias_temp_roya_90d_anom", "tmax_floracion_anom_c", "fuentes"
+      ],
       "properties": {
         "lluvia_floracion_anom_pct": {
           "type": ["number", "null"],
@@ -24,7 +27,19 @@
         },
         "dias_lluvia_nov_abr": {
           "type": ["integer", "null"], "minimum": 0, "maximum": 182,
-          "description": "E_LLUVIA_DIAS: días con lluvia ≥ 1 mm de nov–abr (CHIRPS v3)"
+          "description": "Días con lluvia ≥ 1 mm de nov–abr de la campaña anterior (CHIRPS v3 diario sat/IMERG). Valor absoluto, solo informativo: la evidencia E_LLUVIA_DIAS es dias_lluvia_nov_abr_anom"
+        },
+        "dias_lluvia_nov_abr_normal": {
+          "type": ["number", "null"], "minimum": 0, "maximum": 181,
+          "description": "Media 1991–2020 de días con lluvia ≥ 1 mm en nov–abr (temporadas que empiezan en 1991…2020, sin el 29 de febrero) en ese punto. Fuente: NASA POWER PRECTOTCORR (no CHIRPS: su diario 'sat' empieza en 1998). null = sin dato"
+        },
+        "dias_lluvia_nov_abr_anom": {
+          "type": ["number", "null"],
+          "description": "E_LLUVIA_DIAS: días con lluvia ≥ 1 mm de nov–abr de la campaña anterior menos dias_lluvia_nov_abr_normal, ambos de NASA POWER PRECTOTCORR (la misma serie). Puede ser negativo. normal + anom = días de POWER en la temporada, que no es dias_lluvia_nov_abr (CHIRPS). null = sin dato"
+        },
+        "dias_lluvia_nov_abr_sd": {
+          "type": ["number", "null"], "minimum": 0,
+          "description": "Opcional. Desviación estándar interanual (1991–2020) de los días con lluvia ≥ 1 mm de nov–abr (NASA POWER PRECTOTCORR). Sirve para leer la anomalía en desviaciones estándar"
         },
         "dias_lluvia_aprox_mensual": {
           "type": "boolean", "default": false,
@@ -32,13 +47,28 @@
         },
         "dias_temp_roya_90d": {
           "type": ["integer", "null"], "minimum": 0, "maximum": 90,
-          "description": "E_TEMP_ROYA: días de los últimos 90 con T2M, corregida por altitud, entre 17 y 25 °C (NASA POWER)"
+          "description": "Días de los últimos 90 (hasta el último dato de NASA POWER) con T2M, corregida por altitud, entre 17 y 25 °C. Valor absoluto, solo informativo: la evidencia E_TEMP_ROYA es dias_temp_roya_90d_anom"
+        },
+        "dias_temp_roya_90d_normal": {
+          "type": ["number", "null"], "minimum": 0, "maximum": 90,
+          "description": "Media 1991–2020 de días en 17–25 °C (T2M de NASA POWER corregida por altitud) en la misma ventana de calendario de 90 días. null = sin dato"
+        },
+        "dias_temp_roya_90d_anom": {
+          "type": ["number", "null"],
+          "description": "E_TEMP_ROYA: dias_temp_roya_90d menos dias_temp_roya_90d_normal (NASA POWER T2M, la misma serie). Puede ser negativo. null = sin dato"
+        },
+        "dias_temp_roya_90d_sd": {
+          "type": ["number", "null"], "minimum": 0,
+          "description": "Opcional. Desviación estándar interanual (1991–2020) de los días en 17–25 °C de esa ventana. Cerca de 0 = la ventana está saturada (finca alta: casi todos los días caen en el rango todos los años)"
         },
         "tmax_floracion_anom_c": {
           "type": ["number", "null"],
           "description": "E_CALOR_FLORACION: anomalía de Tmax en floración (°C), corregida por altitud (NASA POWER)"
         },
-        "fuentes": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        "fuentes": {
+          "type": "array", "minItems": 1, "items": { "type": "string" },
+          "description": "Fuente de cada campo de clima. Las 5 fincas comparten una celda de NASA POWER: la capa de clima es una señal regional del año"
+        }
       }
     },
     "registro": {

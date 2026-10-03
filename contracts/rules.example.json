@@ -8,7 +8,7 @@
       "lr": { "broca": 0.5, "sin_problema": 1.5 },
       "fuente": "Tabla binomial n = 20 (PLAN §5.3) frente al umbral de daño económico de 5% de frutos brocados (INIA)",
       "tipo": "literatura",
-      "nota": "Con 0 de 20 la infestación real puede llegar a 14%: un 0 nunca da verde solo (regla de decisión). Magnitud del LR: supuesto a calibrar"
+      "nota": "Con 0 de 20 la infestación real puede llegar a 16,8% (límite bilateral al 95%; 13,9% unilateral): un 0 nunca da verde solo (regla de decisión). Magnitud del LR: supuesto a calibrar"
     },
     {
       "id": "R-GRANOS-02",
@@ -65,20 +65,20 @@
     {
       "id": "R-LLUVIA-01",
       "evidencia": "E_LLUVIA_DIAS",
-      "rango": { "min": 100 },
+      "rango": { "min": 11 },
       "lr": { "roya": 1.8 },
-      "fuente": "La germinación de uredosporas de roya necesita agua libre sobre la hoja (literatura de Hemileia vastatrix); días con lluvia ≥ 1 mm de CHIRPS v3",
+      "fuente": "La germinación de uredosporas de roya necesita agua libre sobre la hoja (literatura de Hemileia vastatrix); anomalía de días con lluvia ≥ 1 mm de nov–abr frente a su normal 1991–2020, temporada y normal de la misma serie NASA POWER PRECTOTCORR (clima.dias_lluvia_nov_abr_anom)",
       "tipo": "supuesto",
-      "nota": "El corte de 100 días de nov–abr es un supuesto a revisar con la climatología de las 5 fincas"
+      "nota": "Corte = +1 desviación estándar interanual (normal 106,2 ± 10,9 días en la celda de las 5 fincas): temporadas con 118 días o más. Se activa en 4 de 30 temporadas de 1991–2020; 2025-26 da +6,8 (no se activa); 2012-13, la epidemia, +10,8 (justo en el borde, no se activa); 2024-25 +17,8 y 2022-23 −37,2. Tabla: python -m pipeline.ficha.historico. Magnitud del LR: supuesto"
     },
     {
       "id": "R-TEMP-01",
       "evidencia": "E_TEMP_ROYA",
-      "rango": { "min": 45 },
+      "rango": { "min": 10 },
       "lr": { "roya": 1.8 },
-      "fuente": "Rango de 17–25 °C favorable a la germinación de la roya (literatura de Hemileia vastatrix); T2M de NASA POWER corregida por altitud",
-      "tipo": "literatura",
-      "nota": "El corte de 45 de 90 días y la magnitud del LR son supuestos"
+      "fuente": "Rango de 17–25 °C favorable a la germinación de la roya (literatura de Hemileia vastatrix); anomalía de días de los últimos 90 con T2M de NASA POWER, corregida por altitud, en ese rango frente a la misma ventana de calendario en 1991–2020 (clima.dias_temp_roya_90d_anom)",
+      "tipo": "supuesto",
+      "nota": "Corte = +10 días ≈ +1 desviación estándar interanual donde la ventana no está saturada (LC-003, 1150 m: 73 ± 10,3; LC-004, 1050 m: 55,9 ± 14,0, ahí +0,7 DE). Sobre 1300 m casi todos los días ya caen en 17–25 °C (normal ≥ 86,8 de 90): la regla no puede activarse y el año no aporta. En 1991–2020 se activa 5 de 30 años en LC-003 y 9 de 30 en LC-004; en 2026 da −0,5 a −8,0 (no se activa). Rango 17–25 °C: literatura; corte y LR: supuestos"
     },
     {
       "id": "R-FLOR-01",

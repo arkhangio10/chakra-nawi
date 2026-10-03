@@ -8,12 +8,20 @@
   "clima": {
     "lluvia_floracion_anom_pct": -11,
     "dias_lluvia_nov_abr": 156,
+    "dias_lluvia_nov_abr_normal": 106.2,
+    "dias_lluvia_nov_abr_anom": 6.8,
+    "dias_lluvia_nov_abr_sd": 10.9,
     "dias_lluvia_aprox_mensual": false,
     "dias_temp_roya_90d": 89,
+    "dias_temp_roya_90d_normal": 89.7,
+    "dias_temp_roya_90d_anom": -0.7,
+    "dias_temp_roya_90d_sd": 0.7,
     "tmax_floracion_anom_c": 0.3,
     "fuentes": [
-      "CHIRPS v3.0 (mensual y diario sat/IMERG)",
-      "NASA POWER (T2M, T2M_MAX)"
+      "CHIRPS v3.0 mensual, sep–nov frente a 1991–2020 (lluvia_floracion_anom_pct)",
+      "CHIRPS v3.0 diario sat/IMERG (dias_lluvia_nov_abr)",
+      "NASA POWER PRECTOTCORR (GEOSIT/MERRA2/POWER), días ≥ 1 mm de nov–abr frente a 1991–2020 (dias_lluvia_nov_abr_normal/_anom/_sd)",
+      "NASA POWER T2M y T2M_MAX corregidas por altitud, frente a 1991–2020 (dias_temp_roya_90d*, tmax_floracion_anom_c)"
     ]
   },
   "registro": {

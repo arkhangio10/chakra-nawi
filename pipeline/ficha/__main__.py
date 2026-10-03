@@ -5,6 +5,9 @@ python -m pipeline.ficha --fincas data/fincas.geojson --out fichas/
 - Lluvia (CHIRPS v3): anomalía sep–nov del año de floración frente a 1991–2020, y días ≥ 1 mm de nov–abr
   siguientes (diario 'sat', desagregado con NASA IMERG).
 - Temperatura (NASA POWER): T2M y T2M_MAX corregidas por altitud desde la cota de la celda.
+- Anomalías frente a 1991–2020, cada una contra su propia climatología (misma fuente, mismo punto, misma ventana):
+  días de lluvia ≥ 1 mm de nov–abr con NASA POWER PRECTOTCORR (CHIRPS diario 'sat' empieza en 1998 y el 'rnl'
+  exige ~5 400 teselas de ~1 MB para 30 temporadas) y días en 17–25 °C de los últimos 90 con NASA POWER T2M.
 - Alertas: las vigentes de data/alertas_activas.json.
 Las descargas se guardan en data/raw/ (no se sube a git); volver a correrlo no descarga nada.
 """
@@ -19,10 +22,10 @@ from pathlib import Path
 from statistics import mean
 
 from .chirps import CacheChirps, url_diaria, url_mensual
+from .clima import CLIMA_FIN, CLIMA_INI, anomalia, dias_en_rango, dias_lluvia_temporada, misma_fecha
 from .power import serie_diaria
 
 RAIZ = Path(__file__).resolve().parents[2]
-CLIMA_INI, CLIMA_FIN = 1991, 2020
 MESES_FLORACION = (9, 10, 11)
 
 
@@ -75,7 +78,7 @@ def main() -> int:
         diario = None
 
     # ---- NASA POWER ----
-    print("NASA POWER: T2M y T2M_MAX diarias")
+    print("NASA POWER: T2M, T2M_MAX y PRECTOTCORR diarias")
     a.out.mkdir(parents=True, exist_ok=True)
     resumen = []
     for i, f in enumerate(fincas):
@@ -85,17 +88,23 @@ def main() -> int:
         pw = serie_diaria(lat, lon, date(CLIMA_INI, 1, 1), hoy, a.raw / f"power_{fid}_{hoy:%Y%m%d}.json")
         corr = gradiente * (alt - pw["elevacion_celda"]) / 1000
 
-        t2m = sorted(pw["T2M"].items())[-90:]
-        dias_roya = sum(t_min <= v + corr <= t_max for _, v in t2m)
+        anios_clima = range(CLIMA_INI, CLIMA_FIN + 1)
+        ult = max(pw["T2M"])  # último día con dato (POWER llega con unos días de retraso)
+        fin_t = date(int(ult[:4]), int(ult[4:6]), int(ult[6:]))
+        dias_roya = dias_en_rango(pw["T2M"], fin_t, corr, t_min, t_max)
+        roya = anomalia(dias_roya, [dias_en_rango(pw["T2M"], misma_fecha(y, fin_t), corr, t_min, t_max)
+                                    for y in anios_clima])
+        prec = pw["PRECTOTCORR"]
+        lluvia = anomalia(dias_lluvia_temporada(prec, anio_flor), [dias_lluvia_temporada(prec, y) for y in anios_clima])
 
         def tmax_flor(y):
             vals = [v for d, v in pw["T2M_MAX"].items() if d[:4] == str(y) and int(d[4:6]) in MESES_FLORACION]
             return mean(vals) + corr
 
-        anom_tmax = tmax_flor(anio_flor) - mean(tmax_flor(y) for y in range(CLIMA_INI, CLIMA_FIN + 1))
+        anom_tmax = tmax_flor(anio_flor) - mean(tmax_flor(y) for y in anios_clima)
 
         lluvia_flor = sum(mensual[u][i] for u in u_flor)
-        clima_anual = [sum(mensual[url_mensual(y, m)][i] for m in MESES_FLORACION) for y in range(CLIMA_INI, CLIMA_FIN + 1)]
+        clima_anual = [sum(mensual[url_mensual(y, m)][i] for m in MESES_FLORACION) for y in anios_clima]
         anom_lluvia = 100 * (lluvia_flor / mean(clima_anual) - 1)
         dias_lluvia = None if diario is None else sum(1 for v in diario.values() if v[i] is not None and v[i] >= 1.0)
 
@@ -109,10 +118,23 @@ def main() -> int:
             "clima": {
                 "lluvia_floracion_anom_pct": round(anom_lluvia),
                 "dias_lluvia_nov_abr": dias_lluvia,
+                "dias_lluvia_nov_abr_normal": lluvia["normal"],
+                "dias_lluvia_nov_abr_anom": lluvia["anom"],
+                "dias_lluvia_nov_abr_sd": lluvia["sd"],
                 "dias_lluvia_aprox_mensual": False,
                 "dias_temp_roya_90d": dias_roya,
+                "dias_temp_roya_90d_normal": roya["normal"],
+                "dias_temp_roya_90d_anom": roya["anom"],
+                "dias_temp_roya_90d_sd": roya["sd"],
                 "tmax_floracion_anom_c": round(anom_tmax, 1),
-                "fuentes": ["CHIRPS v3.0 (mensual y diario sat/IMERG)", "NASA POWER (T2M, T2M_MAX)"],
+                "fuentes": [
+                    f"CHIRPS v3.0 mensual, sep–nov frente a {CLIMA_INI}–{CLIMA_FIN} (lluvia_floracion_anom_pct)",
+                    "CHIRPS v3.0 diario sat/IMERG (dias_lluvia_nov_abr)",
+                    f"NASA POWER PRECTOTCORR ({'/'.join(pw['fuentes'])}), días ≥ 1 mm de nov–abr frente a "
+                    f"{CLIMA_INI}–{CLIMA_FIN} (dias_lluvia_nov_abr_normal/_anom/_sd)",
+                    f"NASA POWER T2M y T2M_MAX corregidas por altitud, frente a {CLIMA_INI}–{CLIMA_FIN} "
+                    "(dias_temp_roya_90d*, tmax_floracion_anom_c)",
+                ],
             },
             "registro": {
                 "edad_mas_20_sin_recepa": pr.get("edad_mas_20_sin_recepa", False),
@@ -121,12 +143,20 @@ def main() -> int:
             "alertas": alertas,
         }
         (a.out / f"{fid}.json").write_text(json.dumps(ficha, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        resumen.append((fid, alt, pw["elevacion_celda"], corr, t2m[-1][0], ficha["clima"]))
+        resumen.append((fid, alt, pw["elevacion_celda"], corr, ult, ficha["clima"]))
 
-    print(f"\n{'finca':7} {'alt':>5} {'celda':>6} {'corr°C':>6} {'últ.T':>9} {'anomLl%':>8} {'díasLl':>6} {'díasRoya':>8} {'anomTmax':>8}")
+    def n(x, signo=False):
+        return "—" if x is None else (f"{x:+.1f}" if signo else f"{x:g}")
+
+    print(f"\n{'finca':7} {'alt':>5} {'celda':>6} {'corr°C':>6} {'últ.T':>9} {'anomLl%':>8} {'díasLl':>6} "
+          f"{'POWER normal/anom/sd':>21} {'díasRoya':>8} {'normal/anom/sd':>17} {'anomTmax':>8}")
     for fid, alt, el, corr, ult, c in resumen:
         print(f"{fid:7} {alt:5} {el:6.0f} {corr:+6.1f} {ult:>9} {c['lluvia_floracion_anom_pct']:8} "
-              f"{str(c['dias_lluvia_nov_abr']):>6} {c['dias_temp_roya_90d']:8} {c['tmax_floracion_anom_c']:+8.1f}")
+              f"{n(c['dias_lluvia_nov_abr']):>6} "
+              f"{n(c['dias_lluvia_nov_abr_normal']):>7} {n(c['dias_lluvia_nov_abr_anom'], True):>6} "
+              f"{n(c['dias_lluvia_nov_abr_sd']):>6} {n(c['dias_temp_roya_90d']):>8} "
+              f"{n(c['dias_temp_roya_90d_normal']):>6} {n(c['dias_temp_roya_90d_anom'], True):>5} "
+              f"{n(c['dias_temp_roya_90d_sd']):>4} {c['tmax_floracion_anom_c']:+8.1f}")
     print(f"\n{len(resumen)} fichas en {a.out}")
     return 0
 

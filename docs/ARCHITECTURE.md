@@ -62,7 +62,7 @@ NUBE (preparación)                        TELÉFONO DE CAMPO (offline)         
 |---|---|
 | Modelo | YOLOv8n o YOLO11n (no YOLO26: su salida es distinta), una sola clase |
 | Datos | Fotos propias de escarabajos oscuros pequeños (gorgojos) sobre la tarjeta, contados a mano, + montajes sintéticos. Yellow Sticky Traps (CC0) solo para probar el pipeline. |
-| Prueba con broca real | 3 fotos completas de CIRAD, solo si dan permiso |
+| Prueba con broca real | 3 fotos completas de CATIE (con CIRAD), solo si dan permiso |
 | Exportación | ONNX (comparar int8 y fp32; quedarse con el más rápido de los que tengan precisión aceptable). Meta < 10 MB. |
 | Métrica | Error absoluto medio del conteo por densidad (< 50, 50–300, > 300). **El sustituto y la broca se reportan por separado.** |
 | Verificación cruzada | Contador clásico (umbral + componentes conexas). Primero se mide cuánto difiere del YOLO; la regla de derivar al técnico solo se activa si se calibra. |
@@ -84,8 +84,8 @@ TypeScript. Los mismos archivos los usan la PWA y los tests.
 
 | Paso | Fuente | Cálculo |
 |---|---|---|
-| Lluvia | CHIRPS v3, COG mensuales (`rasterio` + `/vsicurl/`, leyendo solo el recorte) | Anomalía de lluvia de sep–nov de la campaña anterior frente a la climatología 1991–2020, por falta o por exceso. Días con lluvia ≥ 1 mm de nov–abr (con datos diarios si están disponibles; si no, una aproximación mensual declarada). |
-| Temperatura | NASA POWER, API diaria por punto (`T2M`, `T2M_MAX`, `T2M_MIN`) | Corrección por altitud (−6,5 °C/km desde la cota de la celda). Días en el rango de germinación de la roya (17–25 °C). Calor en floración. |
+| Lluvia | CHIRPS v3, COG mensuales (`rasterio` + `/vsicurl/`, leyendo solo el recorte) | Anomalía de lluvia de sep–nov de la campaña anterior frente a la climatología 1991–2020, por falta o por exceso. Días con lluvia ≥ 1 mm de nov–abr (con datos diarios si están disponibles; si no, una aproximación mensual declarada). Para el motor: anomalía de esos días frente a 1991–2020 con NASA POWER `PRECTOTCORR` (temporada y normal de la misma serie). |
+| Temperatura | NASA POWER, API diaria por punto (`T2M`, `T2M_MAX`, `T2M_MIN`) | Corrección por altitud (−6,5 °C/km desde la cota de la celda). Días en el rango de germinación de la roya (17–25 °C) y su anomalía frente a la misma ventana en 1991–2020. Calor en floración. |
 | Alertas | `data/alertas_activas.json` (manual) | Se copian las alertas vigentes de la provincia |
 
 Comando: `python -m pipeline.ficha --fincas data/fincas.geojson --out fichas/`, para 5 fincas de ejemplo.
@@ -125,7 +125,11 @@ Lista por prioridad (urgente → técnico → amarillo → verde). Para cada cas
   "clima": {
     "lluvia_floracion_anom_pct": -38,
     "dias_lluvia_nov_abr": 112,
+    "dias_lluvia_nov_abr_normal": 106.2,
+    "dias_lluvia_nov_abr_anom": 6.8,
     "dias_temp_roya_90d": 54,
+    "dias_temp_roya_90d_normal": 47.6,
+    "dias_temp_roya_90d_anom": 6.4,
     "tmax_floracion_anom_c": 1.4,
     "fuentes": ["CHIRPS v3.0", "NASA POWER"]
   },
