@@ -1,0 +1,63 @@
+{
+ "leyenda": "entrenado solo con datos sintéticos",
+ "arquitectura": "YOLOv8n",
+ "clases": {
+  "0": "broca"
+ },
+ "epocas": 3,
+ "pesos_iniciales": "yolov8n.pt",
+ "datos": "sintéticos ml/sintetico.py (marcos 1216×1216 → mosaicos 640×640)",
+ "exportacion": "format=onnx imgsz=640 opset=17 simplify=True dynamic=False nms=False half=False",
+ "entrada": {
+  "nombre": "images",
+  "forma": [
+   1,
+   3,
+   640,
+   640
+  ],
+  "tipo": "float32"
+ },
+ "salida": {
+  "nombre": "output0",
+  "forma": [
+   1,
+   5,
+   8400
+  ],
+  "tipo": "float32"
+ },
+ "umbrales": {
+  "candidatas": 0.25,
+  "conteo": 0.6,
+  "nms_iou": 0.45,
+  "dudoso": ">30% de candidatas en [0,25;0,60)",
+  "fuente": "contracts/modelo-io.md (adoptado 2026-10-03)"
+ },
+ "variantes": {
+  "fp32": {
+   "archivo": "broca-y8n-v0-sint.onnx",
+   "mb": 11.7
+  },
+  "int8": {
+   "archivo": "broca-y8n-v0-sint-int8.onnx",
+   "mb": 3.2,
+   "cuantizacion": "onnxruntime.quantization.quantize_dynamic, pesos QUInt8"
+  },
+  "w8_experimental": {
+   "archivo": "broca-y8n-v0-sint-w8.onnx",
+   "mb": 3.15,
+   "cuantizacion": "solo pesos Conv int8 por canal + DequantizeLinear; cómputo fp32",
+   "nota": "propuesta fuera del contrato (que pide int8 dinámica); misma E/S"
+  }
+ },
+ "nota_tamano": "El contrato pide < 10 MB; fp32 de YOLOv8n no lo cumple (ver mb).",
+ "fecha": "2026-10-03T16:50:52",
+ "contrato": "contracts/modelo-io.md",
+ "evaluacion_sintetica": {
+  "archivo": "ml/resultados/eval_sintetico.json",
+  "recomendada": "int8",
+  "umbral_score_propuesto": 0.6,
+  "nota": "propuesta elegida en validación sintética; el contrato sigue en 0,25 hasta acuerdo"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "radio": 25,
+ "t": 0.35,
+ "apertura": 1,
+ "area_min": 80,
+ "area_max_1": 400,
+ "area_max_grupo": 4000,
+ "area_tipica": 220,
+ "e_min": 1.2,
+ "e_max": 4.0,
+ "contraste_min": 0.4,
+ "_nota": "Parámetros calibrados por búsqueda en rejilla sobre la VALIDACIÓN SINTÉTICA (MAE val = 41.53). No calibrados con fotos reales: no activan ninguna regla."
+}
