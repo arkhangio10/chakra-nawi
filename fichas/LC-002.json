@@ -1,0 +1,24 @@
+{
+  "version": "2026-27.1",
+  "finca_id": "LC-002",
+  "ejemplo": true,
+  "altitud_m": 1700,
+  "idioma": "quz",
+  "generado": "2026-10-03",
+  "clima": {
+    "lluvia_floracion_anom_pct": -11,
+    "dias_lluvia_nov_abr": 156,
+    "dias_lluvia_aprox_mensual": false,
+    "dias_temp_roya_90d": 89,
+    "tmax_floracion_anom_c": 0.3,
+    "fuentes": [
+      "CHIRPS v3.0 (mensual y diario sat/IMERG)",
+      "NASA POWER (T2M, T2M_MAX)"
+    ]
+  },
+  "registro": {
+    "edad_mas_20_sin_recepa": false,
+    "cosecha_alta_ano_pasado": false
+  },
+  "alertas": []
+}

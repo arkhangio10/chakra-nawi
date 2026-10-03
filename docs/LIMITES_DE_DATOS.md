@@ -26,7 +26,8 @@ Lo que **no** sabemos o no podemos afirmar. Va tal cual a la lámina de datos de
 
 - **Humedad de NASA POWER:** celdas de ~55 km, no sirven para el microclima. Solo se usa la temperatura (`T2M`, `T2M_MAX`, `T2M_MIN`), corregida por altitud (−6,5 °C/km), que es una aproximación.
 - **NDVI:** no es defendible bajo sombra, y hay 79–90% de nubes de noviembre a marzo (medición propia en Planetary Computer). Queda fuera del motor.
-- Los días de lluvia de nov–abr se calculan con CHIRPS v3 diario si está disponible; si no, con una aproximación mensual declarada en la ficha (`dias_lluvia_aprox_mensual`).
+- **Las 5 fincas caen en la misma celda de NASA POWER** (cota de la celda: 2766 m). Entre fincas, la temperatura solo difiere por la corrección de altitud, y la anomalía de Tmax en floración es idéntica (+0,3 °C). La corrección extrapola entre 1,1 y 1,7 km con un gradiente fijo de −6,5 °C/km. Como control: LC-004 (1050 m) da 25,0 °C de media en jul–sep, coherente con Quillabamba.
+- Los días de lluvia de nov–abr se calculan con CHIRPS v3 diario `sat`. Ese diario se desagrega desde péntadas con NASA IMERG y reparte la lluvia en muchos días de 1–2 mm, así que **sobreestima los días ≥ 1 mm**: salen 140–156 de 181 en las 5 fincas. Con el corte actual de 100 días de la regla R-LLUVIA-01, la regla se activa siempre y no discrimina. Hay que recalibrar el corte o usar días ≥ 5 mm (decisión de P1 + P3).
 - Los meses de floración y cosecha vienen de literatura regional (±1 mes por altitud) y **no están confirmados con COCLA**.
 
 ## Reglas del motor

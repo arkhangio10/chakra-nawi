@@ -11,7 +11,10 @@
         "provincia": "La Convención",
         "distrito": "Huayopata",
         "altitud_m": 1450,
-        "cultivo": "café"
+        "cultivo": "café",
+        "idioma": "quz",
+        "edad_mas_20_sin_recepa": false,
+        "cosecha_alta_ano_pasado": true
       },
       "geometry": {
         "type": "Polygon",
@@ -49,7 +52,10 @@
         "provincia": "La Convención",
         "distrito": "Santa Teresa",
         "altitud_m": 1700,
-        "cultivo": "café"
+        "cultivo": "café",
+        "idioma": "quz",
+        "edad_mas_20_sin_recepa": false,
+        "cosecha_alta_ano_pasado": false
       },
       "geometry": {
         "type": "Polygon",
@@ -87,7 +93,10 @@
         "provincia": "La Convención",
         "distrito": "Maranura",
         "altitud_m": 1150,
-        "cultivo": "café"
+        "cultivo": "café",
+        "idioma": "quz",
+        "edad_mas_20_sin_recepa": true,
+        "cosecha_alta_ano_pasado": false
       },
       "geometry": {
         "type": "Polygon",
@@ -125,7 +134,10 @@
         "provincia": "La Convención",
         "distrito": "Echarati",
         "altitud_m": 1050,
-        "cultivo": "café"
+        "cultivo": "café",
+        "idioma": "quz",
+        "edad_mas_20_sin_recepa": false,
+        "cosecha_alta_ano_pasado": true
       },
       "geometry": {
         "type": "Polygon",
@@ -163,7 +175,10 @@
         "provincia": "La Convención",
         "distrito": "Santa Ana",
         "altitud_m": 1300,
-        "cultivo": "café"
+        "cultivo": "café",
+        "idioma": "quz",
+        "edad_mas_20_sin_recepa": false,
+        "cosecha_alta_ano_pasado": false
       },
       "geometry": {
         "type": "Polygon",

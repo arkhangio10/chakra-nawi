@@ -85,6 +85,8 @@ def main() -> int:
 
     for archivo, esquema in PARES:
         validar(f"{archivo}  ->  {esquema}", cargar(RAIZ / archivo), esquemas[esquema])
+    for ficha in sorted((RAIZ / "fichas").glob("*.json")):
+        validar(f"fichas/{ficha.name}  ->  ficha.schema.json", cargar(ficha), esquemas["ficha.schema.json"])
     fincas = cargar(RAIZ / "data/fincas.geojson")
     validar("data/fincas.geojson  ->  (esquema mínimo en el script)", fincas, FINCAS_SCHEMA)
 
