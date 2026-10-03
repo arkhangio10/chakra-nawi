@@ -3,7 +3,7 @@ import { medirCalidad } from './calidad';
 import { contarClasico } from './clasico';
 import { detectarEsquinas, ordenar } from './esquinas';
 import { aplicar, homografia, rectificar } from './homografia';
-import { decodificar, esDudoso, nms, normalizar } from './posproceso';
+import { contables, decodificar, esDudoso, nms, normalizar } from './posproceso';
 import { aGris, LADO_MARCO, type Img, type Punto } from './tipos';
 
 /** Foto sintética: papel blanco, cuatro cuadrados negros por fuera de un marco, con perspectiva leve. */
@@ -86,6 +86,9 @@ describe('posprocesado del modelo (contracts/modelo-io.md)', () => {
     expect(esDudoso([fuerte, fuerte, debil])).toBe(true);
     expect(esDudoso([fuerte, fuerte, fuerte, debil])).toBe(false);
     expect(esDudoso([])).toBe(false);
+    const media = { ...fuerte, score: 0.5 };
+    expect(contables([fuerte, media, debil])).toHaveLength(1); // solo cuentan las ≥ 0,60
+    expect(esDudoso([fuerte, media])).toBe(true); // 0,5 ya está en la banda débil
   });
 });
 

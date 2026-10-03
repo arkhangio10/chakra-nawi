@@ -11,7 +11,7 @@ import { contarPendientes, enviarPendientes } from './datos/sync';
 import { CALIDAD_POR_DEFECTO } from './vision/calidad';
 import { contarClasico } from './vision/clasico';
 import { cargarModelo, detectar, modeloListo, nombreModelo } from './vision/detector';
-import { esDudoso, normalizar } from './vision/posproceso';
+import { contables, esDudoso, normalizar } from './vision/posproceso';
 import { aJpeg, procesarFoto, reducirFoto } from './vision/procesar';
 import { aGris, LADO_MARCO, type Caja, type Img } from './vision/tipos';
 import { ModoTecnico, type Ajustes, type Diagnostico } from './ui/ModoTecnico';
@@ -136,12 +136,13 @@ export default function App() {
     let detectadas: Caja[] = [];
     let msPorMosaico: number[] = [];
     if (proc.rectificada && modeloListo()) {
-      const r = await detectar(proc.marco, (parciales) => setCajas(parciales));
+      const r = await detectar(proc.marco, (parciales) => setCajas(contables(parciales)));
       detectadas = r.cajas; msPorMosaico = r.msPorMosaico;
     }
     const anterior = (await db.conteos.get(ajustes.finca))?.yolo ?? null;
     const usaYolo = modeloListo() && proc.rectificada;
-    const yolo = usaYolo ? detectadas.length : clasico ?? 0;
+    const brocas = contables(detectadas);
+    const yolo = usaYolo ? brocas.length : clasico ?? 0;
     s.conteo = {
       yolo,
       clasico,
@@ -150,7 +151,7 @@ export default function App() {
       // Sin modelo, sin esquinas o con la foto aún mala tras dos reintentos: no decidimos solos.
       dudoso: !usaYolo || !proc.calidad.ok || esDudoso(detectadas),
       modelo: usaYolo ? nombreModelo() : 'clasico-v0',
-      cajas: detectadas.map(normalizar),
+      cajas: brocas.map(normalizar),
     };
     s.foto = await aJpeg(proc.marco);
     setDiag((d) => ({

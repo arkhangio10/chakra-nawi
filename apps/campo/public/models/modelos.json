@@ -1,0 +1,7 @@
+{
+  "nota": "Modelos que la PWA puede cargar desde /models/. Entrenados SOLO con datos sintéticos: su error no es desempeño en broca real (ml/README.md).",
+  "preferido": "broca-y8n-v0-sint-int8",
+  "modelos": [
+    { "nombre": "broca-y8n-v0-sint-int8", "arquitectura": "YOLOv8n", "variante": "int8", "mb": 3.2, "umbral_conteo": 0.6 }
+  ]
+}

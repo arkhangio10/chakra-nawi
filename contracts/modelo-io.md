@@ -40,10 +40,14 @@ Lo produce P2 (`ml/`) y lo consume P1 (`apps/campo`, `onnxruntime-web` WASM). Si
 
 ## Posprocesado (en `apps/campo`)
 
-1. Descartar puntaje < `0,25`.
+1. Candidatas: descartar puntaje < `0,25`.
 2. Pasar las cajas a coordenadas del marco (`+ origen del mosaico`).
 3. NMS global con IoU `0,45` (las cajas repetidas en el solape se funden aquí).
-4. Normalizar dividiendo por 1216 → `[xc, yc, w, h]` en `[0, 1]`. Ese es el formato de `caso.conteo.cajas`.
-5. `caso.conteo.yolo` = número de cajas que quedan.
+4. **Cuentan como broca solo las candidatas con puntaje ≥ `0,60`.**
+5. Normalizar dividiendo por 1216 → `[xc, yc, w, h]` en `[0, 1]`. Ese es el formato de `caso.conteo.cajas` (solo las que cuentan).
+6. `caso.conteo.yolo` = número de cajas que cuentan.
+7. `caso.conteo.dudoso` = más del 30 % de las candidatas (≥ 0,25, tras NMS) queda en la banda débil `[0,25; 0,60)`.
 
-Los umbrales `0,25` y `0,45` son los de Ultralytics por defecto; P2 puede proponer otros con su curva de error antes de H8, sin cambiar la forma de la entrada ni de la salida.
+### Por qué 0,60 (propuesta de P2, adoptada el 3 oct 2026)
+
+Con `0,25` el modelo v0 (entrenado solo con datos sintéticos) sobrecuenta: confunde granitos de café del cebo con brocas (en un marco con 0 brocas contó 15). El umbral `0,60` se eligió en los marcos de **validación** sintéticos; en los de prueba el MAE del conteo bajó de 21,3 a 4,9 (int8). La regla de "dudoso" marca el 17 % de los marcos de validación; los no marcados tienen 5 % de error relativo. La entrada y la salida del modelo no cambian. **Todo esto es con datos sintéticos: se recalibra con fotos reales.**

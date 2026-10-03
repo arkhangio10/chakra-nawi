@@ -23,10 +23,15 @@ export interface Caja {
 export const LADO_MARCO = 1216;
 export const LADO_MOSAICO = 640;
 export const ORIGENES_MOSAICO = [0, 576] as const;
+/** Candidatas: todo lo que supera 0,25 entra al NMS. */
 export const UMBRAL_SCORE = 0.25;
 export const UMBRAL_NMS = 0.45;
-/** PLAN §2: si más del 30 % de las detecciones tiene puntaje entre 0,25 y 0,45 el conteo es dudoso. */
-export const UMBRAL_SEGURO = 0.45;
+/**
+ * Solo cuentan las cajas con puntaje ≥ 0,60 (propuesta de P2 elegida en validación: con 0,25 el modelo
+ * sintético sobrecuenta granitos de café; MAE 21,3 → 4,9). Ver contracts/modelo-io.md.
+ */
+export const UMBRAL_CONTEO = 0.6;
+/** PLAN §2: dudoso si más del 30 % de las candidatas queda en la banda débil [0,25; 0,60). */
 export const FRACCION_DUDOSA = 0.3;
 
 export function aGris(img: Img): Uint8Array {
