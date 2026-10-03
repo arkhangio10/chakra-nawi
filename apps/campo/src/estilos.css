@@ -1,0 +1,119 @@
+/* Chakra Ñawi · PWA de campo.
+   Se usa a pleno sol en la chacra: un solo tema claro, de alto contraste, a propósito.
+   Botones de 72 px o más, nada de gestos, una sola acción principal por pantalla. */
+
+:root {
+  color-scheme: light;
+  --fondo: #f3f4ee;
+  --superficie: #ffffff;
+  --texto: #18261e;
+  --suave: #4c5c52;
+  --trazo: #23312a;
+  --linea: #d5dbd2;
+  --acento: #1f5135;      /* hoja de café */
+  --acento-texto: #ffffff;
+  --verde: #2e8b45;
+  --amarillo: #f2b705;
+  --urgente: #e8710a;     /* naranja: escala que Noor ya oye en los avisos de SENAMHI */
+  --tecnico: #3d5a80;
+  --radio: 18px;
+  font-family: 'Atkinson Hyperlegible', 'Segoe UI', Roboto, system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+* { box-sizing: border-box; }
+html, body, #raiz { height: 100%; }
+body { margin: 0; background: var(--fondo); }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 4px solid var(--amarillo); outline-offset: 2px; }
+
+.app { min-height: 100%; display: flex; flex-direction: column; padding-inline: 16px; }
+
+.barra {
+  position: sticky; top: env(safe-area-inset-top, 0px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block: 10px; background: var(--fondo); z-index: 2;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 4px;
+  font-weight: 700; font-size: 1.05rem; color: var(--acento); user-select: none; -webkit-user-select: none; touch-action: manipulation;
+}
+.logo img { width: 36px; height: 36px; pointer-events: none; }
+.nube { width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--acento); }
+.nube.al-dia { background: var(--acento); }
+.nube.esperando { background: transparent; border-style: dashed; }
+
+main { flex: 1; display: flex; justify-content: center; padding-block: 8px 24px; }
+
+.pantalla {
+  width: 100%; max-width: 440px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 16px;
+}
+
+.ilustracion {
+  background: var(--superficie); border: 2px solid var(--linea); border-radius: var(--radio);
+  padding: 12px; display: grid; place-items: center;
+}
+.ilustracion .dibujo { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1; }
+.ilustracion.marco canvas { width: 100%; height: auto; aspect-ratio: 1; border-radius: 8px; display: block; }
+
+.subtitulo { margin: 0; text-align: center; font-size: 1.35rem; font-weight: 700; text-wrap: balance; }
+
+.boton-principal, .boton-secundario, .boton-escuchar {
+  min-height: 76px; border-radius: var(--radio); border: 0;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  font-size: 1.35rem; font-weight: 700;
+}
+.boton-principal { background: var(--acento); color: var(--acento-texto); }
+.boton-secundario { background: var(--superficie); border: 3px solid var(--acento); color: var(--acento); }
+.boton-escuchar { min-height: 64px; background: #e3ebe4; color: var(--acento); }
+.icono { width: 36px; height: 36px; flex: none; }
+
+.opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.opciones-3 .opcion:last-child { grid-column: 1 / -1; }
+.opcion {
+  background: var(--superficie); border: 3px solid var(--linea); border-radius: var(--radio);
+  padding: 10px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 1.1rem; font-weight: 700; min-height: 150px;
+}
+.opcion .dibujo { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1; }
+.opcion:active { border-color: var(--acento); background: #eef4ef; }
+
+/* Resultado: semáforo */
+.semaforo {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
+  border-radius: var(--radio); color: #fff; font-size: 1.5rem;
+}
+.semaforo .luz { width: 54px; height: 54px; border-radius: 50%; background: #fff; flex: none; box-shadow: inset 0 0 0 8px rgba(0, 0, 0, .12); }
+.resultado.verde .semaforo { background: var(--verde); }
+.resultado.verde .luz { background: #b8f0c4; }
+.resultado.amarillo .semaforo { background: var(--amarillo); color: #2a2100; }
+.resultado.amarillo .luz { background: #fff3b8; }
+.resultado.tecnico .semaforo { background: var(--tecnico); }
+.resultado.tecnico .luz { background: #cfdcef; }
+.resultado.urgente .semaforo { background: var(--urgente); }
+.resultado.urgente .luz { background: #ffd6b0; }
+
+.puntos::after { content: '•••'; letter-spacing: 4px; animation: pulso 1.2s infinite; }
+@keyframes pulso { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .puntos::after { animation: none; } }
+
+/* Modo técnico: aquí sí hay números */
+.tecnico-fondo { position: fixed; inset: 0; background: rgba(10, 20, 14, .55); display: flex; justify-content: center; z-index: 10; }
+.tecnico {
+  width: 100%; max-width: 560px; background: var(--superficie); overflow-y: auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  font-size: 15px; display: flex; flex-direction: column; gap: 14px;
+}
+.tecnico header { display: flex; justify-content: space-between; align-items: center; }
+.tecnico h2 { margin: 0; font-size: 1.3rem; }
+.tecnico fieldset { border: 1px solid var(--linea); border-radius: 12px; display: flex; flex-direction: column; gap: 8px; padding: 12px; margin: 0; }
+.tecnico legend { font-weight: 700; padding-inline: 6px; }
+.tecnico select, .tecnico input { font: inherit; padding: 8px; border-radius: 8px; border: 1px solid var(--linea); min-height: 44px; width: 100%; }
+.tecnico button { min-height: 44px; border-radius: 10px; border: 1px solid var(--acento); background: #eef4ef; color: var(--acento); font-weight: 700; padding-inline: 14px; }
+.tecnico p { margin: 0; }
+.tecnico .fila { display: grid; grid-template-columns: 1fr 120px; gap: 8px; align-items: center; }
+.datos { margin: 0; padding-left: 18px; font-variant-numeric: tabular-nums; }

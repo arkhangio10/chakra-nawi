@@ -48,3 +48,8 @@ Thumbs.db
 # Datos privados de la API (teléfonos de las productoras, Ley 29733)
 api/fincas_privadas.json
 api/data/
+
+# PWA: el runtime de onnxruntime-web se copia en cada build (14 MB)
+apps/campo/public/ort/
+# El modelo que usa la PWA sí se versiona (es pequeño y la app no funciona sin él)
+!apps/campo/public/models/*.onnx

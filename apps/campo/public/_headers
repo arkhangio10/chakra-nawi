@@ -1,0 +1,10 @@
+# Netlify / Cloudflare Pages: aislamiento de origen cruzado para los hilos de WebAssembly (onnxruntime-web).
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+
+/ort/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/models/*
+  Cache-Control: public, max-age=86400
