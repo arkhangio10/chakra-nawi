@@ -1,0 +1,25 @@
+# Solo entra lo que copia el Dockerfile. Nunca secretos ni datos de productoras.
+.git
+.venv
+venv
+**/__pycache__
+**/*.pyc
+**/node_modules
+**/dist
+.pytest_cache
+.env
+**/.env
+!api/.env.example
+api/fincas_privadas.json
+api/data
+api/uploads
+**/*.sqlite
+**/*.sqlite3
+audio/grabaciones
+data
+ml
+pipeline
+validacion
+docs
+scripts
+apps/campo

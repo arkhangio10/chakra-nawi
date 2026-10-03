@@ -1,0 +1,4 @@
+# Grabaciones originales (notas de voz de WhatsApp): llevan la voz y el código dicho del hablante.
+# Solo se suben los .opus y .mp3 ya convertidos.
+grabaciones/
+__pycache__/

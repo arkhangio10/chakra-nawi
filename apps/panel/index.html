@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Chakra Ñawi · Panel del técnico</title>
+  <link rel="stylesheet" href="panel.css">
+  <script src="panel.js" defer></script>
+</head>
+<body>
+  <header class="barra">
+    <div class="marca">
+      <h1>Chakra Ñawi</h1>
+      <p>Panel del técnico · casos por prioridad</p>
+    </div>
+    <div class="barra-acciones">
+      <span id="sello" class="tenue" aria-live="polite"></span>
+      <button id="actualizar" class="boton" type="button">Actualizar</button>
+    </div>
+  </header>
+
+  <div id="aviso" class="aviso" role="alert" hidden></div>
+
+  <main class="marco">
+    <section id="lista" class="lista" aria-labelledby="titulo-lista">
+      <h2 id="titulo-lista" class="solo-lector">Casos</h2>
+      <p id="resumen" class="resumen"></p>
+      <ol id="casos" class="casos"></ol>
+    </section>
+    <article id="detalle" class="detalle" tabindex="-1">
+      <p class="vacio">Cargando casos…</p>
+    </article>
+  </main>
+
+  <footer class="pie">
+    Triaje para priorizar visitas, no un diagnóstico. Las cifras de este panel son para el técnico: nunca se muestran a la productora.
+    <span id="origen-api"></span>
+  </footer>
+</body>
+</html>

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://chakra-nawi.dev/contracts/mensajes.schema.json",
   "title": "mensajes.json",
-  "description": "Los 14 audios de PLAN §7 (≤ 8 s, Opus), grabados por personas. Lista cerrada: ningún texto se genera en tiempo de ejecución. Guion congelado en H2.",
+  "description": "Los 14 audios de PLAN §7 (≤ 8 s), grabados por personas: Opus para la PWA y MP3 para la llamada (Twilio <Play> no reproduce Opus). Lista cerrada: ningún texto se genera en tiempo de ejecución. Guion congelado en H2. Si texto_quz está vacío, el quechua está pendiente y la app y la llamada usan el castellano como respaldo.",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "mensajes"],
@@ -44,16 +44,28 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["es", "quz"],
+          "description": "Opus, para la PWA",
           "properties": {
             "es": { "type": "string", "pattern": "^audio/es/[A-Z_]+\\.opus$" },
             "quz": { "type": "string", "pattern": "^audio/quz/[A-Z_]+\\.opus$" }
           }
         },
+        "archivos_llamada": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["es", "quz"],
+          "description": "Copias MP3 para la llamada: Twilio <Play> no reproduce Opus. Opcional; la API usa la misma convención audio/<idioma>/<CODIGO>.mp3",
+          "properties": {
+            "es": { "type": "string", "pattern": "^audio/es/[A-Z_]+\\.mp3$" },
+            "quz": { "type": "string", "pattern": "^audio/quz/[A-Z_]+\\.mp3$" }
+          }
+        },
         "texto_es": { "type": "string", "minLength": 1 },
         "texto_quz": { "type": "string", "description": "Vacío hasta que el hablante entregue la grabación" },
         "revisado_por": { "type": "string", "description": "Segundo hablante que validó el audio en quechua. Vacío = sin validar" },
-        "sintetico": { "type": "boolean", "description": "true si el audio viene de mms-tts-quz (CC-BY-NC); se rotula en el demo" },
-        "duracion_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 }
+        "sintetico": { "type": "boolean", "description": "true si algún audio del mensaje es sintético: mms-tts-quz (CC-BY-NC) o la voz TTS de Windows de los provisionales en castellano. Se rotula en el demo" },
+        "duracion_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 8, "description": "Duración del audio más largo entre idiomas, ya recortado (audio/convertir.py)" },
+        "nota": { "type": "string", "description": "Origen de los audios (quién grabó o qué voz sintética) y pendientes" }
       }
     }
   }

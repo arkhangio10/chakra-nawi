@@ -1,0 +1,7 @@
+# Solo lo que necesita la API en el contenedor (Dockerfile). El entorno completo del repo: requirements.txt de la raíz.
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+httpx>=0.27
+jsonschema>=4.18
+python-dotenv>=1.0  # para uvicorn --env-file api/.env

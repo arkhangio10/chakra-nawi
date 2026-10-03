@@ -1,0 +1,3 @@
+# audio/convertir.py y audio/tts_provisional.py. imageio-ffmpeg trae el binario de ffmpeg (con libopus y libmp3lame).
+imageio-ffmpeg>=0.5
+jsonschema>=4.18

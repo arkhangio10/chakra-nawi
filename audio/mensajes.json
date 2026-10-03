@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-03.1",
+  "version": "2026-10-03.tts",
   "mensajes": {
     "G_FOTO_TRAMPA": {
       "uso": "Instrucción de la foto en época seca",
@@ -14,7 +14,9 @@
       "texto_es": "Vacía la trampa en el cuadrado. Que se vean las cuatro esquinas negras.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 5.39,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "G_FOTO_HOJAS": {
       "uso": "Instrucción de la foto en lluvias",
@@ -29,7 +31,9 @@
       "texto_es": "Voltea tres hojas y tómales foto por debajo, sobre la tarjeta.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 4.83,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "G_OTRA_VEZ": {
       "uso": "Foto oscura o movida",
@@ -44,7 +48,9 @@
       "texto_es": "No se ve bien. Acércate a la puerta, hay más luz, y toma la foto otra vez.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 6.74,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "G_ESPERA": {
       "uso": "Mientras el modelo cuenta",
@@ -59,7 +65,9 @@
       "texto_es": "Estoy contando, espera un ratito.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 2.91,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "P_GRANOS": {
       "uso": "Pregunta de los 20 granos",
@@ -74,7 +82,9 @@
       "texto_es": "Pon un grano en cada círculo. ¿Cuántos tienen huequito?",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 4.42,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "P_ROYA": {
       "uso": "Pregunta del polvo naranja",
@@ -89,7 +99,9 @@
       "texto_es": "¿Ves polvo naranja debajo de las hojas?",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 2.71,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_VERDE": {
       "uso": "Resultado verde",
@@ -104,7 +116,9 @@
       "texto_es": "Todo está bien en tu chacra. Sigue cuidándola así.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 4.27,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_BROCA": {
       "uso": "Resultado amarillo: broca",
@@ -119,7 +133,9 @@
       "texto_es": "Hay broca. Haz repase y recoge los granos caídos al suelo.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 4.94,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_ROYA": {
       "uso": "Resultado amarillo: posible roya",
@@ -134,7 +150,9 @@
       "texto_es": "Puede ser roya. Ya le mandé tu caso al técnico; él lo confirmará.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 5.55,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_CLIMA": {
       "uso": "Resultado amarillo: clima",
@@ -149,7 +167,9 @@
       "texto_es": "No es tu chacra, fue el clima. No gastes en remedios.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 5.0,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_TECNICO": {
       "uso": "Derivación al técnico (duda)",
@@ -164,7 +184,9 @@
       "texto_es": "Esto lo tiene que ver el técnico. Ya le mandé tu caso; él te llamará.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 5.72,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "R_TECNICO_URGENTE": {
       "uso": "Derivación urgente al técnico",
@@ -179,7 +201,9 @@
       "texto_es": "Hay mucha broca. Ya avisé al técnico. Mientras tanto, recoge los granos caídos.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 7.75,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "L_INTRO": {
       "uso": "Abre cada llamada al teléfono básico",
@@ -194,7 +218,9 @@
       "texto_es": "Cooperativa X, para Noor.",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 2.42,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     },
     "C_CONSENTIMIENTO": {
       "uso": "Consentimiento oral en la inscripción",
@@ -209,7 +235,9 @@
       "texto_es": "La cooperativa guardará tus fotos y respuestas para que el técnico te ayude. ¿Estás de acuerdo?",
       "texto_quz": "",
       "revisado_por": "",
-      "sintetico": false
+      "sintetico": true,
+      "duracion_s": 6.93,
+      "nota": "PROVISIONAL Y SINTÉTICO: castellano con la voz TTS de Windows (Microsoft Sabina Desktop, es-MX), generado con audio/tts_provisional.py. Reemplazar por la grabación del equipo. Quechua pendiente (texto_quz vacío): la app y la llamada usan el castellano como respaldo."
     }
   }
 }
