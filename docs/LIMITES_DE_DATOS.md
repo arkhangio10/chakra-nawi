@@ -14,7 +14,7 @@ Lo que **no** sabemos o no podemos afirmar. Va tal cual a la lámina de datos de
 ## Trampa y granos
 
 - **No existe un umbral de SENASA por trampa.** SENASA mide el % de frutos brocados; la trampa solo indica la tendencia del vuelo y funciona en época seca. El indicador de daño económico es 5% de frutos brocados (INIA).
-- Con 20 granos hay mucho ruido de muestreo. Con 0 de 20, la infestación real puede llegar a 14% (límite superior al 95%): por eso un 0 nunca da verde por sí solo.
+- Con 20 granos hay mucho ruido de muestreo. Con 0 de 20, la infestación real puede llegar a 14% (límite superior **unilateral** al 95%; el bilateral de Clopper-Pearson da 16,8%): por eso un 0 nunca da verde por sí solo. La tabla se regenera con `python validacion/binomial.py`.
 
 | Infestación real | P(0 con huequito) | P(1–2) | P(3+) |
 |---|---|---|---|

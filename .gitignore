@@ -44,3 +44,7 @@ api/uploads/
 Thumbs.db
 .idea/
 .vscode/
+
+# Datos privados de la API (teléfonos de las productoras, Ley 29733)
+api/fincas_privadas.json
+api/data/

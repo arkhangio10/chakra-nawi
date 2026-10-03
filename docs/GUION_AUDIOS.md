@@ -51,5 +51,7 @@ Versión para congelar en **H2** (PLAN §7). Responsable: P4. Fuente de los text
 ## Después de recibirlas (P4)
 
 1. Recortar el código hablado y los silencios.
-2. Convertir a Opus: `ffmpeg -i entrada.ogg -ac 1 -c:a libopus -b:a 24k audio/quz/R_VERDE.opus`
+2. Convertir a los dos formatos: Opus para la PWA y MP3 para la llamada (**Twilio `<Play>` no reproduce Opus**):
+   `ffmpeg -i entrada.ogg -ac 1 -c:a libopus -b:a 24k audio/quz/R_VERDE.opus`
+   `ffmpeg -i entrada.ogg -ac 1 -ar 22050 -b:a 48k audio/quz/R_VERDE.mp3`
 3. Llenar `texto_quz`, `revisado_por` y `duracion_s` en `mensajes.json`, y correr `python scripts/validar_contratos.py`.

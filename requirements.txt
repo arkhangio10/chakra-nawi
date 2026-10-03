@@ -1,0 +1,12 @@
+# Python del repo (contratos, tarjeta, pipeline/ficha, api). Sin GDAL ni imagecodecs a propósito:
+# en Windows con Control de aplicaciones esas DLL quedan bloqueadas.
+jsonschema>=4.18
+reportlab>=4
+numpy>=1.26
+tifffile>=2024.1
+requests>=2.31
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+httpx>=0.27
+pytest>=8
