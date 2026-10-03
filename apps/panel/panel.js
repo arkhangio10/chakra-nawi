@@ -319,11 +319,15 @@
     const k = c.conteo;
     if (!k) return seccion('Conteo', h('p', { class: 'vacio' }, 'Sin conteo: la foto es de hojas (época de lluvias).'));
     const dif = k.anterior != null ? k.yolo - k.anterior : null;
+    // Si el modelo no cargó en el teléfono, la PWA cuenta con el clásico y lo marca como dudoso.
+    const sinYolo = k.modelo.startsWith('clasico');
     const clasico = k.clasico != null
-      ? `${k.clasico}${k.yolo ? ` (difiere ${fmtPct.format(Math.abs(k.clasico - k.yolo) / k.yolo)} del YOLO; solo comparación)` : ''}`
+      ? sinYolo
+        ? `${k.clasico} (el modelo no cargó en el teléfono; conteo sin calibrar)`
+        : `${k.clasico}${k.yolo ? ` (difiere ${fmtPct.format(Math.abs(k.clasico - k.yolo) / k.yolo)} del YOLO; solo comparación)` : ''}`
       : '—';
     return seccion('Conteo de la trampa', datos([
-      ['Conteo YOLO', h('span', { class: 'grande-num' }, String(k.yolo))],
+      [sinYolo ? 'Conteo (contador clásico)' : 'Conteo YOLO', h('span', { class: 'grande-num' }, String(k.yolo))],
       ['Conteo anterior', k.anterior != null ? String(k.anterior) : 'sin dato'],
       ['Tendencia', `${TENDENCIA[k.tendencia] ?? k.tendencia}${dif != null ? ` (${dif >= 0 ? '+' : ''}${dif})` : ''}`],
       ['Contador clásico', clasico],
