@@ -51,7 +51,7 @@ export async function procesarFoto(archivo: Blob, umbrales: UmbralesCalidad): Pr
   if (!esquinas) {
     // Sin las 4 esquinas no hay escala: la foto no sirve para contar.
     const reducida = reducir(foto, LADO_MARCO);
-    return { marco: reducida, rectificada: false, calidad: { brillo: 0, nitidez: 0, ok: false, motivo: 'movida' }, ms: performance.now() - t0 };
+    return { marco: reducida, rectificada: false, calidad: { brillo: 0, saturados: 0, nitidez: 0, ok: false, motivo: 'movida' }, ms: performance.now() - t0 };
   }
   const marco = rectificar(foto, esquinas.map((p) => ({ x: p.x / escala, y: p.y / escala })), LADO_MARCO);
   const calidad = medirCalidad(aGris(marco), LADO_MARCO, umbrales);

@@ -21,7 +21,7 @@ export interface Diagnostico {
   msCargaModelo?: number;
   msPorMosaico: number[];
   msFoto?: number;
-  ultimoConteo?: { yolo: number; clasico: number | null; dudoso: boolean; brillo: number; nitidez: number };
+  ultimoConteo?: { yolo: number; clasico: number | null; dudoso: boolean; brillo: number; saturados: number; nitidez: number };
   ultimoResultado?: Resultado & { traza: Traza };
   pendientes: number;
   ultimoEnvio?: string;
@@ -116,14 +116,14 @@ export function ModoTecnico(p: {
 
         <fieldset>
           <legend>Calidad de la foto</legend>
-          {(['brilloMin', 'brilloMax', 'nitidezMin'] as const).map((k) => (
+          {(['brilloMin', 'saturadosMax', 'nitidezMin'] as const).map((k) => (
             <div key={k} className="fila">
-              <label htmlFor={`t-${k}`}>{{ brilloMin: 'Brillo mínimo', brilloMax: 'Brillo máximo', nitidezMin: 'Nitidez mínima' }[k]}</label>
-              <input id={`t-${k}`} type="number" value={a.calidad[k]} onChange={(e) => cambiar({ calidad: { ...a.calidad, [k]: Number(e.target.value) } })} />
+              <label htmlFor={`t-${k}`}>{{ brilloMin: 'Brillo medio mínimo', saturadosMax: 'Fracción máx. de píxeles quemados', nitidezMin: 'Nitidez mínima' }[k]}</label>
+              <input id={`t-${k}`} type="number" step="any" value={a.calidad[k]} onChange={(e) => cambiar({ calidad: { ...a.calidad, [k]: Number(e.target.value) } })} />
             </div>
           ))}
           {d.ultimoConteo && (
-            <p>Última foto: brillo {Math.round(d.ultimoConteo.brillo)}, nitidez {Math.round(d.ultimoConteo.nitidez)} ·
+            <p>Última foto: brillo {Math.round(d.ultimoConteo.brillo)}, quemados {Math.round(d.ultimoConteo.saturados * 100)} %, nitidez {Math.round(d.ultimoConteo.nitidez)} ·
               YOLO {d.ultimoConteo.yolo}, clásico {d.ultimoConteo.clasico ?? '—'}{d.ultimoConteo.dudoso ? ' · DUDOSO' : ''}</p>
           )}
           <button type="button" onClick={p.alBorrarHistorial}>Borrar conteos anteriores de esta finca</button>

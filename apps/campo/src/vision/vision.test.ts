@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { medirCalidad } from './calidad';
 import { contarClasico } from './clasico';
 import { detectarEsquinas, ordenar } from './esquinas';
 import { aplicar, homografia, rectificar } from './homografia';
@@ -98,5 +99,18 @@ describe('contador clásico', () => {
     }
     const img: Img = { data, width: lado, height: lado };
     expect(contarClasico(aGris(img), lado)).toBe(puntos.length);
+  });
+});
+
+describe('calidad de la foto', () => {
+  const lado = 64;
+  const papel = (v: number, ruido = 0) => Uint8Array.from({ length: lado * lado }, (_, i) => Math.min(255, v + ((i * 7919) % 2 ? ruido : -ruido)));
+  it('papel blanco bien expuesto NO es "quemada" (brillo medio alto es normal en la tarjeta)', () => {
+    expect(medirCalidad(papel(242, 10), lado).motivo).not.toBe('quemada');
+  });
+  it('detecta foto quemada (píxeles saturados), oscura y movida', () => {
+    expect(medirCalidad(papel(255), lado).motivo).toBe('quemada');
+    expect(medirCalidad(papel(40, 10), lado).motivo).toBe('oscura');
+    expect(medirCalidad(papel(200), lado).motivo).toBe('movida');
   });
 });

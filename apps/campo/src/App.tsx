@@ -155,7 +155,7 @@ export default function App() {
     s.foto = await aJpeg(proc.marco);
     setDiag((d) => ({
       ...d, msPorMosaico,
-      ultimoConteo: { yolo, clasico, dudoso: s.conteo!.dudoso, brillo: proc.calidad.brillo, nitidez: proc.calidad.nitidez },
+      ultimoConteo: { yolo, clasico, dudoso: s.conteo!.dudoso, brillo: proc.calidad.brillo, saturados: proc.calidad.saturados, nitidez: proc.calidad.nitidez },
     }));
     await new Promise((r) => setTimeout(r, 1200)); // que se vean las cajas
     setPaso({ tipo: 'pregunta', pregunta: conf.pregunta_principal });
