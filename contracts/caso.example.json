@@ -1,0 +1,37 @@
+{
+  "caso_id": "0f8c2a4e-5b1d-4c3e-9a7f-2d6b8e1c4a90",
+  "finca_id": "LC-001",
+  "ficha_version": "2026-27.1",
+  "creado": "2026-08-15T09:12:00-05:00",
+  "mes": 8,
+  "temporada": "fin_seca",
+  "foto": { "tipo": "trampa", "archivo": "caso_0f8c2a4e.jpg", "calidad_ok": true, "reintentos": 0 },
+  "conteo": {
+    "yolo": 143,
+    "clasico": 151,
+    "anterior": 88,
+    "tendencia": "sube",
+    "dudoso": false,
+    "modelo": "broca-y11n-v1",
+    "cajas": [
+      [0.12, 0.40, 0.017, 0.008],
+      [0.55, 0.31, 0.016, 0.009]
+    ]
+  },
+  "respuestas": { "granos": "1-2" },
+  "resultado": {
+    "estado": "amarillo",
+    "causa": "broca",
+    "probabilidades": {
+      "sin_problema": 0.08,
+      "broca": 0.71,
+      "roya": 0.07,
+      "clima_floracion": 0.06,
+      "plantas_viejas": 0.04,
+      "otra": 0.04
+    },
+    "reglas": ["R-GRANOS-02", "R-TRAMPA-01", "R-ALERTA-01"],
+    "mensaje": "R_BROCA"
+  },
+  "app_version": "0.1.0"
+}

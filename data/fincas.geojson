@@ -1,0 +1,197 @@
+{
+  "type": "FeatureCollection",
+  "name": "fincas_ejemplo",
+  "nota": "Fincas inventadas para el demo. Polígonos y altitudes plausibles pero no medidos: verificar la altitud con un DEM antes de generar las fichas.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "finca_id": "LC-001",
+        "ejemplo": true,
+        "provincia": "La Convención",
+        "distrito": "Huayopata",
+        "altitud_m": 1450,
+        "cultivo": "café"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.55555,
+              -13.0056
+            ],
+            [
+              -72.55438,
+              -13.00548
+            ],
+            [
+              -72.5545,
+              -13.00442
+            ],
+            [
+              -72.55548,
+              -13.00448
+            ],
+            [
+              -72.55555,
+              -13.0056
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "finca_id": "LC-002",
+        "ejemplo": true,
+        "provincia": "La Convención",
+        "distrito": "Santa Teresa",
+        "altitud_m": 1700,
+        "cultivo": "café"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.590594,
+              -13.140648
+            ],
+            [
+              -72.58933,
+              -13.140518
+            ],
+            [
+              -72.58946,
+              -13.139374
+            ],
+            [
+              -72.590518,
+              -13.139438
+            ],
+            [
+              -72.590594,
+              -13.140648
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "finca_id": "LC-003",
+        "ejemplo": true,
+        "provincia": "La Convención",
+        "distrito": "Maranura",
+        "altitud_m": 1150,
+        "cultivo": "café"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.665638,
+              -12.960696
+            ],
+            [
+              -72.664281,
+              -12.960557
+            ],
+            [
+              -72.66442,
+              -12.959327
+            ],
+            [
+              -72.665557,
+              -12.959397
+            ],
+            [
+              -72.665638,
+              -12.960696
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "finca_id": "LC-004",
+        "ejemplo": true,
+        "provincia": "La Convención",
+        "distrito": "Echarati",
+        "altitud_m": 1050,
+        "cultivo": "café"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.575682,
+              -12.780744
+            ],
+            [
+              -72.574231,
+              -12.780595
+            ],
+            [
+              -72.57438,
+              -12.779281
+            ],
+            [
+              -72.575595,
+              -12.779355
+            ],
+            [
+              -72.575682,
+              -12.780744
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "finca_id": "LC-005",
+        "ejemplo": true,
+        "provincia": "La Convención",
+        "distrito": "Santa Ana",
+        "altitud_m": 1300,
+        "cultivo": "café"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.720726,
+              -12.880792
+            ],
+            [
+              -72.719182,
+              -12.880634
+            ],
+            [
+              -72.71934,
+              -12.879234
+            ],
+            [
+              -72.720634,
+              -12.879314
+            ],
+            [
+              -72.720726,
+              -12.880792
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

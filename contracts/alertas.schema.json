@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/alertas.schema.json",
+  "title": "alertas_activas.json",
+  "description": "Alertas oficiales cargadas a mano (PLAN §2, fila 'Noticias'). Sin extractor LLM. El motor funciona igual con la lista vacía.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "actualizado", "alertas"],
+  "properties": {
+    "version": { "type": "string" },
+    "actualizado": { "type": "string", "format": "date" },
+    "alertas": { "type": "array", "items": { "$ref": "#/$defs/alerta" } }
+  },
+  "$defs": {
+    "alerta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codigo", "causa", "fuente", "url", "cita", "fecha", "vence"],
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]+$",
+          "examples": ["BROCA_ALTA_REGION", "ROYA_ALERTA_REGION", "LLUVIA_DEFICIT_FLORACION"]
+        },
+        "causa": { "$ref": "caso.schema.json#/$defs/causa", "description": "Causa cuyo prior modifica la alerta" },
+        "fuente": { "type": "string", "enum": ["SENASA", "SENAMHI", "ENFEN", "MIDAGRI", "INIA"] },
+        "url": { "type": "string", "format": "uri" },
+        "cita": { "type": "string", "minLength": 1, "description": "Texto literal de la fuente" },
+        "provincia": { "type": "string", "default": "La Convención" },
+        "fecha": { "type": "string", "format": "date" },
+        "vence": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

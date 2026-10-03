@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/rules.schema.json",
+  "title": "rules.json",
+  "description": "Reglas del motor (PLAN §5.1). Cada regla tiene fuente y tipo: el panel las muestra y la lámina de datos cuenta cuántas son supuestos.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "reglas"],
+  "properties": {
+    "version": { "type": "string" },
+    "reglas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/regla" } }
+  },
+  "$defs": {
+    "evidencia": {
+      "type": "string",
+      "enum": [
+        "E_TRAMPA_TENDENCIA", "E_GRANOS", "E_POLVO_NARANJA", "E_LLUVIA_DIAS", "E_TEMP_ROYA",
+        "E_LLUVIA_FLORACION", "E_CALOR_FLORACION", "E_EDAD", "A_REGIONAL"
+      ]
+    },
+    "regla": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "evidencia", "lr", "fuente", "tipo"],
+      "oneOf": [
+        { "required": ["valor"], "not": { "required": ["rango"] } },
+        { "required": ["rango"], "not": { "required": ["valor"] } }
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^R-[A-Z]+-[0-9A-Z]+$" },
+        "evidencia": { "$ref": "#/$defs/evidencia" },
+        "valor": {
+          "type": ["string", "boolean"],
+          "description": "Valor categórico que activa la regla: respuesta ('0', '1-2', '3+', 'si', 'no'), tendencia ('sube', 'igual', 'baja'), booleano de la inscripción o código de alerta (A_REGIONAL)"
+        },
+        "rango": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "description": "Para evidencias numéricas de la ficha: se activa si min ≤ x ≤ max (límites opcionales)",
+          "properties": { "min": { "type": "number" }, "max": { "type": "number" } }
+        },
+        "aplica_como": {
+          "type": "string", "enum": ["lr", "prior"], "default": "lr",
+          "description": "prior = multiplica el prior de la causa (E_EDAD, A_REGIONAL) y no recibe peso por temporada"
+        },
+        "lr": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "caso.schema.json#/$defs/causa" },
+          "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 10 },
+          "description": "Razón de verosimilitud por causa; las causas ausentes valen 1"
+        },
+        "fuente": { "type": "string", "minLength": 1 },
+        "tipo": { "type": "string", "enum": ["oficial", "literatura", "supuesto"] },
+        "nota": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/mensajes.schema.json",
+  "title": "mensajes.json",
+  "description": "Los 14 audios de PLAN §7 (≤ 8 s, Opus), grabados por personas. Lista cerrada: ningún texto se genera en tiempo de ejecución. Guion congelado en H2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "mensajes"],
+  "properties": {
+    "version": { "type": "string" },
+    "mensajes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "G_FOTO_TRAMPA", "G_FOTO_HOJAS", "G_OTRA_VEZ", "G_ESPERA", "P_GRANOS", "P_ROYA", "R_VERDE",
+        "R_BROCA", "R_ROYA", "R_CLIMA", "R_TECNICO", "R_TECNICO_URGENTE", "L_INTRO", "C_CONSENTIMIENTO"
+      ],
+      "properties": {
+        "G_FOTO_TRAMPA": { "$ref": "#/$defs/mensaje" },
+        "G_FOTO_HOJAS": { "$ref": "#/$defs/mensaje" },
+        "G_OTRA_VEZ": { "$ref": "#/$defs/mensaje" },
+        "G_ESPERA": { "$ref": "#/$defs/mensaje" },
+        "P_GRANOS": { "$ref": "#/$defs/mensaje" },
+        "P_ROYA": { "$ref": "#/$defs/mensaje" },
+        "R_VERDE": { "$ref": "#/$defs/mensaje" },
+        "R_BROCA": { "$ref": "#/$defs/mensaje" },
+        "R_ROYA": { "$ref": "#/$defs/mensaje" },
+        "R_CLIMA": { "$ref": "#/$defs/mensaje" },
+        "R_TECNICO": { "$ref": "#/$defs/mensaje" },
+        "R_TECNICO_URGENTE": { "$ref": "#/$defs/mensaje" },
+        "L_INTRO": { "$ref": "#/$defs/mensaje" },
+        "C_CONSENTIMIENTO": { "$ref": "#/$defs/mensaje" }
+      }
+    }
+  },
+  "$defs": {
+    "mensaje": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uso", "archivos", "texto_es", "texto_quz", "revisado_por", "sintetico"],
+      "properties": {
+        "uso": { "type": "string" },
+        "archivos": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["es", "quz"],
+          "properties": {
+            "es": { "type": "string", "pattern": "^audio/es/[A-Z_]+\\.opus$" },
+            "quz": { "type": "string", "pattern": "^audio/quz/[A-Z_]+\\.opus$" }
+          }
+        },
+        "texto_es": { "type": "string", "minLength": 1 },
+        "texto_quz": { "type": "string", "description": "Vacío hasta que el hablante entregue la grabación" },
+        "revisado_por": { "type": "string", "description": "Segundo hablante que validó el audio en quechua. Vacío = sin validar" },
+        "sintetico": { "type": "boolean", "description": "true si el audio viene de mms-tts-quz (CC-BY-NC); se rotula en el demo" },
+        "duracion_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 }
+      }
+    }
+  }
+}

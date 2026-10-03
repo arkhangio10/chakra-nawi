@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/ficha.schema.json",
+  "title": "ficha.json",
+  "description": "Ficha de finca (~5 KB) que viaja al teléfono una vez por campaña. NO contiene el número de Noor ni el polígono: esos viven solo en el servidor (Ley 29733).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "finca_id", "ejemplo", "altitud_m", "generado", "clima", "registro", "alertas"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d{4}-\\d{2}\\.\\d+$", "description": "Campaña + revisión, p. ej. 2026-27.1" },
+    "finca_id": { "type": "string", "pattern": "^LC-\\d{3}$" },
+    "ejemplo": { "type": "boolean", "description": "true = finca inventada para el demo" },
+    "altitud_m": { "type": "number", "minimum": 400, "maximum": 3000 },
+    "idioma": { "type": "string", "enum": ["quz", "es"], "default": "quz", "description": "Idioma de los audios, elegido en la inscripción" },
+    "generado": { "type": "string", "format": "date" },
+    "clima": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lluvia_floracion_anom_pct", "dias_lluvia_nov_abr", "dias_temp_roya_90d", "tmax_floracion_anom_c", "fuentes"],
+      "properties": {
+        "lluvia_floracion_anom_pct": {
+          "type": ["number", "null"],
+          "description": "E_LLUVIA_FLORACION: anomalía (%) de la lluvia sep–nov de la campaña anterior frente a 1991–2020 (CHIRPS v3). null = sin dato"
+        },
+        "dias_lluvia_nov_abr": {
+          "type": ["integer", "null"], "minimum": 0, "maximum": 182,
+          "description": "E_LLUVIA_DIAS: días con lluvia ≥ 1 mm de nov–abr (CHIRPS v3)"
+        },
+        "dias_lluvia_aprox_mensual": {
+          "type": "boolean", "default": false,
+          "description": "true si dias_lluvia_nov_abr se aproximó con datos mensuales (se declara en LIMITES_DE_DATOS.md)"
+        },
+        "dias_temp_roya_90d": {
+          "type": ["integer", "null"], "minimum": 0, "maximum": 90,
+          "description": "E_TEMP_ROYA: días de los últimos 90 con T2M, corregida por altitud, entre 17 y 25 °C (NASA POWER)"
+        },
+        "tmax_floracion_anom_c": {
+          "type": ["number", "null"],
+          "description": "E_CALOR_FLORACION: anomalía de Tmax en floración (°C), corregida por altitud (NASA POWER)"
+        },
+        "fuentes": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    },
+    "registro": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edad_mas_20_sin_recepa", "cosecha_alta_ano_pasado"],
+      "properties": {
+        "edad_mas_20_sin_recepa": { "type": "boolean", "description": "E_EDAD (dato de la inscripción)" },
+        "cosecha_alta_ano_pasado": { "type": "boolean", "description": "Se pregunta una vez en la inscripción; no es una causa (PLAN §2)" }
+      }
+    },
+    "alertas": { "type": "array", "items": { "$ref": "alertas.schema.json#/$defs/alerta" } }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/config.schema.json",
+  "title": "config.json",
+  "description": "Parámetros del motor: umbrales de decisión (PLAN §5.2), tope de LR, épocas y peso de cada evidencia por época (PLAN §5.1). El peso multiplica el log-LR; nunca se pone una causa en cero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "umbrales", "tope_lr_por_causa", "priors_base", "niveles_peso",
+    "temporadas", "fruto_atacable_por_mes", "peso_sin_fruto_atacable",
+    "correccion_altitud_c_por_km", "rango_temp_roya_c"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "umbrales": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verde_p_sin_problema", "amarillo_p_causa", "amarillo_ventaja"],
+      "properties": {
+        "verde_p_sin_problema": { "$ref": "#/$defs/prob" },
+        "amarillo_p_causa": { "$ref": "#/$defs/prob" },
+        "amarillo_ventaja": { "$ref": "#/$defs/prob" }
+      }
+    },
+    "tope_lr_por_causa": { "type": "number", "minimum": 1, "description": "Tope del LR combinado por causa (PLAN §5.1)" },
+    "priors_base": {
+      "type": "object",
+      "required": ["sin_problema", "broca", "roya", "clima_floracion", "plantas_viejas", "otra"],
+      "propertyNames": { "$ref": "caso.schema.json#/$defs/causa" },
+      "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+    },
+    "niveles_peso": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plena", "media", "baja", "ignorar"],
+      "properties": {
+        "plena": { "type": "number", "minimum": 0, "maximum": 1 },
+        "media": { "type": "number", "minimum": 0, "maximum": 1 },
+        "baja": { "type": "number", "minimum": 0, "maximum": 1 },
+        "ignorar": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "temporadas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cosecha", "fin_seca", "lluvias"],
+      "properties": {
+        "cosecha": { "$ref": "#/$defs/temporada" },
+        "fin_seca": { "$ref": "#/$defs/temporada" },
+        "lluvias": { "$ref": "#/$defs/temporada" }
+      }
+    },
+    "fruto_atacable_por_mes": {
+      "type": "array", "minItems": 12, "maxItems": 12, "items": { "type": "boolean" },
+      "description": "Índice 0 = enero. Decide el peso de E_GRANOS y el estado técnico urgente (granos 3+ en fruto atacable)"
+    },
+    "peso_sin_fruto_atacable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "E_GRANOS": { "$ref": "#/$defs/nivel" } },
+      "description": "Nivel que reemplaza al de la temporada cuando el mes no tiene fruto atacable"
+    },
+    "correccion_altitud_c_por_km": { "type": "number" },
+    "rango_temp_roya_c": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": { "min": { "type": "number" }, "max": { "type": "number" } }
+    },
+    "notas": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "prob": { "type": "number", "minimum": 0, "maximum": 1 },
+    "nivel": { "type": "string", "enum": ["plena", "media", "baja", "ignorar"] },
+    "temporada": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["meses", "foto", "pregunta_principal", "pesos"],
+      "properties": {
+        "meses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "foto": { "type": "string", "enum": ["trampa", "hojas"] },
+        "pregunta_principal": { "type": "string", "enum": ["granos", "polvo_naranja"] },
+        "pesos": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["E_TRAMPA_TENDENCIA", "E_GRANOS", "E_POLVO_NARANJA", "E_LLUVIA_DIAS", "E_TEMP_ROYA", "E_LLUVIA_FLORACION", "E_CALOR_FLORACION"],
+          "properties": {
+            "E_TRAMPA_TENDENCIA": { "$ref": "#/$defs/nivel" },
+            "E_GRANOS": { "$ref": "#/$defs/nivel" },
+            "E_POLVO_NARANJA": { "$ref": "#/$defs/nivel" },
+            "E_LLUVIA_DIAS": { "$ref": "#/$defs/nivel" },
+            "E_TEMP_ROYA": { "$ref": "#/$defs/nivel" },
+            "E_LLUVIA_FLORACION": { "$ref": "#/$defs/nivel" },
+            "E_CALOR_FLORACION": { "$ref": "#/$defs/nivel" }
+          }
+        },
+        "lr_max_por_evidencia": {
+          "type": "object",
+          "propertyNames": { "$ref": "rules.schema.json#/$defs/evidencia" },
+          "additionalProperties": { "type": "number", "minimum": 1 },
+          "description": "Tope del LR de una evidencia en esta época (p. ej. trampa ≤ 2 en fin de la seca)"
+        }
+      }
+    }
+  }
+}

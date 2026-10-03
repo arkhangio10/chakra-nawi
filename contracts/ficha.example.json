@@ -1,0 +1,29 @@
+{
+  "version": "2026-27.1",
+  "finca_id": "LC-001",
+  "ejemplo": true,
+  "altitud_m": 1450,
+  "idioma": "quz",
+  "generado": "2026-10-03",
+  "clima": {
+    "lluvia_floracion_anom_pct": -38,
+    "dias_lluvia_nov_abr": 112,
+    "dias_lluvia_aprox_mensual": false,
+    "dias_temp_roya_90d": 54,
+    "tmax_floracion_anom_c": 1.4,
+    "fuentes": ["CHIRPS v3.0", "NASA POWER"]
+  },
+  "registro": { "edad_mas_20_sin_recepa": false, "cosecha_alta_ano_pasado": true },
+  "alertas": [
+    {
+      "codigo": "BROCA_ALTA_REGION",
+      "causa": "broca",
+      "fuente": "SENASA",
+      "url": "https://www.gob.pe/senasa",
+      "cita": "EJEMPLO: reemplazar por la cita literal verificada de la alerta",
+      "provincia": "La Convención",
+      "fecha": "2026-08-01",
+      "vence": "2026-08-31"
+    }
+  ]
+}

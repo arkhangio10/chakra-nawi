@@ -1,0 +1,139 @@
+{
+  "version": "2026-10-03.1",
+  "reglas": [
+    {
+      "id": "R-GRANOS-01",
+      "evidencia": "E_GRANOS",
+      "valor": "0",
+      "lr": { "broca": 0.5, "sin_problema": 1.5 },
+      "fuente": "Tabla binomial n = 20 (PLAN §5.3) frente al umbral de daño económico de 5% de frutos brocados (INIA)",
+      "tipo": "literatura",
+      "nota": "Con 0 de 20 la infestación real puede llegar a 14%: un 0 nunca da verde solo (regla de decisión). Magnitud del LR: supuesto a calibrar"
+    },
+    {
+      "id": "R-GRANOS-02",
+      "evidencia": "E_GRANOS",
+      "valor": "1-2",
+      "lr": { "broca": 4.0, "sin_problema": 0.4 },
+      "fuente": "INIA: umbral de daño económico de 5% de frutos brocados; muestreo de frutos de SENASA",
+      "tipo": "literatura",
+      "nota": "Con 5% de infestación real, P(1–2 de 20) = 57%. Magnitud del LR: supuesto a calibrar"
+    },
+    {
+      "id": "R-GRANOS-03",
+      "evidencia": "E_GRANOS",
+      "valor": "3+",
+      "lr": { "broca": 10.0, "sin_problema": 0.1 },
+      "fuente": "INIA: umbral de daño económico de 5% de frutos brocados; tabla binomial n = 20 (PLAN §5.3)",
+      "tipo": "literatura",
+      "nota": "Con 15% de infestación real, P(3+ de 20) = 60%. En fruto atacable la decisión es técnico urgente (PLAN §5.2)"
+    },
+    {
+      "id": "R-TRAMPA-01",
+      "evidencia": "E_TRAMPA_TENDENCIA",
+      "valor": "sube",
+      "lr": { "broca": 2.0 },
+      "fuente": "SENASA 2017: la trampa mide vuelo de la broca, no infestación; solo indica tendencia y funciona en época seca",
+      "tipo": "supuesto",
+      "nota": "No existe umbral oficial por trampa. LR ≤ 2 en fin de la seca (config.json)"
+    },
+    {
+      "id": "R-TRAMPA-02",
+      "evidencia": "E_TRAMPA_TENDENCIA",
+      "valor": "baja",
+      "lr": { "broca": 0.7 },
+      "fuente": "SENASA 2017: la trampa solo indica tendencia",
+      "tipo": "supuesto"
+    },
+    {
+      "id": "R-ROYA-01",
+      "evidencia": "E_POLVO_NARANJA",
+      "valor": "si",
+      "lr": { "roya": 6.0, "sin_problema": 0.4 },
+      "fuente": "Signo diagnóstico de la roya (Hemileia vastatrix): polvo amarillo-naranja de uredosporas en el envés de la hoja (SENASA)",
+      "tipo": "literatura",
+      "nota": "Magnitud del LR: supuesto. El técnico confirma con la foto de hojas"
+    },
+    {
+      "id": "R-ROYA-02",
+      "evidencia": "E_POLVO_NARANJA",
+      "valor": "no",
+      "lr": { "roya": 0.4 },
+      "fuente": "Signo diagnóstico de la roya (SENASA)",
+      "tipo": "supuesto"
+    },
+    {
+      "id": "R-LLUVIA-01",
+      "evidencia": "E_LLUVIA_DIAS",
+      "rango": { "min": 100 },
+      "lr": { "roya": 1.8 },
+      "fuente": "La germinación de uredosporas de roya necesita agua libre sobre la hoja (literatura de Hemileia vastatrix); días con lluvia ≥ 1 mm de CHIRPS v3",
+      "tipo": "supuesto",
+      "nota": "El corte de 100 días de nov–abr es un supuesto a revisar con la climatología de las 5 fincas"
+    },
+    {
+      "id": "R-TEMP-01",
+      "evidencia": "E_TEMP_ROYA",
+      "rango": { "min": 45 },
+      "lr": { "roya": 1.8 },
+      "fuente": "Rango de 17–25 °C favorable a la germinación de la roya (literatura de Hemileia vastatrix); T2M de NASA POWER corregida por altitud",
+      "tipo": "literatura",
+      "nota": "El corte de 45 de 90 días y la magnitud del LR son supuestos"
+    },
+    {
+      "id": "R-FLOR-01",
+      "evidencia": "E_LLUVIA_FLORACION",
+      "rango": { "max": -30 },
+      "lr": { "clima_floracion": 3.0 },
+      "fuente": "Déficit de lluvia en la floración (sep–nov) de la campaña anterior, anomalía CHIRPS v3 frente a 1991–2020",
+      "tipo": "supuesto",
+      "nota": "Floración de La Convención según literatura regional (±1 mes por altitud); confirmar con COCLA"
+    },
+    {
+      "id": "R-FLOR-02",
+      "evidencia": "E_LLUVIA_FLORACION",
+      "rango": { "min": 30 },
+      "lr": { "clima_floracion": 2.0 },
+      "fuente": "Exceso de lluvia en la floración (sep–nov) de la campaña anterior, anomalía CHIRPS v3 frente a 1991–2020",
+      "tipo": "supuesto"
+    },
+    {
+      "id": "R-CALOR-01",
+      "evidencia": "E_CALOR_FLORACION",
+      "rango": { "min": 1.0 },
+      "lr": { "clima_floracion": 2.0 },
+      "fuente": "Estrés por calor en la floración del café arábica (literatura agronómica); Tmax de NASA POWER corregida por altitud",
+      "tipo": "supuesto",
+      "nota": "El corte de +1 °C de anomalía es un supuesto"
+    },
+    {
+      "id": "R-EDAD-01",
+      "evidencia": "E_EDAD",
+      "valor": true,
+      "aplica_como": "prior",
+      "lr": { "plantas_viejas": 3.0 },
+      "fuente": "Junta Nacional del Café: 70–75% del área cafetalera supera 15 años, por eso se usa > 20 años y sin recepa (PLAN §12)",
+      "tipo": "supuesto"
+    },
+    {
+      "id": "R-ALERTA-01",
+      "evidencia": "A_REGIONAL",
+      "valor": "BROCA_ALTA_REGION",
+      "aplica_como": "prior",
+      "lr": { "broca": 2.0 },
+      "fuente": "Alerta oficial vigente en alertas_activas.json (URL y cita literal en la alerta)",
+      "tipo": "oficial",
+      "nota": "El texto de la alerta es oficial; el factor 2 es un supuesto"
+    },
+    {
+      "id": "R-ALERTA-02",
+      "evidencia": "A_REGIONAL",
+      "valor": "ROYA_ALERTA_REGION",
+      "aplica_como": "prior",
+      "lr": { "roya": 2.0 },
+      "fuente": "Alerta oficial vigente en alertas_activas.json (URL y cita literal en la alerta)",
+      "tipo": "oficial",
+      "nota": "El texto de la alerta es oficial; el factor 2 es un supuesto"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "version": "2026-10-03.1",
+  "umbrales": {
+    "verde_p_sin_problema": 0.6,
+    "amarillo_p_causa": 0.5,
+    "amarillo_ventaja": 0.15
+  },
+  "tope_lr_por_causa": 10,
+  "priors_base": {
+    "sin_problema": 0.50,
+    "broca": 0.20,
+    "roya": 0.10,
+    "clima_floracion": 0.08,
+    "plantas_viejas": 0.07,
+    "otra": 0.05
+  },
+  "niveles_peso": { "plena": 1.0, "media": 0.5, "baja": 0.25, "ignorar": 0.0 },
+  "temporadas": {
+    "cosecha": {
+      "meses": [5, 6, 7],
+      "foto": "trampa",
+      "pregunta_principal": "granos",
+      "pesos": {
+        "E_TRAMPA_TENDENCIA": "media",
+        "E_GRANOS": "plena",
+        "E_POLVO_NARANJA": "media",
+        "E_LLUVIA_DIAS": "baja",
+        "E_TEMP_ROYA": "media",
+        "E_LLUVIA_FLORACION": "plena",
+        "E_CALOR_FLORACION": "plena"
+      }
+    },
+    "fin_seca": {
+      "meses": [8, 9, 10],
+      "foto": "trampa",
+      "pregunta_principal": "granos",
+      "pesos": {
+        "E_TRAMPA_TENDENCIA": "plena",
+        "E_GRANOS": "plena",
+        "E_POLVO_NARANJA": "baja",
+        "E_LLUVIA_DIAS": "baja",
+        "E_TEMP_ROYA": "media",
+        "E_LLUVIA_FLORACION": "plena",
+        "E_CALOR_FLORACION": "plena"
+      },
+      "lr_max_por_evidencia": { "E_TRAMPA_TENDENCIA": 2 }
+    },
+    "lluvias": {
+      "meses": [11, 12, 1, 2, 3, 4],
+      "foto": "hojas",
+      "pregunta_principal": "polvo_naranja",
+      "pesos": {
+        "E_TRAMPA_TENDENCIA": "ignorar",
+        "E_GRANOS": "plena",
+        "E_POLVO_NARANJA": "plena",
+        "E_LLUVIA_DIAS": "plena",
+        "E_TEMP_ROYA": "plena",
+        "E_LLUVIA_FLORACION": "media",
+        "E_CALOR_FLORACION": "media"
+      }
+    }
+  },
+  "fruto_atacable_por_mes": [true, true, true, true, true, true, true, true, true, true, false, false],
+  "peso_sin_fruto_atacable": { "E_GRANOS": "ignorar" },
+  "correccion_altitud_c_por_km": -6.5,
+  "rango_temp_roya_c": { "min": 17, "max": 25 },
+  "notas": [
+    "Valores numéricos de niveles_peso y priors_base: supuestos del equipo, a revisar con la prueba de sensibilidad ±50% (PLAN §10).",
+    "fruto_atacable_por_mes: nov–dic sin fruto atacable ('E_GRANOS plena desde ene', PLAN §5.1); oct con fruto residual. Calendario a confirmar con COCLA (±1 mes por altitud).",
+    "E_EDAD y A_REGIONAL actúan como prior (aplica_como = 'prior' en rules.json) y no reciben peso por época."
+  ]
+}

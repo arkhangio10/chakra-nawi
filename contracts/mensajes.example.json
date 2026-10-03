@@ -1,0 +1,159 @@
+{
+  "version": "2026-10-03.1",
+  "mensajes": {
+    "G_FOTO_TRAMPA": {
+      "uso": "Instrucción de la foto en época seca",
+      "archivos": {
+        "es": "audio/es/G_FOTO_TRAMPA.opus",
+        "quz": "audio/quz/G_FOTO_TRAMPA.opus"
+      },
+      "texto_es": "Vacía la trampa en el cuadrado. Que se vean las cuatro esquinas negras.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "G_FOTO_HOJAS": {
+      "uso": "Instrucción de la foto en lluvias",
+      "archivos": {
+        "es": "audio/es/G_FOTO_HOJAS.opus",
+        "quz": "audio/quz/G_FOTO_HOJAS.opus"
+      },
+      "texto_es": "Voltea tres hojas y tómales foto por debajo, sobre la tarjeta.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "G_OTRA_VEZ": {
+      "uso": "Foto oscura o movida",
+      "archivos": {
+        "es": "audio/es/G_OTRA_VEZ.opus",
+        "quz": "audio/quz/G_OTRA_VEZ.opus"
+      },
+      "texto_es": "No se ve bien. Acércate a la puerta, hay más luz, y toma la foto otra vez.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "G_ESPERA": {
+      "uso": "Mientras el modelo cuenta",
+      "archivos": {
+        "es": "audio/es/G_ESPERA.opus",
+        "quz": "audio/quz/G_ESPERA.opus"
+      },
+      "texto_es": "Estoy contando, espera un ratito.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "P_GRANOS": {
+      "uso": "Pregunta de los 20 granos",
+      "archivos": {
+        "es": "audio/es/P_GRANOS.opus",
+        "quz": "audio/quz/P_GRANOS.opus"
+      },
+      "texto_es": "Pon un grano en cada círculo. ¿Cuántos tienen huequito?",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "P_ROYA": {
+      "uso": "Pregunta del polvo naranja",
+      "archivos": {
+        "es": "audio/es/P_ROYA.opus",
+        "quz": "audio/quz/P_ROYA.opus"
+      },
+      "texto_es": "¿Ves polvo naranja debajo de las hojas?",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_VERDE": {
+      "uso": "Resultado verde",
+      "archivos": {
+        "es": "audio/es/R_VERDE.opus",
+        "quz": "audio/quz/R_VERDE.opus"
+      },
+      "texto_es": "Todo está bien en tu chacra. Sigue cuidándola así.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_BROCA": {
+      "uso": "Resultado amarillo: broca",
+      "archivos": {
+        "es": "audio/es/R_BROCA.opus",
+        "quz": "audio/quz/R_BROCA.opus"
+      },
+      "texto_es": "Hay broca. Haz repase y recoge los granos caídos al suelo.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_ROYA": {
+      "uso": "Resultado amarillo: posible roya",
+      "archivos": {
+        "es": "audio/es/R_ROYA.opus",
+        "quz": "audio/quz/R_ROYA.opus"
+      },
+      "texto_es": "Puede ser roya. Ya le mandé tu caso al técnico; él lo confirmará.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_CLIMA": {
+      "uso": "Resultado amarillo: clima",
+      "archivos": {
+        "es": "audio/es/R_CLIMA.opus",
+        "quz": "audio/quz/R_CLIMA.opus"
+      },
+      "texto_es": "No es tu chacra, fue el clima. No gastes en remedios.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_TECNICO": {
+      "uso": "Derivación al técnico (duda)",
+      "archivos": {
+        "es": "audio/es/R_TECNICO.opus",
+        "quz": "audio/quz/R_TECNICO.opus"
+      },
+      "texto_es": "Esto lo tiene que ver el técnico. Ya le mandé tu caso; él te llamará.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "R_TECNICO_URGENTE": {
+      "uso": "Derivación urgente al técnico",
+      "archivos": {
+        "es": "audio/es/R_TECNICO_URGENTE.opus",
+        "quz": "audio/quz/R_TECNICO_URGENTE.opus"
+      },
+      "texto_es": "Hay mucha broca. Ya avisé al técnico. Mientras tanto, recoge los granos caídos.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "L_INTRO": {
+      "uso": "Abre cada llamada al teléfono básico",
+      "archivos": {
+        "es": "audio/es/L_INTRO.opus",
+        "quz": "audio/quz/L_INTRO.opus"
+      },
+      "texto_es": "Cooperativa X, para Noor.",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    },
+    "C_CONSENTIMIENTO": {
+      "uso": "Consentimiento oral en la inscripción",
+      "archivos": {
+        "es": "audio/es/C_CONSENTIMIENTO.opus",
+        "quz": "audio/quz/C_CONSENTIMIENTO.opus"
+      },
+      "texto_es": "La cooperativa guardará tus fotos y respuestas para que el técnico te ayude. ¿Estás de acuerdo?",
+      "texto_quz": "",
+      "revisado_por": "",
+      "sintetico": false
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chakra-nawi.dev/contracts/caso.schema.json",
+  "title": "caso.json",
+  "description": "Un triaje. Lo produce la PWA, viaja por POST /casos (idempotente por caso_id) y lo lee el panel. Las probabilidades son para el técnico: nunca se muestran a Noor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["caso_id", "finca_id", "ficha_version", "creado", "mes", "temporada", "foto", "conteo", "respuestas", "resultado", "app_version"],
+  "properties": {
+    "caso_id": { "type": "string", "format": "uuid" },
+    "finca_id": { "type": "string", "pattern": "^LC-\\d{3}$" },
+    "ficha_version": { "type": "string" },
+    "creado": { "type": "string", "format": "date-time", "description": "Hora real del teléfono" },
+    "mes": {
+      "type": "integer", "minimum": 1, "maximum": 12,
+      "description": "Mes que usó el motor. Normalmente el de 'creado'; en el demo puede venir del selector de fecha del modo técnico ('caso de agosto')"
+    },
+    "temporada": { "$ref": "#/$defs/temporada" },
+    "foto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo", "archivo", "calidad_ok", "reintentos"],
+      "properties": {
+        "tipo": { "type": "string", "enum": ["trampa", "hojas"], "description": "hojas = época de lluvias; la IA no la analiza, queda como evidencia para el técnico" },
+        "archivo": { "type": "string", "pattern": "^[\\w.-]+\\.(jpg|jpeg|webp)$" },
+        "calidad_ok": { "type": "boolean" },
+        "reintentos": { "type": "integer", "minimum": 0, "maximum": 2 }
+      }
+    },
+    "conteo": {
+      "description": "null cuando la foto es de hojas",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["yolo", "tendencia", "dudoso", "modelo", "cajas"],
+          "properties": {
+            "yolo": { "type": "integer", "minimum": 0 },
+            "clasico": { "type": ["integer", "null"], "minimum": 0, "description": "Contador clásico de manchas (solo comparación)" },
+            "anterior": { "type": ["integer", "null"], "minimum": 0, "description": "Conteo YOLO del caso anterior de la misma finca" },
+            "tendencia": { "$ref": "#/$defs/tendencia" },
+            "dudoso": { "type": "boolean" },
+            "modelo": { "type": "string" },
+            "cajas": {
+              "type": "array",
+              "description": "[xc, yc, w, h] normalizadas a 0–1 sobre el marco rectificado de 10×10 cm (ver modelo-io.md)",
+              "items": {
+                "type": "array", "minItems": 4, "maxItems": 4,
+                "items": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "respuestas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "granos": { "type": "string", "enum": ["0", "1-2", "3+", "no_se"] },
+        "polvo_naranja": { "type": "string", "enum": ["si", "no", "no_se"] }
+      }
+    },
+    "resultado": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["estado", "causa", "probabilidades", "reglas", "mensaje"],
+      "properties": {
+        "estado": { "type": "string", "enum": ["verde", "amarillo", "tecnico", "tecnico_urgente"] },
+        "causa": { "oneOf": [{ "$ref": "#/$defs/causa" }, { "type": "null" }] },
+        "probabilidades": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sin_problema", "broca", "roya", "clima_floracion", "plantas_viejas", "otra"],
+          "properties": {
+            "sin_problema": { "$ref": "#/$defs/prob" },
+            "broca": { "$ref": "#/$defs/prob" },
+            "roya": { "$ref": "#/$defs/prob" },
+            "clima_floracion": { "$ref": "#/$defs/prob" },
+            "plantas_viejas": { "$ref": "#/$defs/prob" },
+            "otra": { "$ref": "#/$defs/prob" }
+          }
+        },
+        "reglas": {
+          "type": "array",
+          "description": "ids de rules.json que se aplicaron",
+          "items": { "type": "string", "pattern": "^R-[A-Z]+-[0-9A-Z]+$" }
+        },
+        "mensaje": { "type": "string", "enum": ["R_VERDE", "R_BROCA", "R_ROYA", "R_CLIMA", "R_TECNICO", "R_TECNICO_URGENTE"] }
+      }
+    },
+    "app_version": { "type": "string" }
+  },
+  "$defs": {
+    "causa": { "type": "string", "enum": ["sin_problema", "broca", "roya", "clima_floracion", "plantas_viejas", "otra"] },
+    "temporada": { "type": "string", "enum": ["cosecha", "fin_seca", "lluvias"], "description": "cosecha = may–jul · fin_seca = ago–oct · lluvias = nov–abr" },
+    "tendencia": { "type": "string", "enum": ["sube", "igual", "baja", "sin_dato"] },
+    "prob": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

@@ -1,0 +1,46 @@
+# Entornos y dependencias
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.vite/
+coverage/
+
+# Datos descargados (CHIRPS, NASA POWER, datasets)
+data/raw/
+data/descargas/
+*.tif
+*.tiff
+*.nc
+
+# Modelos pesados y entrenamiento
+ml/datasets/
+ml/runs/
+ml/weights/
+*.pt
+*.onnx
+*.engine
+*.tflite
+
+# Fotos de casos y base local de la API
+api/uploads/
+*.sqlite
+*.sqlite3
+*.db
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
