@@ -4,11 +4,14 @@ Lo que **no** sabemos o no podemos afirmar. Va tal cual a la lámina de datos de
 
 ## Contador de broca
 
-- **El modelo no ha visto broca peruana.** Se entrena con fotos propias de gorgojos (escarabajos oscuros pequeños de granos almacenados) sobre la tarjeta blanca, más montajes sintéticos.
+- **El modelo no ha visto broca peruana.** El de la app (`broca-y8n-v0-semireal`) se entrena con trampas sintéticas en las que el 70 % de las "brocas" son recortes de **escarabajos Scolytinae reales** de 4 especies (la subfamilia de la broca; Marais et al. 2024, PLOS ONE, doi:10.1371/journal.pone.0310716, CC-BY-SA-4.0). Todavía **no hay fotos propias de gorgojos** sobre la tarjeta.
+- **Se prueba con una quinta especie que no vio** (*Xylosandrus compactus*): MAE ≈ 11,2 insectos por marco a 0,60 (subcuenta, sesgo −10,8) y 0,17 detecciones falsas por trampa vacía. El modelo anterior, solo con dibujos, daba 26,3 y 25,2 en la misma prueba. Con umbral 0,45 el MAE baja a 6,0, pero ese umbral es una propuesta y no está adoptado (`ml/resultados/semireal/RESUMEN.md`).
+- **Qué no mide esa prueba:** las fotos de origen son de laboratorio (insectos en etanol, flash de anillo, fondo blanco), así que no mide la luz de un celular, el desenfoque real, ni la homografía de la tarjeta. Los insectos están reescalados a 1,7 mm y oscurecidos hacia el color de la broca: son primos de la broca, no broca.
 - **El error de conteo con el sustituto no se presenta como desempeño en broca.** Se reportan por separado.
 - Yellow Sticky Traps (CC0) solo prueba el pipeline: tiene el contraste invertido. Wadhwani queda fuera (polillas ~10 veces más grandes).
 - La prueba con broca real depende de que CATIE (con CIRAD) dé permiso para usar 3 fotos completas. Si no, solo hay resultados con el sustituto, declarados como tales.
 - El dataset de broca de *Sensors* 2026 (PMC13075308) son **frutos**, no trampas, y **no es público**.
+- El repositorio de CATIE (SVMendoza/Detection-and-count-CBB) **no tiene licencia** y su dataset completo (Broca2000) no es público: no se usa sin permiso. Las 45 fotos de *H. hampei* con licencia CC en iNaturalist son fotos sueltas, no de trampa, y no sirven para medir el conteo.
 - La regla "si el contador clásico difiere más de 30% → técnico" solo se activa si se calibra.
 
 ## Trampa y granos

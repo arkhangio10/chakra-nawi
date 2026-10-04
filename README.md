@@ -71,7 +71,7 @@ With 0 out of 20, true infestation can still be as high as **16.8%** (Clopper-Pe
 | Temperature, rainy days | **NASA POWER** daily `T2M`, `T2M_MAX`, `PRECTOTCORR`, altitude-corrected (−6.5 °C/km) | Rust-favorable temperature days and rainy-day anomaly vs 1991–2020; heat during flowering |
 | Regional alerts | `data/alertas_activas.json`, curated by hand from official sources (SENASA, SENAMHI, ENFEN) with URL and literal quote. **Currently empty**; the engine works the same without it | Prior only |
 | Quechua voice | **Meta MMS-TTS** `facebook/mms-tts-quz` (VITS, 36 M params, CC-BY-NC 4.0), run offline at build time with `audio/tts_quz.py`; 14 clips, 216 KB in Opus | Voice of the app and the call |
-| Counter training data | **Synthetic** trap images generated in `ml/sintetico.py` | YOLOv8n, 1 class |
+| Counter training data | **Synthetic** trap images generated in `ml/sintetico.py`, where 70% of the "borers" are cut-outs of **real bark beetles** (Scolytinae, the borer's subfamily) from [Marais et al. 2024](https://huggingface.co/datasets/ChristopherMarais/Andrew_Alpha_training_data), PLOS ONE, doi:10.1371/journal.pone.0310716, **CC-BY-SA-4.0** | YOLOv8n, 1 class |
 
 Rust rules use **anomalies, not absolute values**. La Convención is humid every year, so absolute thresholds fired on all farms every year. What carries information is whether *this* year departs from the 1991–2020 normal.
 
@@ -79,7 +79,7 @@ Rust rules use **anomalies, not absolute values**. La Convención is humid every
 
 We take this part seriously. Full list (in Spanish): [`docs/LIMITES_DE_DATOS.md`](docs/LIMITES_DE_DATOS.md).
 
-- **The model has never seen Peruvian coffee berry borer.** v0 is trained **only on synthetic images**. Its synthetic count error (MAE ≈ 4.9 insects per frame at the adopted 0.60 score threshold) is an optimistic bound from the same generator, **not field performance**. Results with substitute insects (small dark grain weevils) will be reported separately and never presented as borer performance.
+- **The model has never seen Peruvian coffee berry borer.** The counter in the app (`broca-y8n-v0-semireal`) is trained on synthetic trap images in which most "borers" are cut-outs of real bark beetles of four species. We test it on a **fifth species it never saw** (*Xylosandrus compactus*): count error MAE ≈ 11 insects per frame at the adopted 0.60 score threshold (it undercounts; ≈ 6 at 0.45, a proposed change not yet adopted), and 0.17 false detections per empty trap, versus 26 and 25 for the previous purely synthetic model. **This is a substitute, not borer performance**: the source photos are lab shots in ethanol with a ring flash, so phone lighting and the card's perspective correction are not measured. Details: [`ml/resultados/semireal/RESUMEN.md`](ml/resultados/semireal/RESUMEN.md).
 - **Climate is a regional signal for the year, not a farm-level one.** All 5 farms fall in the same NASA POWER cell (~55 km), so only altitude differs between them. NASA POWER humidity and NDVI are deliberately left out: the cells are too coarse, the crop grows under shade, and Nov–Mar cloud cover is 79–90%.
 - **9 of the 15 engine rules are assumptions**, and even for the cited ones the LR magnitude is an assumption, to be stress-tested with a ±50% sensitivity analysis.
 - **The 5 farms are fictional examples** with plausible locations and altitudes in La Convención.
@@ -95,7 +95,7 @@ We take this part seriously. Full list (in Spanish): [`docs/LIMITES_DE_DATOS.md`
 | [`api`](api) | FastAPI + SQLite: idempotent `POST /casos`, serves the technician panel, places Twilio calls | 15 |
 | [`apps/panel`](apps/panel) | One-page technician panel (no framework) | — |
 | [`pipeline/ficha`](pipeline/ficha) | Farm climate profile from CHIRPS v3 + NASA POWER, as anomalies vs 1991–2020 | — |
-| [`ml`](ml) | Synthetic data generator, YOLOv8n/11n training, ONNX export (fp32/int8), evaluation, classic blob counter for comparison | — |
+| [`ml`](ml) | Synthetic + semi-real data generator (real beetle cut-outs), YOLOv8n/11n training, ONNX export (fp32/int8), evaluation on an unseen species, classic blob counter for comparison | — |
 | [`contracts`](contracts) | JSON Schemas shared by all parts (frozen at hour 1) | `scripts/validar_contratos.py` |
 | [`audio`](audio) | 14-message catalog and conversion to `.opus` (app) and `.mp3` (call) | — |
 | [`docs`](docs) | Plan, architecture, data limits, printable A5 card (internal working docs are in Spanish) | — |
@@ -139,7 +139,7 @@ No printed card? Use `docs/demo/foto_tarjeta_sintetica.jpg` (synthetic photo in 
 ## Next steps
 
 - Replace the synthetic Quechua with messages recorded by co-op members and validated by a second speaker.
-- Retrain the counter on real photos of substitute insects on the card, then evaluate on real borer photos with permission from CATIE/CIRAD.
+- Retrain the counter on real phone photos of substitute insects on the printed card, then evaluate on real borer photos with permission from CATIE/CIRAD.
 - Pilot with one co-op, measured by two indicators: % of members doing sanitation picking within 2 weeks, and % of bored beans at collection.
 
 Ideas deliberately left out of the MVP (in Spanish): [`docs/LO_QUE_SIGUE.md`](docs/LO_QUE_SIGUE.md).

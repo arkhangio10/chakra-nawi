@@ -16,7 +16,7 @@ Hack-Nation 7 · Challenge 04 "Small AI for Development" (World Bank) · Agricul
 | `api` | FastAPI + SQLite: recibe casos, sirve el panel del técnico y llama a Noor por Twilio | tests en `api/` |
 | `apps/panel` | Panel del técnico, una sola página | — |
 | `pipeline/ficha` | Ficha de clima por finca: CHIRPS v3 + NASA POWER, como anomalías frente a 1991–2020 | — |
-| `ml` | Contador de broca: datos sintéticos, YOLO nano, exportación ONNX | ver `ml/README.md` |
+| `ml` | Contador de broca: datos sintéticos con recortes de escarabajos reales, YOLO nano, exportación ONNX | ver `ml/README.md` |
 | `audio` | Catálogo de 14 mensajes y conversión a `.opus` (app) y `.mp3` (llamada) | sintéticos: quechua (Meta MMS-TTS, texto sin validar) y castellano (TTS de Windows) |
 
 ## Correr en local
@@ -55,4 +55,4 @@ Para probar sin tarjeta impresa: `docs/demo/foto_tarjeta_sintetica.jpg` (foto si
 
 ## Honestidad de los datos
 
-El contador se entrena con **datos sintéticos** y, más adelante, con fotos de gorgojos sobre la tarjeta. **Su error no es desempeño en broca real.** Límites completos en [`docs/LIMITES_DE_DATOS.md`](docs/LIMITES_DE_DATOS.md).
+El contador de la app (`broca-y8n-v0-semireal`) se entrena con trampas sintéticas en las que la mayoría de las "brocas" son recortes de **escarabajos reales** de la misma subfamilia (Scolytinae; [Marais et al. 2024](https://huggingface.co/datasets/ChristopherMarais/Andrew_Alpha_training_data), PLOS ONE, doi:10.1371/journal.pone.0310716, **CC-BY-SA-4.0**). Con una especie que no vio en el entrenamiento, el error de conteo es ≈ 11 insectos por marco con el umbral 0,60 (subcuenta) y 0,17 detecciones falsas por trampa vacía. **Es un sustituto: su error no es desempeño en broca real.** Más adelante se reentrena con fotos de gorgojos sobre la tarjeta. Límites completos en [`docs/LIMITES_DE_DATOS.md`](docs/LIMITES_DE_DATOS.md).

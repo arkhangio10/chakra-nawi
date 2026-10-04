@@ -1,4 +1,13 @@
 {
+ "vigente_pwa": {
+  "modelo": "broca-y8n-v0-semireal-int8",
+  "metadata": "ml/modelos/broca-y8n-v0-semireal.metadata.json",
+  "desde": "2026-10-04",
+  "reemplaza_a": "broca-y8n-v0-sint-int8",
+  "motivo": "Con una especie de Scolytinae no vista: MAE 11,2 frente a 26,3 y 0,17 falsos positivos por trampa vacía frente a 25,2 (ml/resultados/semireal/RESUMEN.md). Sustituto, no broca.",
+  "umbral_conteo": 0.6,
+  "nota": "El resto de este archivo describe el modelo v0 sintético anterior y se conserva como historial."
+ },
  "leyenda": "entrenado solo con datos sintéticos",
  "arquitectura": "YOLOv8n",
  "clases": {
