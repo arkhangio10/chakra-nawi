@@ -1,0 +1,331 @@
+{
+ "modelo": "broca-y11n-v0-sint",
+ "leyenda": "entrenado solo con datos sintéticos",
+ "arquitectura": "YOLO11n",
+ "clases": {
+  "0": "broca"
+ },
+ "epocas": 4,
+ "pesos_iniciales": "ml/weights/yolo11n.pt",
+ "datos": "C:\\Users\\Usuario\\Desktop\\abel\\_projects\\hacknation\\v7\\chakra-nawi\\ml\\datasets\\sint_v0\\data.yaml",
+ "exportacion": "format=onnx imgsz=640 opset=17 simplify=True dynamic=False nms=False half=False",
+ "entrada": {
+  "nombre": "images",
+  "forma": [
+   1,
+   3,
+   640,
+   640
+  ],
+  "tipo": "float32"
+ },
+ "salida": {
+  "nombre": "output0",
+  "forma": [
+   1,
+   5,
+   8400
+  ],
+  "tipo": "float32"
+ },
+ "umbrales": {
+  "candidatas": 0.25,
+  "conteo": 0.6,
+  "nms_iou": 0.45,
+  "dudoso": ">30% de candidatas en [0,25;0,60)",
+  "fuente": "contracts/modelo-io.md (adoptado 2026-10-03)"
+ },
+ "variantes": {
+  "fp32": {
+   "archivo": "broca-y11n-v0-sint.onnx",
+   "mb": 10.11,
+   "unidad": "MiB",
+   "bytes": 10604660,
+   "cumple_10_MB_decimal": false
+  },
+  "int8": {
+   "archivo": "broca-y11n-v0-sint-int8.onnx",
+   "mb": 2.87,
+   "unidad": "MiB",
+   "bytes": 3013941,
+   "cumple_10_MB_decimal": true,
+   "cuantizacion": "onnxruntime.quantization.quantize_dynamic, pesos QUInt8"
+  }
+ },
+ "nota_tamano": "El contrato pide < 10 MB; revisar tamaño y latencia por variante.",
+ "fecha": "2026-10-03T19:20:40",
+ "contrato": "contracts/modelo-io.md",
+ "evaluacion_sintetica": {
+  "archivo": "ml/resultados/p2/y11_original/eval_sintetico.json",
+  "recomendada": "int8",
+  "recalibracion_val": {
+   "nota": "Recalibración experimental; el contrato congelado usa candidatas 0,25, conteo 0,60 y NMS 0,45. Un umbral distinto es una propuesta y no modifica el contrato. Elegido en validación sintética; con fotos reales hay que recalibrarlo.",
+   "nms_iou": 0.45,
+   "variantes": {
+    "fp32": {
+     "score_elegido_en_val": 0.6,
+     "curva_val": [
+      {
+       "score": 0.25,
+       "n": 60,
+       "mae": 18.95,
+       "sesgo": 18.95,
+       "error_relativo_medio_%": 22.5
+      },
+      {
+       "score": 0.3,
+       "n": 60,
+       "mae": 16.33,
+       "sesgo": 16.33,
+       "error_relativo_medio_%": 19.2
+      },
+      {
+       "score": 0.35,
+       "n": 60,
+       "mae": 14.48,
+       "sesgo": 14.48,
+       "error_relativo_medio_%": 18.3
+      },
+      {
+       "score": 0.4,
+       "n": 60,
+       "mae": 12.05,
+       "sesgo": 12.05,
+       "error_relativo_medio_%": 14.8
+      },
+      {
+       "score": 0.45,
+       "n": 60,
+       "mae": 10.13,
+       "sesgo": 10.13,
+       "error_relativo_medio_%": 14.1
+      },
+      {
+       "score": 0.5,
+       "n": 60,
+       "mae": 8.35,
+       "sesgo": 8.28,
+       "error_relativo_medio_%": 13.4
+      },
+      {
+       "score": 0.55,
+       "n": 60,
+       "mae": 6.47,
+       "sesgo": 6.0,
+       "error_relativo_medio_%": 11.6
+      },
+      {
+       "score": 0.6,
+       "n": 60,
+       "mae": 5.28,
+       "sesgo": 3.38,
+       "error_relativo_medio_%": 8.7
+      },
+      {
+       "score": 0.65,
+       "n": 60,
+       "mae": 5.42,
+       "sesgo": 0.25,
+       "error_relativo_medio_%": 7.4
+      },
+      {
+       "score": 0.7,
+       "n": 60,
+       "mae": 6.65,
+       "sesgo": -3.92,
+       "error_relativo_medio_%": 6.1
+      },
+      {
+       "score": 0.75,
+       "n": 60,
+       "mae": 10.15,
+       "sesgo": -9.02,
+       "error_relativo_medio_%": 6.9
+      },
+      {
+       "score": 0.8,
+       "n": 60,
+       "mae": 16.95,
+       "sesgo": -16.82,
+       "error_relativo_medio_%": 6.5
+      },
+      {
+       "score": 0.85,
+       "n": 60,
+       "mae": 33.73,
+       "sesgo": -33.73,
+       "error_relativo_medio_%": 13.5
+      },
+      {
+       "score": 0.9,
+       "n": 60,
+       "mae": 110.45,
+       "sesgo": -110.45,
+       "error_relativo_medio_%": 55.2
+      }
+     ],
+     "prueba_con_ese_score": {
+      "conteo_total": {
+       "n": 60,
+       "mae": 4.22,
+       "sesgo": 1.98,
+       "error_relativo_medio_%": 2.8
+      },
+      "por_densidad": {
+       "<50": {
+        "n": 25,
+        "mae": 0.88,
+        "sesgo": 0.88,
+        "error_relativo_medio_%": 3.6
+       },
+       "50-300": {
+        "n": 18,
+        "mae": 3.56,
+        "sesgo": 2.11,
+        "error_relativo_medio_%": 2.5
+       },
+       ">300": {
+        "n": 17,
+        "mae": 9.82,
+        "sesgo": 3.47,
+        "error_relativo_medio_%": 2.1
+       }
+      }
+     }
+    },
+    "int8": {
+     "score_elegido_en_val": 0.6,
+     "curva_val": [
+      {
+       "score": 0.25,
+       "n": 60,
+       "mae": 17.72,
+       "sesgo": 17.72,
+       "error_relativo_medio_%": 19.3
+      },
+      {
+       "score": 0.3,
+       "n": 60,
+       "mae": 15.32,
+       "sesgo": 15.32,
+       "error_relativo_medio_%": 16.7
+      },
+      {
+       "score": 0.35,
+       "n": 60,
+       "mae": 13.25,
+       "sesgo": 13.25,
+       "error_relativo_medio_%": 14.7
+      },
+      {
+       "score": 0.4,
+       "n": 60,
+       "mae": 11.32,
+       "sesgo": 11.32,
+       "error_relativo_medio_%": 13.7
+      },
+      {
+       "score": 0.45,
+       "n": 60,
+       "mae": 9.22,
+       "sesgo": 9.22,
+       "error_relativo_medio_%": 12.5
+      },
+      {
+       "score": 0.5,
+       "n": 60,
+       "mae": 7.65,
+       "sesgo": 7.15,
+       "error_relativo_medio_%": 10.7
+      },
+      {
+       "score": 0.55,
+       "n": 60,
+       "mae": 6.28,
+       "sesgo": 5.15,
+       "error_relativo_medio_%": 9.4
+      },
+      {
+       "score": 0.6,
+       "n": 60,
+       "mae": 5.27,
+       "sesgo": 2.63,
+       "error_relativo_medio_%": 7.8
+      },
+      {
+       "score": 0.65,
+       "n": 60,
+       "mae": 5.63,
+       "sesgo": -0.47,
+       "error_relativo_medio_%": 6.4
+      },
+      {
+       "score": 0.7,
+       "n": 60,
+       "mae": 7.0,
+       "sesgo": -4.23,
+       "error_relativo_medio_%": 5.3
+      },
+      {
+       "score": 0.75,
+       "n": 60,
+       "mae": 10.52,
+       "sesgo": -9.42,
+       "error_relativo_medio_%": 5.1
+      },
+      {
+       "score": 0.8,
+       "n": 60,
+       "mae": 16.67,
+       "sesgo": -16.53,
+       "error_relativo_medio_%": 6.2
+      },
+      {
+       "score": 0.85,
+       "n": 60,
+       "mae": 31.8,
+       "sesgo": -31.8,
+       "error_relativo_medio_%": 12.1
+      },
+      {
+       "score": 0.9,
+       "n": 60,
+       "mae": 91.2,
+       "sesgo": -91.2,
+       "error_relativo_medio_%": 42.4
+      }
+     ],
+     "prueba_con_ese_score": {
+      "conteo_total": {
+       "n": 60,
+       "mae": 4.12,
+       "sesgo": 1.12,
+       "error_relativo_medio_%": 2.3
+      },
+      "por_densidad": {
+       "<50": {
+        "n": 25,
+        "mae": 0.64,
+        "sesgo": 0.64,
+        "error_relativo_medio_%": 2.7
+       },
+       "50-300": {
+        "n": 18,
+        "mae": 3.61,
+        "sesgo": 1.39,
+        "error_relativo_medio_%": 2.2
+       },
+       ">300": {
+        "n": 17,
+        "mae": 9.76,
+        "sesgo": 1.53,
+        "error_relativo_medio_%": 2.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "estado_recomendacion": "cumple"
+ }
+}

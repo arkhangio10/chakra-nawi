@@ -88,9 +88,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--w8", action="store_true",
                     help="crea además la variante experimental -w8 (pesos int8, cómputo fp32)")
-    ap.add_argument("--pesos", default=str(ML / "runs" / "y8n_sint_v0" / "weights" / "best.pt"))
+    ap.add_argument("--pesos", default=None, help="por defecto: corrida v0 de la arquitectura indicada en --nombre")
     ap.add_argument("--nombre", default="broca-y8n-v0-sint")
-    ap.add_argument("--arquitectura", default="YOLOv8n")
+    ap.add_argument("--arquitectura", default=None)
+    ap.add_argument("--evaluacion", default=None, help="JSON de evaluación de ESTE modelo, si ya existe")
     ap.add_argument("--no-copiar", action="store_true", help="no copiar a apps/campo/public/models/")
     a = ap.parse_args()
 
@@ -100,7 +101,8 @@ def main():
 
     destino = ML / "modelos"
     destino.mkdir(exist_ok=True)
-    pesos = Path(a.pesos)
+    corrida = "y11n_sint_v0" if "y11n" in a.nombre else "y8n_sint_v0"
+    pesos = Path(a.pesos) if a.pesos else ML / "runs" / corrida / "weights" / "best.pt"
 
     modelo = YOLO(str(pesos))
     salida = modelo.export(format="onnx", imgsz=640, opset=17, simplify=True, dynamic=False,
@@ -141,35 +143,45 @@ def main():
 
     mb = lambda p: round(p.stat().st_size / 2 ** 20, 2)
     meta = {
+        "modelo": a.nombre,
         "leyenda": "entrenado solo con datos sintéticos",
-        "arquitectura": a.arquitectura,
+        "arquitectura": a.arquitectura or (
+            "YOLO11n" if "yolo11" in str(modelo.model.yaml.get("yaml_file", "")) else "YOLOv8n"),
         "clases": {"0": "broca"},
         "epocas": epocas,
-        "pesos_iniciales": resumen.get("modelo_inicial", "yolov8n.pt (COCO)"),
-        "datos": "sintéticos ml/sintetico.py (marcos 1216×1216 → mosaicos 640×640)",
+        "pesos_iniciales": resumen.get("modelo_inicial_ruta", resumen.get("modelo_inicial", "yolov8n.pt (COCO)")),
+        "datos": resumen.get("datos", "sintéticos ml/sintetico.py (marcos 1216×1216 → mosaicos 640×640)"),
         "exportacion": "format=onnx imgsz=640 opset=17 simplify=True dynamic=False nms=False half=False",
         "entrada": io["entrada"],
         "salida": io["salida"],
-        "umbrales": {"score": 0.25, "nms_iou": 0.45},
+        "umbrales": {"candidatas": 0.25, "conteo": 0.60, "nms_iou": 0.45,
+                     "dudoso": ">30% de candidatas en [0,25;0,60)",
+                     "fuente": "contracts/modelo-io.md (adoptado 2026-10-03)"},
         "variantes": {
-            "fp32": {"archivo": fp32.name, "mb": mb(fp32)},
-            "int8": {"archivo": int8.name, "mb": mb(int8),
+            "fp32": {"archivo": fp32.name, "mb": mb(fp32), "unidad": "MiB",
+                     "bytes": fp32.stat().st_size, "cumple_10_MB_decimal": fp32.stat().st_size < 10_000_000},
+            "int8": {"archivo": int8.name, "mb": mb(int8), "unidad": "MiB",
+                     "bytes": int8.stat().st_size, "cumple_10_MB_decimal": int8.stat().st_size < 10_000_000,
                      "cuantizacion": "onnxruntime.quantization.quantize_dynamic, pesos QUInt8"},
             **({"w8_experimental": {"archivo": w8.name, "mb": mb(w8),
                                     "cuantizacion": "solo pesos Conv int8 por canal + DequantizeLinear; cómputo fp32",
                                     "nota": "propuesta fuera del contrato (que pide int8 dinámica); misma E/S"}}
                if w8.exists() else {}),
         },
-        "nota_tamano": "El contrato pide < 10 MB; fp32 de YOLOv8n no lo cumple (ver mb).",
+        "nota_tamano": "El contrato pide < 10 MB; revisar tamaño y latencia por variante.",
         "fecha": dt.datetime.now().isoformat(timespec="seconds"),
         "contrato": "contracts/modelo-io.md",
     }
-    ev = ML / "resultados" / "eval_sintetico.json"
-    if ev.exists():
+    ev = Path(a.evaluacion) if a.evaluacion else None
+    if ev is not None and ev.exists():
         e = json.loads(ev.read_text(encoding="utf-8"))
-        meta["evaluacion_sintetica"] = {"archivo": "ml/resultados/eval_sintetico.json",
+        assert e.get("modelo") == a.nombre, "La evaluación pertenece a otro modelo"
+        meta["evaluacion_sintetica"] = {"archivo": str(ev),
                                         "recomendada": e.get("recomendacion", {}).get("variante")}
-    (destino / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
+    # Conservar trazabilidad de todas las exportaciones, sin reemplazar el modelo vigente.
+    (destino / f"{a.nombre}.metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
+    if not (destino / "metadata.json").exists():
+        (destino / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(meta, indent=1, ensure_ascii=False))
 
     if not a.no_copiar:

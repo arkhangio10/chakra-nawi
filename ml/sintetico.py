@@ -16,10 +16,12 @@ tal como lo entrega la homografía de la PWA (contracts/modelo-io.md):
 - Broca: escarabajo marrón oscuro/negro de ≈1,7 × 0,8 mm (≈21 × 10 px),
   elipsoide alargado con sombreado, brillo especular, sutura de élitros,
   rotación aleatoria, a veces agrupadas y solapadas parcialmente. Clase 0.
-- Distractores (NO se etiquetan): granitos de café tostado molido, restos
+- Distractores (NO se etiquetan): granitos de café tostado molido, incluidos
+  negativos alargados de 1–1,5 mm, restos
   vegetales (fibras y trocitos de hoja), moscas de 4–6 mm, mosquitas oscuras
   con alas, insectos claros pequeños y otros escarabajos más grandes. Entre el
-  7 y el 22 % de los insectos de cada marco no son broca.
+  7 y el 22 % proporcionales a las brocas, más Poisson(8) insectos adicionales
+  (55 % de los distractores sorteados son mosquitas oscuras).
 - Fotometría: gradiente de iluminación, viñeteo, sombras suaves, dominante de
   color, desenfoque, pérdida de resolución, ruido y artefactos JPEG variables.
 
@@ -357,9 +359,26 @@ def mosca(rng, cx, cy, luz, escala):
     return p, p.reducir(m / 255.0)
 
 
-def granito_cafe(rng, img, cx, cy, escala):
+def granito_cafe(rng, img, cx, cy, escala, *, dificil=False):
     """Granito de café tostado molido: polígono irregular oscuro, 0,2–1,1 mm."""
     k = 4
+    if dificil:
+        # Largo físico 1–1,5 mm; bordes quebrados y textura, sin patas ni sutura.
+        largo = rng.uniform(1.0, 1.5) * PX_MM * escala
+        ancho = largo * rng.uniform(0.35, 0.6)
+        p = Parche(cx, cy, int(math.ceil(largo / 2 + 3)), k)
+        rot = rng.uniform(0, 2 * math.pi)
+        angs = np.linspace(0, 2 * math.pi, 12, endpoint=False)
+        pts = [p.a_parche(largo / 2 * k * math.cos(t) * rng.uniform(0.85, 1),
+                          ancho / 2 * k * math.sin(t) * rng.uniform(0.7, 1), rot)
+               for t in angs]
+        m = p.mascara()
+        cv2.fillPoly(m, [np.int32(np.round(np.array(pts) * 16))], 255, cv2.LINE_AA, 4)
+        base = tono(rng, (20, 95), (0.6, 0.85), (0.4, 0.7))
+        tex = 1 + 0.25 * ruido_suave(rng, p.n, p.n, 4)
+        p.capa(m.astype(np.float32) / 255, base[None, None, :] * tex[..., None])
+        pegar(img, p)
+        return
     d = float(np.clip(rng.lognormal(math.log(0.45), 0.45), 0.15, 1.1)) * PX_MM * escala
     half = int(math.ceil(d * 0.9 + 2))
     p = Parche(cx, cy, half, k)
@@ -618,6 +637,11 @@ def generar_marco(semilla: int, densidad: str):
     for _ in range(n_cafe):
         x, y = posicion(rng, grupos, 0.4)
         granito_cafe(rng, img, x, y, escala)
+    # También en marcos vacíos: aprender a rechazar café sin depender de brocas.
+    n_cafe_dificil = int(rng.integers(15, 81)) if rng.random() < 0.85 else 0
+    for _ in range(n_cafe_dificil):
+        x, y = posicion(rng, grupos, 0.4)
+        granito_cafe(rng, img, x, y, escala, dificil=True)
     for _ in range(n_veg):
         x, y = posicion(rng, grupos, 0.3)
         resto_vegetal(rng, img, x, y, escala)
@@ -625,10 +649,10 @@ def generar_marco(semilla: int, densidad: str):
     ocupado = np.zeros((S, S), bool)
     # Distractores insectos: 7–22 % de lo capturado + algunos fijos
     frac = rng.uniform(0.07, 0.22)
-    n_otros = int(round(n_broca * frac / (1 - frac))) + int(rng.poisson(2.0))
+    n_otros = int(round(n_broca * frac / (1 - frac))) + int(rng.poisson(8.0))
     tipos = {"mosca": 0, "mosquita": 0, "claro": 0, "escarabajo": 0}
     for _ in range(n_otros):
-        t = rng.choice(["mosca", "mosquita", "claro", "escarabajo"], p=[0.3, 0.25, 0.3, 0.15])
+        t = rng.choice(["mosca", "mosquita", "claro", "escarabajo"], p=[0.15, 0.55, 0.2, 0.1])
         crear = {
             "mosca": lambda x, y: mosca(rng, x, y, luz, escala),
             "mosquita": lambda x, y: mosquita_oscura(rng, x, y, luz, escala),
@@ -671,7 +695,8 @@ def generar_marco(semilla: int, densidad: str):
     ok, buf = cv2.imencode(".jpg", cv2.cvtColor(img, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, calidad])
     img = cv2.cvtColor(cv2.imdecode(buf, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
     info = {"conteo": len(cajas), "densidad": densidad_de(len(cajas)), "densidad_pedida": densidad,
-            "cafe": n_cafe, "vegetal": n_veg, "otros_insectos": tipos, "jpeg": calidad,
+            "cafe": n_cafe, "cafe_alargado_dificil": n_cafe_dificil,
+            "generador": "sint_dificiles_v1", "vegetal": n_veg, "otros_insectos": tipos, "jpeg": calidad,
             "escala": round(float(escala), 3)}
     return img, cajas, info
 

@@ -74,6 +74,7 @@ def main():
         "sintetico": True,
         "nota": "Entrenado SOLO con datos sintéticos (ml/sintetico.py).",
         "modelo_inicial": Path(a.modelo).name,
+        "modelo_inicial_ruta": str(Path(a.modelo).resolve()),
         "datos": a.datos,
         "epocas_pedidas": a.epocas,
         "lote": a.lote, "nbs": a.nbs or a.lote, "congelar": a.congelar, "warmup_epochs": a.warmup,

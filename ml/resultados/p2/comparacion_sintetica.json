@@ -1,0 +1,188 @@
+{
+ "sintetico": true,
+ "advertencia": "SOLO datos sintéticos; NO es desempeño en broca real ni en el sustituto.",
+ "score_contrato": 0.6,
+ "filas": [
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_v0\\marcos\\test",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_contrato_060": 5.02,
+   "latencia_ms": {
+    "durante_eval_media": 134.6,
+    "hilos_por_defecto_mediana": 132.9,
+    "1_hilo_mediana": 270.5
+   },
+   "score_elegido_val": 0.6,
+   "mae_val_min": 6.58,
+   "mae_prueba_score_calibrado": 5.02
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_v0\\marcos\\test",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_contrato_060": 4.92,
+   "latencia_ms": {
+    "durante_eval_media": 209.0,
+    "hilos_por_defecto_mediana": 203.3,
+    "1_hilo_mediana": 305.7
+   },
+   "score_elegido_val": 0.6,
+   "mae_val_min": 6.82,
+   "mae_prueba_score_calibrado": 4.92
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_v0\\marcos\\test",
+   "variante": "w8",
+   "mb": 3.15,
+   "mae_contrato_060": 5.12,
+   "latencia_ms": {
+    "durante_eval_media": 163.7,
+    "hilos_por_defecto_mediana": 162.8,
+    "1_hilo_mediana": 353.4
+   },
+   "score_elegido_val": 0.6,
+   "mae_val_min": 6.75,
+   "mae_prueba_score_calibrado": 5.12
+  },
+  {
+   "modelo": "broca-y11n-v0-sint",
+   "dataset": "datasets\\sint_v0\\marcos\\test",
+   "variante": "fp32",
+   "mb": 10.11,
+   "mae_contrato_060": 4.22,
+   "latencia_ms": {
+    "durante_eval_media": 121.7,
+    "hilos_por_defecto_mediana": 120.9,
+    "1_hilo_mediana": 234.9
+   },
+   "score_elegido_val": 0.6,
+   "mae_val_min": 5.28,
+   "mae_prueba_score_calibrado": 4.22
+  },
+  {
+   "modelo": "broca-y11n-v0-sint",
+   "dataset": "datasets\\sint_v0\\marcos\\test",
+   "variante": "int8",
+   "mb": 2.87,
+   "mae_contrato_060": 4.12,
+   "latencia_ms": {
+    "durante_eval_media": 197.5,
+    "hilos_por_defecto_mediana": 194.9,
+    "1_hilo_mediana": 290.3
+   },
+   "score_elegido_val": 0.6,
+   "mae_val_min": 5.27,
+   "mae_prueba_score_calibrado": 4.12
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_contrato_060": 26.93,
+   "latencia_ms": {
+    "durante_eval_media": 160.8,
+    "hilos_por_defecto_mediana": 162.3,
+    "1_hilo_mediana": 327.3
+   },
+   "score_elegido_val": 0.75,
+   "mae_val_min": 14.22,
+   "mae_prueba_score_calibrado": 13.75
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_contrato_060": 25.65,
+   "latencia_ms": {
+    "durante_eval_media": 236.4,
+    "hilos_por_defecto_mediana": 238.1,
+    "1_hilo_mediana": 371.6
+   },
+   "score_elegido_val": 0.75,
+   "mae_val_min": 13.8,
+   "mae_prueba_score_calibrado": 14.05
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "w8",
+   "mb": 3.15,
+   "mae_contrato_060": 26.42,
+   "latencia_ms": {
+    "durante_eval_media": 193.8,
+    "hilos_por_defecto_mediana": 192.5,
+    "1_hilo_mediana": 433.8
+   },
+   "score_elegido_val": 0.75,
+   "mae_val_min": 14.02,
+   "mae_prueba_score_calibrado": 13.43
+  },
+  {
+   "modelo": "broca-y11n-v0-sint",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "fp32",
+   "mb": 10.11,
+   "mae_contrato_060": 18.5,
+   "latencia_ms": {
+    "durante_eval_media": 137.1,
+    "hilos_por_defecto_mediana": 136.6,
+    "1_hilo_mediana": 278.5
+   },
+   "score_elegido_val": 0.75,
+   "mae_val_min": 11.17,
+   "mae_prueba_score_calibrado": 10.62
+  },
+  {
+   "modelo": "broca-y11n-v0-sint",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "int8",
+   "mb": 2.87,
+   "mae_contrato_060": 17.63,
+   "latencia_ms": {
+    "durante_eval_media": 240.3,
+    "hilos_por_defecto_mediana": 235.1,
+    "1_hilo_mediana": 351.3
+   },
+   "score_elegido_val": 0.75,
+   "mae_val_min": 11.03,
+   "mae_prueba_score_calibrado": 10.25
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_contrato_060": 9.13,
+   "latencia_ms": {
+    "durante_eval_media": 162.7,
+    "hilos_por_defecto_mediana": 158.0,
+    "1_hilo_mediana": 323.6
+   },
+   "score_elegido_val": 0.45,
+   "mae_val_min": 4.68,
+   "mae_prueba_score_calibrado": 5.13
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "dataset": "datasets\\sint_dificiles_v1\\marcos\\test",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_contrato_060": 12.27,
+   "latencia_ms": {
+    "durante_eval_media": 236.7,
+    "hilos_por_defecto_mediana": 234.3,
+    "1_hilo_mediana": 360.8
+   },
+   "score_elegido_val": 0.4,
+   "mae_val_min": 4.92,
+   "mae_prueba_score_calibrado": 4.77
+  }
+ ],
+ "sin_fotos_reales": "broca-y8n-v1 pendiente de fotos etiquetadas y división por sesión"
+}

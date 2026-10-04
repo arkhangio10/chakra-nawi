@@ -1,0 +1,101 @@
+fp32 {"archivo": "broca-y8n-v0-sint.onnx", "mb": 11.7, "unidad": "MiB", "bytes": 12265771, "cumple_10_MB_decimal": false, "conteo_total": {"n": 60, "mae": 5.02, "sesgo": 3.98, "error_relativo_medio_%": 6.5}, "por_densidad": {"<50": {"n": 25, "mae": 2.44, "sesgo": 2.44, "error_relativo_medio_%": 12.8}, "50-300": {"n": 18, "mae": 5.67, "sesgo": 4.89, "error_relativo_medio_%": 4.3}, ">300": {"n": 17, "mae": 8.12, "sesgo": 5.29, "error_relativo_medio_%": 1.8}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.83}, "marcos_dudosos_%": 11.7, "deteccion_iou50": {"precision": 0.955, "recall": 0.975, "f1": 0.965}, "latencia_ms_mosaico": {"durante_eval_media": 134.6, "hilos_por_defecto_mediana": 132.9, "1_hilo_mediana": 270.5}}
+int8 {"archivo": "broca-y8n-v0-sint-int8.onnx", "mb": 3.2, "unidad": "MiB", "bytes": 3356012, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 4.92, "sesgo": 3.68, "error_relativo_medio_%": 6.3}, "por_densidad": {"<50": {"n": 25, "mae": 2.36, "sesgo": 2.36, "error_relativo_medio_%": 12.3}, "50-300": {"n": 18, "mae": 5.89, "sesgo": 4.56, "error_relativo_medio_%": 4.2}, ">300": {"n": 17, "mae": 7.65, "sesgo": 4.71, "error_relativo_medio_%": 1.7}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.83}, "marcos_dudosos_%": 10.0, "deteccion_iou50": {"precision": 0.955, "recall": 0.974, "f1": 0.964}, "latencia_ms_mosaico": {"durante_eval_media": 209.0, "hilos_por_defecto_mediana": 203.3, "1_hilo_mediana": 305.7}}
+w8 {"archivo": "broca-y8n-v0-sint-w8.onnx", "mb": 3.15, "unidad": "MiB", "bytes": 3308224, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 5.12, "sesgo": 3.95, "error_relativo_medio_%": 6.4}, "por_densidad": {"<50": {"n": 25, "mae": 2.36, "sesgo": 2.28, "error_relativo_medio_%": 12.5}, "50-300": {"n": 18, "mae": 5.67, "sesgo": 4.89, "error_relativo_medio_%": 4.2}, ">300": {"n": 17, "mae": 8.59, "sesgo": 5.41, "error_relativo_medio_%": 1.9}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 1.0}, "marcos_dudosos_%": 11.7, "deteccion_iou50": {"precision": 0.955, "recall": 0.975, "f1": 0.965}, "latencia_ms_mosaico": {"durante_eval_media": 163.7, "hilos_por_defecto_mediana": 162.8, "1_hilo_mediana": 353.4}}
+umbral propuesto {'fp32': 0.6, 'int8': 0.6, 'w8': 0.6} {'fp32': {'n': 60, 'mae': 5.02, 'sesgo': 3.98, 'error_relativo_medio_%': 6.5}, 'int8': {'n': 60, 'mae': 4.92, 'sesgo': 3.68, 'error_relativo_medio_%': 6.3}, 'w8': {'n': 60, 'mae': 5.12, 'sesgo': 3.95, 'error_relativo_medio_%': 6.4}}
+{
+ "recomendacion": {
+  "variante": "int8",
+  "criterio": "entre las variantes del contrato (fp32, int8): MAE ≤ 1,1×MAE fp32 + 0,5 (= 6.02), tamaño < 10 MB y, de esas, la más rápida a 1 hilo (como WASM sin aislamiento). Si ninguna cumple el tamaño, la más rápida con precisión aceptable.",
+  "tabla": {
+   "fp32": {
+    "mae": 5.02,
+    "mb": 11.7,
+    "latencia_1_hilo_ms": 270.5,
+    "latencia_hilos_def_ms": 132.9,
+    "precision_ok": true,
+    "cumple_10mb": false
+   },
+   "int8": {
+    "mae": 4.92,
+    "mb": 3.2,
+    "latencia_1_hilo_ms": 305.7,
+    "latencia_hilos_def_ms": 203.3,
+    "precision_ok": true,
+    "cumple_10mb": true
+   },
+   "w8": {
+    "mae": 5.12,
+    "mb": 3.15,
+    "latencia_1_hilo_ms": 353.4,
+    "latencia_hilos_def_ms": 162.8,
+    "precision_ok": true,
+    "cumple_10mb": true
+   }
+  }
+ },
+ "barrido_score_fp32": [
+  {
+   "score": 0.25,
+   "n": 60,
+   "mae": 21.6,
+   "sesgo": 21.6,
+   "error_relativo_medio_%": 23.4
+  },
+  {
+   "score": 0.3,
+   "n": 60,
+   "mae": 18.4,
+   "sesgo": 18.4,
+   "error_relativo_medio_%": 20.3
+  },
+  {
+   "score": 0.35,
+   "n": 60,
+   "mae": 16.03,
+   "sesgo": 16.03,
+   "error_relativo_medio_%": 18.4
+  },
+  {
+   "score": 0.4,
+   "n": 60,
+   "mae": 13.7,
+   "sesgo": 13.7,
+   "error_relativo_medio_%": 16.2
+  },
+  {
+   "score": 0.5,
+   "n": 60,
+   "mae": 9.18,
+   "sesgo": 9.18,
+   "error_relativo_medio_%": 11.3
+  },
+  {
+   "score": 0.6,
+   "n": 60,
+   "mae": 5.02,
+   "sesgo": 3.98,
+   "error_relativo_medio_%": 6.5
+  },
+  {
+   "score": 0.7,
+   "n": 60,
+   "mae": 5.6,
+   "sesgo": -3.2,
+   "error_relativo_medio_%": 4.3
+  },
+  {
+   "score": 0.8,
+   "n": 60,
+   "mae": 19.65,
+   "sesgo": -19.48,
+   "error_relativo_medio_%": 7.5
+  },
+  {
+   "score": 0.9,
+   "n": 60,
+   "mae": 159.93,
+   "sesgo": -159.93,
+   "error_relativo_medio_%": 85.4
+  }
+ ]
+}

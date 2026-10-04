@@ -11,8 +11,8 @@ Responsable: P2. Produce el `.onnx` que cumple `contracts/modelo-io.md`; los pes
 | Archivo | Qué es |
 |---|---|
 | `sintetico.py` | Generador de marcos rectificados 1216×1216 sintéticos + mosaicos 640×640 + etiquetas YOLO + `conteos.json` |
-| `entrenar.py` | Entrena YOLOv8n de una clase en CPU (mosaicos, `imgsz=640`) |
-| `exportar.py` | Exporta ONNX (opset 17, sin NMS, 640 fijo), crea int8 dinámica, verifica E/S, escribe `modelos/metadata.json` y copia a `apps/campo/public/models/` |
+| `entrenar.py` | Entrena YOLOv8n/YOLO11n de una clase en CPU (mosaicos, `imgsz=640`) |
+| `exportar.py` | Exporta ONNX (opset 17, sin NMS, 640 fijo), crea int8 dinámica, verifica E/S, conserva metadata por modelo y copia a `apps/campo/public/models/` |
 | `evaluar.py` | Conteo en marcos completos con el **posprocesado exacto** de `modelo-io.md`; MAE por densidad, latencia, ejemplos |
 | `contador_clasico.py` + `contador_clasico.json` | Contador de manchas sin IA (portable a JS). Solo mide, no activa reglas |
 | `entrenar_colab.ipynb` | Lo mismo en Colab con GPU (plan B y para reentrenar más rápido) |
@@ -69,14 +69,14 @@ Prueba: 60 marcos sintéticos completos (6 sin brocas; 19 de 1–49; 18 de 50–
 
 | | <50 (n=25) | 50–300 (n=18) | >300 (n=17) | Total | Sesgo |
 |---|---|---|---|---|---|
-| fp32, score 0,25 (contrato) | 8,6 | 19,7 | 42,8 | 21,6 | +21,6 |
-| int8, score 0,25 (contrato) | 7,8 | 19,2 | 43,1 | 21,3 | +21,3 |
-| fp32, score 0,60 (propuesto) | 2,4 | 5,7 | 8,1 | 5,0 | +4,0 |
-| int8, score 0,60 (propuesto) | 2,4 | 5,9 | 7,7 | 4,9 | +3,7 |
+| fp32, score 0,25 (diagnóstico anterior) | 8,6 | 19,7 | 42,8 | 21,6 | +21,6 |
+| int8, score 0,25 (diagnóstico anterior) | 7,8 | 19,2 | 43,1 | 21,3 | +21,3 |
+| fp32, score 0,60 (contrato vigente) | 2,4 | 5,7 | 8,1 | 5,0 | +4,0 |
+| int8, score 0,60 (contrato vigente) | 2,4 | 5,9 | 7,7 | 4,9 | +3,7 |
 | Contador clásico (calibrado en val) | 17,1 | 40,0 | 64,6 | 37,4 | sobrecuenta |
 
-- Con 0,25 el modelo **sobrecuenta**: precisión 0,89 y recall 0,99 (IoU 0,5). Los falsos positivos son sobre todo granitos de café alargados (ver `resultados/ejemplo_fallo_*.jpg`: 0 brocas reales, 15 contadas). En marcos sin brocas hay 3,5–4,2 falsos positivos de media.
-- **Umbral propuesto: score 0,60** (NMS 0,45 igual). Se eligió en la VALIDACIÓN sintética (curva: 0,25 → MAE 22,1; 0,60 → 6,8; 0,70 → 9,0) y luego se midió en prueba. Es una propuesta para acordar antes de H8 y no cambia la E/S. Con fotos reales hay que recalibrarlo.
+- Con 0,25 el modelo **sobrecuenta**: precisión 0,89 y recall 0,99 (IoU 0,5). Los falsos positivos son sobre todo granitos de café alargados (ver `resultados/ejemplo_fallo_*.jpg`: 0 brocas sintéticas de referencia, 15 contadas). En marcos sin brocas hay 3,5–4,2 falsos positivos de media.
+- **Umbral de conteo adoptado: score 0,60** (NMS 0,45 igual; candidatas desde 0,25). Se eligió en la VALIDACIÓN sintética (curva: 0,25 → MAE 22,1; 0,60 → 6,8; 0,70 → 9,0) y luego se midió en prueba. El contrato lo adoptó el 3 de octubre de 2026. Con fotos reales hay que recalibrarlo; cualquier cambio posterior se anota como propuesta, sin modificar el contrato congelado.
 - Desacuerdo clásico vs YOLO (int8, 0,25), con diferencia > 30 %: 26,7 % de los marcos (60 % en <50; 5,6 % en 50–300; 0 % en >300). Solo se mide; no activa ninguna regla.
 
 **Tamaño y latencia por mosaico** (onnxruntime 1.30 CPU, i7-1165G7, mediana)
@@ -112,3 +112,82 @@ Prueba: 60 marcos sintéticos completos (6 sin brocas; 19 de 1–49; 18 de 50–
 ## Yellow Sticky Traps
 
 Omitido en v0. La CPU estuvo ocupada con el entrenamiento y el pipeline ya quedó probado de punta a punta con los sintéticos. El dataset tiene el contraste invertido (insectos claros u oscuros sobre fondo amarillo) y solo serviría para probar el pipeline (PLAN §6).
+
+## Reproducción del experimento P2 (solo sintéticos)
+
+Desde `ml/`, ` .venv/Scripts/python experimento_p2.py` ejecuta en orden:
+YOLO11n con `weights/yolo11n.pt`, nombre `y11n_sint_v0` y presupuesto de 0,75 horas;
+exportación `broca-y11n-v0-sint`; evaluación de ambos modelos sobre `sint_v0`;
+generación de `datasets/sint_dificiles_v1` (400/60/60, semilla 20261004);
+afinamiento de YOLOv8n desde `runs/y8n_sint_v0/weights/best.pt` por 0,75 horas;
+exportación `broca-y8n-v0-sint-dificiles`; evaluación de los tres modelos en los mismos
+marcos difíciles; calibración del contador clásico exclusivamente en validación y evaluación en prueba.
+`--esperar-y11` continúa cuando termina un entrenamiento YOLO11n ya iniciado en esta sesión.
+Ultralytics puede cortar una época por el límite de tiempo; las «épocas completadas»
+del resumen cuentan filas de `results.csv` y pueden incluir esa época parcial.
+Los registros conservan el progreso por lote; comparar también el tiempo efectivo.
+
+El generador difícil agrega 15–80 granitos alargados de 1–1,5 mm en el 85 % de los
+marcos y aumenta las mosquitas oscuras. Son supuestos sintéticos, no frecuencias
+observadas en trampas. Los negativos no reciben etiqueta YOLO. `conteos.json`
+registra `cafe_alargado_dificil` y la versión del generador. La semilla y carpeta nuevas
+conservan el dataset original; no comparar MAE de datasets diferentes como si fueran iguales.
+
+Los resultados nuevos y registros se guardan en `resultados/p2/`; `eval_sintetico.json`
+y `eval_clasico.json` originales se conservan como resultados históricos (a 0,25).
+El evaluador actual mide por defecto el contrato adoptado: candidatas ≥0,25,
+NMS global a 0,45 y conteo ≥0,60. Los scores experimentales se eligen en validación,
+de 0,25 a 0,90. No cambian el umbral usado en la PWA.
+El campo heredado `real` de los JSON significa **conteo de referencia sintético**,
+no presencia de fotos reales ni desempeño en broca real.
+`exportar.py --evaluacion <JSON>` solo adjunta una evaluación si su nombre de modelo coincide.
+La rejilla del contador clásico incluye área mínima de 40 a 140 px para los
+granitos mayores; la elección usa exclusivamente validación sintética. Los
+parámetros nuevos se guardan en `contador_clasico_dificiles.json`, sin reemplazar
+la calibración histórica ni activar reglas.
+
+El equipo tiene NVIDIA GeForce MX450 (2 GiB), verificada con `nvidia-smi`.
+El entorno autorizado usa `torch==2.5.1+cpu` y `torchvision==0.20.1+cpu`, por lo que
+no puede usar CUDA (`torch.cuda.is_available() == False` no prueba ausencia física de GPU).
+Se conserva ese entorno. No hay navegador conectado para acceder a una sesión de Colab;
+este experimento se ejecuta en CPU. `entrenar_colab.ipynb` queda preparado para repetirlo
+con una GPU T4 accesible en Colab.
+No hay fotos propias de gorgojos etiquetadas en `ml/datasets/`: los pasos de
+`broca-y8n-v1` siguen pendientes y no se crea un modelo sintético con ese nombre.
+Antes de entrenar con fotos reales, verificar las sesiones, las esquinas para
+rectificación y las etiquetas; el reporte debe decir **sustituto**, nunca broca real.
+
+Problema anotado del contrato: el límite dice «MB» pero los scripts reportan MiB
+(bytes/2²⁰); se verificará también contra 10 000 000 bytes para evitar ambigüedad.
+El contrato permanece sin cambios.
+
+## Experimento P2 · SOLO SINTÉTICOS (2026-10-03)
+
+Comparación medida con el contrato vigente (conteo ≥0,60). Latencia de laptop CPU; no es Android.
+
+| Modelo / dataset | Variante | MiB | MAE a 0,60 | ms/mosaico 1 hilo | Score val | MAE prueba calibrado |
+|---|---|---:|---:|---:|---:|---:|
+| broca-y8n-v0-sint / sint_v0 | fp32 | 11.7 | 5.02 | 270.5 | 0.6 | 5.02 |
+| broca-y8n-v0-sint / sint_v0 | int8 | 3.2 | 4.92 | 305.7 | 0.6 | 4.92 |
+| broca-y8n-v0-sint / sint_v0 | w8 | 3.15 | 5.12 | 353.4 | 0.6 | 5.12 |
+| broca-y11n-v0-sint / sint_v0 | fp32 | 10.11 | 4.22 | 234.9 | 0.6 | 4.22 |
+| broca-y11n-v0-sint / sint_v0 | int8 | 2.87 | 4.12 | 290.3 | 0.6 | 4.12 |
+| broca-y8n-v0-sint / sint_dificiles_v1 | fp32 | 11.7 | 26.93 | 327.3 | 0.75 | 13.75 |
+| broca-y8n-v0-sint / sint_dificiles_v1 | int8 | 3.2 | 25.65 | 371.6 | 0.75 | 14.05 |
+| broca-y8n-v0-sint / sint_dificiles_v1 | w8 | 3.15 | 26.42 | 433.8 | 0.75 | 13.43 |
+| broca-y11n-v0-sint / sint_dificiles_v1 | fp32 | 10.11 | 18.5 | 278.5 | 0.75 | 10.62 |
+| broca-y11n-v0-sint / sint_dificiles_v1 | int8 | 2.87 | 17.63 | 351.3 | 0.75 | 10.25 |
+| broca-y8n-v0-sint-dificiles / sint_dificiles_v1 | fp32 | 11.7 | 9.13 | 323.6 | 0.45 | 5.13 |
+| broca-y8n-v0-sint-dificiles / sint_dificiles_v1 | int8 | 3.2 | 12.27 | 360.8 | 0.4 | 4.77 |
+
+Contador clásico recalibrado en validación difícil sintética: MAE prueba **27.8**. No está calibrado con fotos reales y no activa reglas.
+
+El barrido elige score solo en validación. Un score distinto de 0,60 es una propuesta; el contrato congelado permanece intacto. Se conserva el modelo vigente en metadata y las variantes nuevas tienen metadata individual. Las épocas y tiempos efectivos están en cada resumen de entrenamiento.
+
+Los datasets son diferentes: comparar modelos solo dentro del mismo dataset. Detalle: `resultados/p2/comparacion_sintetica.json`. **Ninguno de estos errores mide desempeño en broca real o en gorgojos.**
+
+Cierre P2: YOLO11n fp32 ocupa **10 604 660 bytes (10,60 MB; 10,11 MiB)**: no alcanza el limite de 10 MB. Su int8 ocupa 3 013 941 bytes.
+
+En el mismo test dificil, el reentrenamiento int8 reduce los falsos positivos en los seis marcos vacios de **21,00 a 0,33 por marco**, y el MAE a score 0,60 de **25,65 a 12,27**. Sigue existiendo subconteo (sesgo -12,03). A 0,60 ninguna variante nueva satisface simultaneamente tamano y tolerancia de error: fp32 supera 10 MB; int8 supera el MAE tolerado de 10,54. La recomendacion fp32 del evaluador es solo una alternativa experimental fuera de los criterios completos, no una aprobacion para despliegue.
+
+La propuesta int8 **score 0,40** se eligio en validacion (MAE 4,92) y obtuvo MAE **4,77** en test separado. No esta activada y requiere revisar el contrato con el equipo. El contador clasico obtuvo MAE 27,28 en validacion y 27,80 en test. **Todo es sintetico: no demuestra desempeno en broca real ni en el sustituto.**

@@ -1,0 +1,77 @@
+WARNING 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+Ultralytics 8.4.172  Python-3.12.10 torch-2.5.1+cpu CPU (11th Gen Intel Core i7-1165G7 @ 2.80GHz)
+WARNING This model has no one-to-one head; using one-to-many outputs.
+YOLO11n summary (fused): 100 layers, 2,582,347 parameters, 0 gradients, 6.4 GFLOPs
+
+[34m[1mPyTorch:[0m starting from 'runs\y11n_sint_v0\weights\best.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 5, 8400) (5.2 MB)
+
+[34m[1mONNX:[0m starting export with onnx 1.23.1 opset 17...
+[34m[1mONNX:[0m slimming with onnxslim 0.1.97...
+[34m[1mONNX:[0m export success  5.6s, saved as 'runs\y11n_sint_v0\weights\best.onnx' (10.1 MB)
+
+Export complete (6.3s)
+Results saved to [1mC:\Users\Usuario\Desktop\abel\_projects\hacknation\v7\chakra-nawi\ml\runs\y11n_sint_v0\weights\best.onnx[0m
+Predict:         yolo predict task=detect model=runs\y11n_sint_v0\weights\best.onnx imgsz=640 
+Validate:        yolo val task=detect model=runs\y11n_sint_v0\weights\best.onnx imgsz=640 data=C:\Users\Usuario\Desktop\abel\_projects\hacknation\v7\chakra-nawi\ml\datasets\sint_v0\data.yaml  
+Visualize:       https://netron.app
+fp32 OK {'entrada': {'nombre': 'images', 'forma': [1, 3, 640, 640], 'tipo': 'float32'}, 'salida': {'nombre': 'output0', 'forma': [1, 5, 8400], 'tipo': 'float32'}}
+int8 OK {'entrada': {'nombre': 'images', 'forma': [1, 3, 640, 640], 'tipo': 'float32'}, 'salida': {'nombre': 'output0', 'forma': [1, 5, 8400], 'tipo': 'float32'}}
+{
+ "modelo": "broca-y11n-v0-sint",
+ "leyenda": "entrenado solo con datos sintéticos",
+ "arquitectura": "YOLO11n",
+ "clases": {
+  "0": "broca"
+ },
+ "epocas": 4,
+ "pesos_iniciales": "yolo11n.pt",
+ "datos": "C:\\Users\\Usuario\\Desktop\\abel\\_projects\\hacknation\\v7\\chakra-nawi\\ml\\datasets\\sint_v0\\data.yaml",
+ "exportacion": "format=onnx imgsz=640 opset=17 simplify=True dynamic=False nms=False half=False",
+ "entrada": {
+  "nombre": "images",
+  "forma": [
+   1,
+   3,
+   640,
+   640
+  ],
+  "tipo": "float32"
+ },
+ "salida": {
+  "nombre": "output0",
+  "forma": [
+   1,
+   5,
+   8400
+  ],
+  "tipo": "float32"
+ },
+ "umbrales": {
+  "candidatas": 0.25,
+  "conteo": 0.6,
+  "nms_iou": 0.45,
+  "dudoso": ">30% de candidatas en [0,25;0,60)",
+  "fuente": "contracts/modelo-io.md (adoptado 2026-10-03)"
+ },
+ "variantes": {
+  "fp32": {
+   "archivo": "broca-y11n-v0-sint.onnx",
+   "mb": 10.11,
+   "unidad": "MiB",
+   "bytes": 10604660,
+   "cumple_10_MB_decimal": false
+  },
+  "int8": {
+   "archivo": "broca-y11n-v0-sint-int8.onnx",
+   "mb": 2.87,
+   "unidad": "MiB",
+   "bytes": 3013941,
+   "cumple_10_MB_decimal": true,
+   "cuantizacion": "onnxruntime.quantization.quantize_dynamic, pesos QUInt8"
+  }
+ },
+ "nota_tamano": "El contrato pide < 10 MB; revisar tamaño y latencia por variante.",
+ "fecha": "2026-10-03T19:20:40",
+ "contrato": "contracts/modelo-io.md"
+}
+Copiados a C:\Users\Usuario\Desktop\abel\_projects\hacknation\v7\chakra-nawi\apps\campo\public\models

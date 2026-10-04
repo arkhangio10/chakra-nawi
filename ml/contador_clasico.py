@@ -151,11 +151,11 @@ def mae(r, p):
     return round(float(np.abs(p - r).mean()), 2) if len(r) else None
 
 
-def calibrar(carpeta: Path):
+def calibrar(carpeta: Path, params: Path = PARAMS):
     nombres, imgs, reales = cargar(carpeta)
     r = np.array([reales[n] for n in nombres])
     mejor = None
-    rejilla_area = list(itertools.product([40, 60, 80], [260, 320, 400], [130, 160, 190, 220],
+    rejilla_area = list(itertools.product([40, 60, 80, 100, 120, 140], [260, 320, 400], [130, 160, 190, 220],
                                           [0.2, 0.3, 0.4], [1.0, 1.2]))
     for radio, t, ap in itertools.product([25, 40, 60], [0.15, 0.2, 0.25, 0.3, 0.35], [0, 1]):
         sts = [componentes(imgs[n], radio, t, ap)[0] for n in nombres]
@@ -171,16 +171,27 @@ def calibrar(carpeta: Path):
     p = dict(p)
     p["_nota"] = ("Parámetros calibrados por búsqueda en rejilla sobre la VALIDACIÓN SINTÉTICA "
                   f"(MAE val = {m:.2f}). No calibrados con fotos reales: no activan ninguna regla.")
-    PARAMS.write_text(json.dumps(p, indent=1, ensure_ascii=False), encoding="utf-8")
+    p["_validacion"] = str(carpeta.resolve())
+    p["_mae_validacion"] = round(m, 4)
+    params.parent.mkdir(parents=True, exist_ok=True)
+    params.write_text(json.dumps(p, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(p, indent=1, ensure_ascii=False))
 
 
-def evaluar(carpeta: Path):
-    p = json.loads(PARAMS.read_text(encoding="utf-8")) if PARAMS.exists() else POR_DEFECTO
+def evaluar(carpeta: Path, params: Path = PARAMS, ev_path: Path = ML / "resultados" / "eval_sintetico.json",
+            salida: Path = ML / "resultados"):
+    p = json.loads(params.read_text(encoding="utf-8")) if params.exists() else POR_DEFECTO
     nombres, imgs, reales = cargar(carpeta)
     clas = {n: contar(imgs[n], p) for n in nombres}
-    ev_path = ML / "resultados" / "eval_sintetico.json"
     ev = json.loads(ev_path.read_text(encoding="utf-8")) if ev_path.exists() else {}
+    if ev:
+        origen = Path(ev["carpeta"])
+        if not origen.is_absolute():
+            origen = ML / origen
+        if origen.resolve() != carpeta.resolve():
+            raise ValueError("La evaluación YOLO corresponde a otro dataset; indicar --evaluacion correcto")
+        if any(ev.get("por_marco", {}).get(n, {}).get("real") != reales[n] for n in nombres):
+            raise ValueError("Las referencias YOLO y clásicas no coinciden")
     var = ev.get("recomendacion", {}).get("variante", "fp32")
     yolo = {n: ev.get("por_marco", {}).get(n, {}).get(var) for n in nombres}
 
@@ -210,8 +221,8 @@ def evaluar(carpeta: Path):
             "nota": "Con datos sintéticos; la regla de derivar al técnico NO se activa.",
         }
     out["por_marco"] = {n: {"real": reales[n], "clasico": clas[n], "yolo": yolo[n]} for n in nombres}
-    (ML / "resultados").mkdir(exist_ok=True)
-    (ML / "resultados" / "eval_clasico.json").write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
+    salida.mkdir(parents=True, exist_ok=True)
+    (salida / "eval_clasico.json").write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
     if ev:
         ev["contador_clasico"] = {k: v for k, v in out.items() if k != "por_marco"}
         for n in nombres:
@@ -225,11 +236,14 @@ def main():
     ap.add_argument("--calibrar", action="store_true", help="calibra con la validación sintética")
     ap.add_argument("--val", default=str(ML / "datasets" / "sint_v0" / "marcos" / "val"))
     ap.add_argument("--test", default=str(ML / "datasets" / "sint_v0" / "marcos" / "test"))
+    ap.add_argument("--params", default=str(PARAMS))
+    ap.add_argument("--evaluacion", default=str(ML / "resultados" / "eval_sintetico.json"))
+    ap.add_argument("--salida", default=str(ML / "resultados"))
     a = ap.parse_args()
     if a.calibrar:
-        calibrar(Path(a.val))
+        calibrar(Path(a.val), Path(a.params))
     else:
-        evaluar(Path(a.test))
+        evaluar(Path(a.test), Path(a.params), Path(a.evaluacion), Path(a.salida))
 
 
 if __name__ == "__main__":

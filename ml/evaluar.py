@@ -8,7 +8,7 @@ posprocesado EXACTO de contracts/modelo-io.md:
   4. Descartar puntaje < 0,25.
   5. Cajas a coordenadas del marco (+ origen del mosaico).
   6. NMS global con IoU 0,45 (se suprime si IoU > 0,45).
-  7. Conteo = número de cajas que quedan.
+  7. Conteo = número de cajas que quedan con puntaje ≥0,60.
 
 Reporta, para fp32 e int8: error absoluto medio (MAE) del conteo, sesgo,
 desglose por densidad (<50, 50–300, >300; y los marcos con 0), precisión/recall
@@ -35,6 +35,7 @@ import numpy as np
 ML = Path(__file__).resolve().parent
 S, TILE, ORIGENES = 1216, 640, (0, 576)
 SCORE, IOU = 0.25, 0.45
+SCORE_CONTEO = 0.60
 
 
 # ----------------------------- posprocesado del contrato -----------------------------
@@ -98,12 +99,14 @@ def inferir_marco(sesion, marco_rgb, umbral=SCORE):
     return np.concatenate(cajas), np.concatenate(punt), tiempos
 
 
-def contar(cajas, punt, umbral=SCORE, iou=IOU):
-    k = punt >= umbral
+def contar(cajas, punt, umbral=SCORE_CONTEO, iou=IOU):
+    # Contrato: NMS sobre candidatas >=0,25 y después filtrar el conteo.
+    k = punt >= SCORE
     c, s = cajas[k], punt[k]
     if len(c) == 0:
         return c, s
     q = nms(c, s, iou)
+    q = q[s[q] >= umbral]
     return c[q], s[q]
 
 
@@ -211,10 +214,12 @@ def main():
     res = {"sintetico": True,
            "advertencia": "Evaluación con datos SINTÉTICOS. NO es desempeño en broca real.",
            "marcos_prueba": len(nombres), "carpeta": str(marcos.relative_to(ML)) if marcos.is_relative_to(ML) else str(marcos),
-           "posprocesado": {"score_min": SCORE, "nms_iou": IOU, "mosaicos": "4 de 640, orígenes {0,576}",
+           "modelo": a.nombre,
+           "posprocesado": {"score_min": SCORE, "score_conteo": SCORE_CONTEO, "nms_iou": IOU, "mosaicos": "4 de 640, orígenes {0,576}",
                             "fuente": "contracts/modelo-io.md"},
            "variantes": {}, "por_marco": {n: {"real": len(gts[n])} for n in nombres}}
     candidatos = {}
+    puntajes_nms = {}
     for var, ruta in variantes.items():
         if not ruta.exists():
             print("falta", ruta)
@@ -222,16 +227,27 @@ def main():
         ses = ort.InferenceSession(str(ruta), providers=["CPUExecutionProvider"])
         reales, preds, tps, nps, ngt, tiempos = [], [], 0, 0, 0, []
         cand_var = {}
-        for n in nombres:
+        post_var = {}
+        for i, n in enumerate(nombres, 1):
             c, s, t = inferir_marco(ses, imgs[n], umbral=0.05)
             cand_var[n] = (c, s)
             tiempos += t
-            pc, ps = contar(c, s)
+            candidatas, scores_candidatas = contar(c, s, umbral=SCORE)
+            post_var[n] = scores_candidatas
+            fuertes = scores_candidatas >= SCORE_CONTEO
+            pc, ps = candidatas[fuertes], scores_candidatas[fuertes]
+            n_debiles = int((scores_candidatas < SCORE_CONTEO).sum())
+            res["por_marco"][n][f"{var}_calidad"] = {
+                "candidatas": len(candidatas), "debiles": n_debiles,
+                "dudoso": n_debiles > 0.30 * len(candidatas)}
             tp, _ = emparejar(pc, ps, gts[n])
             tps += int(tp.sum()); nps += len(pc); ngt += len(gts[n])
             reales.append(len(gts[n])); preds.append(len(pc))
             res["por_marco"][n][var] = len(pc)
+            if i % 10 == 0:
+                print(f"{var}: {i}/{len(nombres)} marcos de prueba SINTÉTICOS", flush=True)
         candidatos[var] = cand_var
+        puntajes_nms[var] = post_var
         porb = {}
         for b in ("<50", "50-300", ">300"):
             idx = [i for i, r in enumerate(reales) if banda(r) == b]
@@ -239,10 +255,13 @@ def main():
         ceros = [preds[i] for i, r in enumerate(reales) if r == 0]
         prec = tps / max(nps, 1); rec = tps / max(ngt, 1)
         res["variantes"][var] = {
-            "archivo": ruta.name, "mb": round(ruta.stat().st_size / 2 ** 20, 2),
+            "archivo": ruta.name, "mb": round(ruta.stat().st_size / 2 ** 20, 2), "unidad": "MiB",
+            "bytes": ruta.stat().st_size, "cumple_10_MB_decimal": ruta.stat().st_size < 10_000_000,
             "conteo_total": resumen_conteo(reales, preds),
             "por_densidad": porb,
             "marcos_con_0_brocas": {"n": len(ceros), "falsos_positivos_medios": round(float(np.mean(ceros)), 2) if ceros else None},
+            "marcos_dudosos_%": round(100 * float(np.mean([
+                res["por_marco"][n][f"{var}_calidad"]["dudoso"] for n in nombres])), 1),
             "deteccion_iou50": {"precision": round(prec, 3), "recall": round(rec, 3),
                                 "f1": round(2 * prec * rec / max(prec + rec, 1e-9), 3)},
             "latencia_ms_mosaico": {
@@ -251,16 +270,16 @@ def main():
                 "1_hilo_mediana": latencia(ruta, 1),
             },
         }
-        print(var, json.dumps(res["variantes"][var], ensure_ascii=False))
+        print(var, json.dumps(res["variantes"][var], ensure_ascii=False), flush=True)
 
-    # Barrido del umbral de puntaje (fp32): curva para proponer umbrales antes de H8
+    # Barrido experimental de puntaje (fp32); no modifica el contrato congelado.
     if "fp32" in candidatos:
         barrido = []
-        for u in (0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.60):
+        for u in (0.25, 0.30, 0.35, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90):
             r_, p_ = [], []
             for n in nombres:
                 c, s = candidatos["fp32"][n]
-                r_.append(len(gts[n])); p_.append(len(contar(c, s, umbral=u)[0]))
+                r_.append(len(gts[n])); p_.append(int((puntajes_nms["fp32"][n] >= u).sum()))
             barrido.append({"score": u, **resumen_conteo(r_, p_)})
         res["barrido_score_fp32"] = barrido
 
@@ -272,13 +291,15 @@ def main():
         filas = {k: {"mae": d["conteo_total"]["mae"], "mb": d["mb"],
                      "latencia_1_hilo_ms": d["latencia_ms_mosaico"]["1_hilo_mediana"],
                      "latencia_hilos_def_ms": d["latencia_ms_mosaico"]["hilos_por_defecto_mediana"],
-                     "precision_ok": d["conteo_total"]["mae"] <= tol, "cumple_10mb": d["mb"] < 10}
+                     "precision_ok": d["conteo_total"]["mae"] <= tol, "cumple_10mb": d["cumple_10_MB_decimal"]}
                  for k, d in v.items()}
         contrato = [k for k in ("fp32", "int8") if k in filas]
         ok = [k for k in contrato if filas[k]["precision_ok"] and filas[k]["cumple_10mb"]]
         eleg = min(ok, key=lambda k: filas[k]["latencia_1_hilo_ms"]) if ok else             min([k for k in contrato if filas[k]["precision_ok"]], key=lambda k: filas[k]["latencia_1_hilo_ms"])
         res["recomendacion"] = {
             "variante": eleg,
+            "cumple_tamano_y_tolerancia": eleg in ok,
+            "estado": "cumple" if eleg in ok else "alternativa experimental fuera de los criterios completos",
             "criterio": ("entre las variantes del contrato (fp32, int8): MAE ≤ 1,1×MAE fp32 + 0,5 "
                          f"(= {tol}), tamaño < 10 MB y, de esas, la más rápida a 1 hilo (como WASM sin "
                          "aislamiento). Si ninguna cumple el tamaño, la más rápida con precisión aceptable."),
@@ -289,22 +310,24 @@ def main():
     val = Path(a.val)
     if (val / "conteos.json").exists() and candidatos:
         cv = json.loads((val / "conteos.json").read_text(encoding="utf-8"))["marcos"]
-        umbrales = [round(0.25 + 0.05 * i, 2) for i in range(10)]
+        umbrales = [round(0.25 + 0.05 * i, 2) for i in range(14)]
         prop = {}
         for var in candidatos:
             ses = ort.InferenceSession(str(variantes[var]), providers=["CPUExecutionProvider"])
             cand_val = {}
-            for n in sorted(cv):
+            for i, n in enumerate(sorted(cv), 1):
                 im = cv2.cvtColor(cv2.imread(str(val / "images" / f"{n}.jpg")), cv2.COLOR_BGR2RGB)
-                cand_val[n] = inferir_marco(ses, im, umbral=0.05)[:2]
+                cand_val[n] = contar(*inferir_marco(ses, im, umbral=0.05)[:2], umbral=SCORE)
+                if i % 10 == 0:
+                    print(f"{var}: {i}/{len(cv)} marcos de validación SINTÉTICOS", flush=True)
             curva = []
             for u in umbrales:
                 r_ = [cv[n]["conteo"] for n in sorted(cv)]
-                p_ = [len(contar(*cand_val[n], umbral=u)[0]) for n in sorted(cv)]
+                p_ = [int((cand_val[n][1] >= u).sum()) for n in sorted(cv)]
                 curva.append({"score": u, **resumen_conteo(r_, p_)})
             mejor = min(curva, key=lambda d: d["mae"])["score"]
             reales = [len(gts[n]) for n in nombres]
-            preds = [len(contar(*candidatos[var][n], umbral=mejor)[0]) for n in nombres]
+            preds = [int((puntajes_nms[var][n] >= mejor).sum()) for n in nombres]
             porb = {}
             for b in ("<50", "50-300", ">300"):
                 idx = [i for i, r in enumerate(reales) if banda(r) == b]
@@ -314,8 +337,8 @@ def main():
             prop[var] = {"score_elegido_en_val": mejor, "curva_val": curva,
                          "prueba_con_ese_score": {"conteo_total": resumen_conteo(reales, preds), "por_densidad": porb}}
         res["umbral_propuesto"] = {
-            "nota": ("PROPUESTA de P2 para discutir antes de H8 (contracts/modelo-io.md lo permite sin cambiar la E/S). "
-                     "El contrato sigue en score 0,25 / NMS 0,45 hasta que los cuatro lo acuerden. "
+            "nota": ("Recalibración experimental; el contrato congelado usa candidatas 0,25, conteo 0,60 y NMS 0,45. "
+                     "Un umbral distinto es una propuesta y no modifica el contrato. "
                      "Elegido en validación sintética; con fotos reales hay que recalibrarlo."),
             "nms_iou": IOU, "variantes": prop}
         print("umbral propuesto", {k: v["score_elegido_en_val"] for k, v in prop.items()},
@@ -335,7 +358,7 @@ def main():
             c, s = candidatos["fp32"][n]
             pc, ps = contar(c, s)
             r = res["por_marco"][n]["real"]
-            titulo = f"{etiqueta.upper()} {n}: real {r}, YOLO fp32 {len(pc)} (error {len(pc) - r:+d})"
+            titulo = f"{etiqueta.upper()} {n}: referencia {r}, YOLO fp32 {len(pc)} (error {len(pc) - r:+d})"
             ruta = out / f"ejemplo_{etiqueta}_{n}.jpg"
             dibujar(imgs[n], pc, ps, gts[n], titulo, ruta)
             ejemplos.append({"tipo": etiqueta, "marco": n, "real": r, "yolo_fp32": len(pc), "imagen": ruta.name})

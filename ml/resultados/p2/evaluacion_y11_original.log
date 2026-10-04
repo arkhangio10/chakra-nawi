@@ -1,0 +1,116 @@
+fp32: 10/60 marcos de prueba SINTÉTICOS
+fp32: 20/60 marcos de prueba SINTÉTICOS
+fp32: 30/60 marcos de prueba SINTÉTICOS
+fp32: 40/60 marcos de prueba SINTÉTICOS
+fp32: 50/60 marcos de prueba SINTÉTICOS
+fp32: 60/60 marcos de prueba SINTÉTICOS
+fp32 {"archivo": "broca-y11n-v0-sint.onnx", "mb": 10.11, "unidad": "MiB", "bytes": 10604660, "cumple_10_MB_decimal": false, "conteo_total": {"n": 60, "mae": 4.22, "sesgo": 1.98, "error_relativo_medio_%": 2.8}, "por_densidad": {"<50": {"n": 25, "mae": 0.88, "sesgo": 0.88, "error_relativo_medio_%": 3.6}, "50-300": {"n": 18, "mae": 3.56, "sesgo": 2.11, "error_relativo_medio_%": 2.5}, ">300": {"n": 17, "mae": 9.82, "sesgo": 3.47, "error_relativo_medio_%": 2.1}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.33}, "marcos_dudosos_%": 6.7, "deteccion_iou50": {"precision": 0.963, "recall": 0.973, "f1": 0.968}, "latencia_ms_mosaico": {"durante_eval_media": 121.7, "hilos_por_defecto_mediana": 120.9, "1_hilo_mediana": 234.9}}
+int8: 10/60 marcos de prueba SINTÉTICOS
+int8: 20/60 marcos de prueba SINTÉTICOS
+int8: 30/60 marcos de prueba SINTÉTICOS
+int8: 40/60 marcos de prueba SINTÉTICOS
+int8: 50/60 marcos de prueba SINTÉTICOS
+int8: 60/60 marcos de prueba SINTÉTICOS
+int8 {"archivo": "broca-y11n-v0-sint-int8.onnx", "mb": 2.87, "unidad": "MiB", "bytes": 3013941, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 4.12, "sesgo": 1.12, "error_relativo_medio_%": 2.3}, "por_densidad": {"<50": {"n": 25, "mae": 0.64, "sesgo": 0.64, "error_relativo_medio_%": 2.7}, "50-300": {"n": 18, "mae": 3.61, "sesgo": 1.39, "error_relativo_medio_%": 2.2}, ">300": {"n": 17, "mae": 9.76, "sesgo": 1.53, "error_relativo_medio_%": 2.0}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.17}, "marcos_dudosos_%": 6.7, "deteccion_iou50": {"precision": 0.966, "recall": 0.972, "f1": 0.969}, "latencia_ms_mosaico": {"durante_eval_media": 197.5, "hilos_por_defecto_mediana": 194.9, "1_hilo_mediana": 290.3}}
+fp32: 10/60 marcos de validación SINTÉTICOS
+fp32: 20/60 marcos de validación SINTÉTICOS
+fp32: 30/60 marcos de validación SINTÉTICOS
+fp32: 40/60 marcos de validación SINTÉTICOS
+fp32: 50/60 marcos de validación SINTÉTICOS
+fp32: 60/60 marcos de validación SINTÉTICOS
+int8: 10/60 marcos de validación SINTÉTICOS
+int8: 20/60 marcos de validación SINTÉTICOS
+int8: 30/60 marcos de validación SINTÉTICOS
+int8: 40/60 marcos de validación SINTÉTICOS
+int8: 50/60 marcos de validación SINTÉTICOS
+int8: 60/60 marcos de validación SINTÉTICOS
+umbral propuesto {'fp32': 0.6, 'int8': 0.6} {'fp32': {'n': 60, 'mae': 4.22, 'sesgo': 1.98, 'error_relativo_medio_%': 2.8}, 'int8': {'n': 60, 'mae': 4.12, 'sesgo': 1.12, 'error_relativo_medio_%': 2.3}}
+{
+ "recomendacion": {
+  "variante": "int8",
+  "criterio": "entre las variantes del contrato (fp32, int8): MAE ≤ 1,1×MAE fp32 + 0,5 (= 5.14), tamaño < 10 MB y, de esas, la más rápida a 1 hilo (como WASM sin aislamiento). Si ninguna cumple el tamaño, la más rápida con precisión aceptable.",
+  "tabla": {
+   "fp32": {
+    "mae": 4.22,
+    "mb": 10.11,
+    "latencia_1_hilo_ms": 234.9,
+    "latencia_hilos_def_ms": 120.9,
+    "precision_ok": true,
+    "cumple_10mb": false
+   },
+   "int8": {
+    "mae": 4.12,
+    "mb": 2.87,
+    "latencia_1_hilo_ms": 290.3,
+    "latencia_hilos_def_ms": 194.9,
+    "precision_ok": true,
+    "cumple_10mb": true
+   }
+  }
+ },
+ "barrido_score_fp32": [
+  {
+   "score": 0.25,
+   "n": 60,
+   "mae": 16.1,
+   "sesgo": 16.1,
+   "error_relativo_medio_%": 13.3
+  },
+  {
+   "score": 0.3,
+   "n": 60,
+   "mae": 13.93,
+   "sesgo": 13.93,
+   "error_relativo_medio_%": 10.8
+  },
+  {
+   "score": 0.35,
+   "n": 60,
+   "mae": 12.0,
+   "sesgo": 12.0,
+   "error_relativo_medio_%": 9.3
+  },
+  {
+   "score": 0.4,
+   "n": 60,
+   "mae": 10.32,
+   "sesgo": 10.32,
+   "error_relativo_medio_%": 7.7
+  },
+  {
+   "score": 0.5,
+   "n": 60,
+   "mae": 6.42,
+   "sesgo": 6.42,
+   "error_relativo_medio_%": 4.7
+  },
+  {
+   "score": 0.6,
+   "n": 60,
+   "mae": 4.22,
+   "sesgo": 1.98,
+   "error_relativo_medio_%": 2.8
+  },
+  {
+   "score": 0.7,
+   "n": 60,
+   "mae": 5.67,
+   "sesgo": -3.57,
+   "error_relativo_medio_%": 2.5
+  },
+  {
+   "score": 0.8,
+   "n": 60,
+   "mae": 14.9,
+   "sesgo": -14.8,
+   "error_relativo_medio_%": 6.7
+  },
+  {
+   "score": 0.9,
+   "n": 60,
+   "mae": 106.55,
+   "sesgo": -106.55,
+   "error_relativo_medio_%": 55.6
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+50/520 marcos  98s
+100/520 marcos  176s
+150/520 marcos  251s
+200/520 marcos  342s
+250/520 marcos  428s
+300/520 marcos  501s
+350/520 marcos  601s
+400/520 marcos  681s
+450/520 marcos  822s
+500/520 marcos  906s
+Listo en 942s. Marcos: {'train': 400, 'val': 60, 'test': 60}  brocas: {'train': 76411, 'val': 11437, 'test': 11508}

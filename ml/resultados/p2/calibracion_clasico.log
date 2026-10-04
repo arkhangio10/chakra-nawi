@@ -1,0 +1,45 @@
+radio=25 t=0.15 apertura=0 → mejor MAE val hasta ahora 50.42
+radio=25 t=0.15 apertura=1 → mejor MAE val hasta ahora 49.00
+radio=25 t=0.2 apertura=0 → mejor MAE val hasta ahora 45.25
+radio=25 t=0.2 apertura=1 → mejor MAE val hasta ahora 42.65
+radio=25 t=0.25 apertura=0 → mejor MAE val hasta ahora 37.80
+radio=25 t=0.25 apertura=1 → mejor MAE val hasta ahora 35.37
+radio=25 t=0.3 apertura=0 → mejor MAE val hasta ahora 31.92
+radio=25 t=0.3 apertura=1 → mejor MAE val hasta ahora 29.87
+radio=25 t=0.35 apertura=0 → mejor MAE val hasta ahora 29.83
+radio=25 t=0.35 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.15 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.15 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.2 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.2 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.25 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.25 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.3 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.3 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.35 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=40 t=0.35 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.15 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.15 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.2 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.2 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.25 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.25 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.3 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.3 apertura=1 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.35 apertura=0 → mejor MAE val hasta ahora 27.28
+radio=60 t=0.35 apertura=1 → mejor MAE val hasta ahora 27.28
+{
+ "radio": 25,
+ "t": 0.35,
+ "apertura": 1,
+ "area_min": 120,
+ "area_max_1": 400,
+ "area_max_grupo": 4000,
+ "area_tipica": 220,
+ "e_min": 1.2,
+ "e_max": 4.0,
+ "contraste_min": 0.4,
+ "_nota": "Parámetros calibrados por búsqueda en rejilla sobre la VALIDACIÓN SINTÉTICA (MAE val = 27.28). No calibrados con fotos reales: no activan ninguna regla.",
+ "_validacion": "C:\\Users\\Usuario\\Desktop\\abel\\_projects\\hacknation\\v7\\chakra-nawi\\ml\\datasets\\sint_dificiles_v1\\marcos\\val",
+ "_mae_validacion": 27.2833
+}

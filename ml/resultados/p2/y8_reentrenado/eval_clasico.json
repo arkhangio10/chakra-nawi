@@ -1,0 +1,348 @@
+{
+ "sintetico": true,
+ "advertencia": "Datos SINTÉTICOS. Solo medición; no activa ninguna regla.",
+ "parametros": {
+  "radio": 25,
+  "t": 0.35,
+  "apertura": 1,
+  "area_min": 120,
+  "area_max_1": 400,
+  "area_max_grupo": 4000,
+  "area_tipica": 220,
+  "e_min": 1.2,
+  "e_max": 4.0,
+  "contraste_min": 0.4
+ },
+ "mae_total": 27.8,
+ "por_densidad": {
+  "<50": {
+   "n": 25,
+   "mae": 17.36,
+   "sesgo": 17.36
+  },
+  "50-300": {
+   "n": 17,
+   "mae": 35.06,
+   "sesgo": 27.53
+  },
+  ">300": {
+   "n": 18,
+   "mae": 35.44,
+   "sesgo": -16.78
+  }
+ },
+ "desacuerdo_con_yolo": {
+  "variante_yolo": "fp32",
+  "definicion": "|clasico − yolo| > 0,30 × max(yolo, 1)",
+  "%_marcos": 50.0,
+  "%_marcos_con_dif_abs_>=5": 50.0,
+  "por_densidad_%": {
+   "<50": 96.0,
+   "50-300": 35.3,
+   ">300": 0.0
+  },
+  "nota": "Con datos sintéticos; la regla de derivar al técnico NO se activa."
+ },
+ "por_marco": {
+  "sint_test_0000": {
+   "real": 0,
+   "clasico": 31,
+   "yolo": 2
+  },
+  "sint_test_0001": {
+   "real": 0,
+   "clasico": 11,
+   "yolo": 0
+  },
+  "sint_test_0002": {
+   "real": 0,
+   "clasico": 18,
+   "yolo": 0
+  },
+  "sint_test_0003": {
+   "real": 0,
+   "clasico": 13,
+   "yolo": 0
+  },
+  "sint_test_0004": {
+   "real": 0,
+   "clasico": 13,
+   "yolo": 0
+  },
+  "sint_test_0005": {
+   "real": 0,
+   "clasico": 9,
+   "yolo": 0
+  },
+  "sint_test_0006": {
+   "real": 2,
+   "clasico": 17,
+   "yolo": 2
+  },
+  "sint_test_0007": {
+   "real": 211,
+   "clasico": 247,
+   "yolo": 208
+  },
+  "sint_test_0008": {
+   "real": 547,
+   "clasico": 505,
+   "yolo": 517
+  },
+  "sint_test_0009": {
+   "real": 13,
+   "clasico": 24,
+   "yolo": 14
+  },
+  "sint_test_0010": {
+   "real": 74,
+   "clasico": 112,
+   "yolo": 72
+  },
+  "sint_test_0011": {
+   "real": 444,
+   "clasico": 452,
+   "yolo": 430
+  },
+  "sint_test_0012": {
+   "real": 19,
+   "clasico": 34,
+   "yolo": 21
+  },
+  "sint_test_0013": {
+   "real": 195,
+   "clasico": 220,
+   "yolo": 183
+  },
+  "sint_test_0014": {
+   "real": 334,
+   "clasico": 334,
+   "yolo": 310
+  },
+  "sint_test_0015": {
+   "real": 1,
+   "clasico": 13,
+   "yolo": 1
+  },
+  "sint_test_0016": {
+   "real": 265,
+   "clasico": 353,
+   "yolo": 259
+  },
+  "sint_test_0017": {
+   "real": 392,
+   "clasico": 423,
+   "yolo": 380
+  },
+  "sint_test_0018": {
+   "real": 21,
+   "clasico": 32,
+   "yolo": 19
+  },
+  "sint_test_0019": {
+   "real": 111,
+   "clasico": 116,
+   "yolo": 103
+  },
+  "sint_test_0020": {
+   "real": 357,
+   "clasico": 332,
+   "yolo": 341
+  },
+  "sint_test_0021": {
+   "real": 14,
+   "clasico": 39,
+   "yolo": 15
+  },
+  "sint_test_0022": {
+   "real": 274,
+   "clasico": 233,
+   "yolo": 247
+  },
+  "sint_test_0023": {
+   "real": 324,
+   "clasico": 351,
+   "yolo": 310
+  },
+  "sint_test_0024": {
+   "real": 1,
+   "clasico": 16,
+   "yolo": 2
+  },
+  "sint_test_0025": {
+   "real": 107,
+   "clasico": 119,
+   "yolo": 105
+  },
+  "sint_test_0026": {
+   "real": 513,
+   "clasico": 445,
+   "yolo": 477
+  },
+  "sint_test_0027": {
+   "real": 35,
+   "clasico": 44,
+   "yolo": 36
+  },
+  "sint_test_0028": {
+   "real": 193,
+   "clasico": 257,
+   "yolo": 191
+  },
+  "sint_test_0029": {
+   "real": 405,
+   "clasico": 427,
+   "yolo": 392
+  },
+  "sint_test_0030": {
+   "real": 3,
+   "clasico": 23,
+   "yolo": 11
+  },
+  "sint_test_0031": {
+   "real": 172,
+   "clasico": 163,
+   "yolo": 146
+  },
+  "sint_test_0032": {
+   "real": 424,
+   "clasico": 401,
+   "yolo": 410
+  },
+  "sint_test_0033": {
+   "real": 29,
+   "clasico": 51,
+   "yolo": 23
+  },
+  "sint_test_0034": {
+   "real": 67,
+   "clasico": 84,
+   "yolo": 65
+  },
+  "sint_test_0035": {
+   "real": 472,
+   "clasico": 427,
+   "yolo": 443
+  },
+  "sint_test_0036": {
+   "real": 48,
+   "clasico": 82,
+   "yolo": 47
+  },
+  "sint_test_0037": {
+   "real": 78,
+   "clasico": 101,
+   "yolo": 76
+  },
+  "sint_test_0038": {
+   "real": 508,
+   "clasico": 465,
+   "yolo": 487
+  },
+  "sint_test_0039": {
+   "real": 44,
+   "clasico": 63,
+   "yolo": 44
+  },
+  "sint_test_0040": {
+   "real": 174,
+   "clasico": 192,
+   "yolo": 166
+  },
+  "sint_test_0041": {
+   "real": 573,
+   "clasico": 593,
+   "yolo": 568
+  },
+  "sint_test_0042": {
+   "real": 39,
+   "clasico": 62,
+   "yolo": 38
+  },
+  "sint_test_0043": {
+   "real": 271,
+   "clasico": 257,
+   "yolo": 268
+  },
+  "sint_test_0044": {
+   "real": 527,
+   "clasico": 431,
+   "yolo": 498
+  },
+  "sint_test_0045": {
+   "real": 27,
+   "clasico": 45,
+   "yolo": 23
+  },
+  "sint_test_0046": {
+   "real": 137,
+   "clasico": 209,
+   "yolo": 139
+  },
+  "sint_test_0047": {
+   "real": 467,
+   "clasico": 484,
+   "yolo": 445
+  },
+  "sint_test_0048": {
+   "real": 33,
+   "clasico": 65,
+   "yolo": 33
+  },
+  "sint_test_0049": {
+   "real": 244,
+   "clasico": 299,
+   "yolo": 238
+  },
+  "sint_test_0050": {
+   "real": 614,
+   "clasico": 508,
+   "yolo": 564
+  },
+  "sint_test_0051": {
+   "real": 17,
+   "clasico": 38,
+   "yolo": 14
+  },
+  "sint_test_0052": {
+   "real": 107,
+   "clasico": 151,
+   "yolo": 99
+  },
+  "sint_test_0053": {
+   "real": 371,
+   "clasico": 399,
+   "yolo": 370
+  },
+  "sint_test_0054": {
+   "real": 35,
+   "clasico": 43,
+   "yolo": 31
+  },
+  "sint_test_0055": {
+   "real": 237,
+   "clasico": 272,
+   "yolo": 221
+  },
+  "sint_test_0056": {
+   "real": 455,
+   "clasico": 470,
+   "yolo": 432
+  },
+  "sint_test_0057": {
+   "real": 22,
+   "clasico": 35,
+   "yolo": 16
+  },
+  "sint_test_0058": {
+   "real": 49,
+   "clasico": 65,
+   "yolo": 46
+  },
+  "sint_test_0059": {
+   "real": 412,
+   "clasico": 390,
+   "yolo": 398
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "sintetico": true,
+ "advertencia": "Datos SINTÉTICOS. Solo medición; no activa ninguna regla.",
+ "parametros": {
+  "radio": 25,
+  "t": 0.35,
+  "apertura": 1,
+  "area_min": 120,
+  "area_max_1": 400,
+  "area_max_grupo": 4000,
+  "area_tipica": 220,
+  "e_min": 1.2,
+  "e_max": 4.0,
+  "contraste_min": 0.4
+ },
+ "mae_total": 27.8,
+ "por_densidad": {
+  "<50": {
+   "n": 25,
+   "mae": 17.36,
+   "sesgo": 17.36
+  },
+  "50-300": {
+   "n": 17,
+   "mae": 35.06,
+   "sesgo": 27.53
+  },
+  ">300": {
+   "n": 18,
+   "mae": 35.44,
+   "sesgo": -16.78
+  }
+ },
+ "desacuerdo_con_yolo": {
+  "variante_yolo": "fp32",
+  "definicion": "|clasico − yolo| > 0,30 × max(yolo, 1)",
+  "%_marcos": 50.0,
+  "%_marcos_con_dif_abs_>=5": 50.0,
+  "por_densidad_%": {
+   "<50": 96.0,
+   "50-300": 35.3,
+   ">300": 0.0
+  },
+  "nota": "Con datos sintéticos; la regla de derivar al técnico NO se activa."
+ }
+}
