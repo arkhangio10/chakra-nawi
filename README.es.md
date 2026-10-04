@@ -17,7 +17,7 @@ Hack-Nation 7 · Challenge 04 "Small AI for Development" (World Bank) · Agricul
 | `apps/panel` | Panel del técnico, una sola página | — |
 | `pipeline/ficha` | Ficha de clima por finca: CHIRPS v3 + NASA POWER, como anomalías frente a 1991–2020 | — |
 | `ml` | Contador de broca: datos sintéticos, YOLO nano, exportación ONNX | ver `ml/README.md` |
-| `audio` | Catálogo de 14 mensajes y conversión a `.opus` (app) y `.mp3` (llamada) | provisionales sintéticos |
+| `audio` | Catálogo de 14 mensajes y conversión a `.opus` (app) y `.mp3` (llamada) | sintéticos: quechua (Meta MMS-TTS, texto sin validar) y castellano (TTS de Windows) |
 
 ## Correr en local
 

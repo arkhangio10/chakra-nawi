@@ -53,5 +53,5 @@ Lo que **no** sabemos o no podemos afirmar. Va tal cual a la lámina de datos de
 
 ## Voz
 
-- Idioma: **la entrega del hackathon va solo en castellano.** No conseguimos un hablante de quechua cusqueño a tiempo. Para el piloto, el quechua debe grabarlo una persona y validarlo un segundo hablante (`docs/GUION_AUDIOS.md`); la app y la llamada ya buscan `audio/quz/` y, si no existe, usan el castellano. Mientras no esté, la usuaria que no entiende castellano depende de un familiar.
+- Idioma: **el quechua de la entrega es sintético y sin validar.** No conseguimos un hablante de quechua cusqueño a tiempo. Los 14 textos (`texto_quz` en `contracts/mensajes.example.json`) los tradujo el equipo y pueden tener errores de vocabulario o de variante; la voz es Meta MMS-TTS (`facebook/mms-tts-quz`, CC-BY-NC 4.0), entrenada sobre todo con lecturas religiosas, así que suena plana y puede pronunciar mal los préstamos ("técnico", "broca", "repase"). Por eso cada mensaje es corto, va con dibujo, y lo químico o biológico siempre pasa por el técnico. Para el piloto, el quechua debe grabarlo una persona de la cooperativa y validarlo un segundo hablante (`docs/GUION_AUDIOS.md`); `audio/convertir.py` lo reemplaza sin tocar la app.
 - Dependemos del teléfono de la hija para la app; la llamada al teléfono básico es el único canal que llega directo a Noor.

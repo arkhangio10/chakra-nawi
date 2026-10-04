@@ -40,6 +40,10 @@ Versión para congelar en **H2** (PLAN §7). Responsable: P4. Fuente de los text
 | `L_INTRO` | Abre cada llamada | Cooperativa X, para Noor. | Para que sepa quién llama y que es para ella |
 | `C_CONSENTIMIENTO` | Inscripción | La cooperativa guardará tus fotos y respuestas para que el técnico te ayude. ¿Estás de acuerdo? | Respetuoso; se puede decir que no |
 
+## Estado (3 oct, noche)
+
+No hubo hablante a tiempo: `texto_quz` en `contracts/mensajes.example.json` es un **borrador del equipo** y los audios `audio/quz/` son sintéticos (Meta MMS-TTS, `audio/tts_quz.py`). Si aparece un hablante, lo más rápido es pedirle que **escuche** los 14 audios y corrija el texto; después, que los grabe con el mensaje de arriba.
+
 ## Reglas del guion
 
 - Ningún mensaje lleva números ni porcentajes (PLAN §3).

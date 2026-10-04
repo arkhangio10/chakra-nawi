@@ -8,7 +8,7 @@ Versión 1.0 · 3 oct 2026 · Resultado de un debate en dos rondas entre cuatro 
 
 ## 1. Objetivo
 
-> **Chakra Ñawi es un triaje que prioriza las visitas del técnico, no un diagnóstico autónomo.** Cada dos semanas, sin internet, convierte la foto de la trampa y una pregunta con dibujos en un semáforo con voz en quechua para Noor. Los casos que necesitan una persona van al técnico de la cooperativa.
+> **Chakra Ñawi es un triaje que prioriza las visitas del técnico, no un diagnóstico autónomo.** Cada dos semanas, sin internet, convierte la foto de la trampa y una pregunta con dibujos en un semáforo con voz en quechua cusqueño para Noor (actualización 3 oct: voz sintética, ver §3). Los casos que necesitan una persona van al técnico de la cooperativa.
 
 La decisión que mejora: **¿qué hago esta semana en mi chacra: nada, repase y recojo, o llamar al técnico?**
 
@@ -56,11 +56,11 @@ Antes de empezar cualquier tarea, responder las cinco preguntas. Si alguna da "n
 - [ ] Motor TypeScript: 4 causas + "otra", pesos por temporada, tope de LR, reglas con fuente y tipo
 - [ ] Preguntas con dibujos: sí / no / no sé, y 0 / 1–2 / 3+ granos
 - [ ] Semáforo: verde · amarillo (broca, roya o clima) · técnico (duda) · técnico (urgente)
-- [ ] 14 audios grabados por personas en castellano (actualización 3 oct: no se consiguió hablante de quechua cusqueño a tiempo; el quechua pasa a `LO_QUE_SIGUE.md`)
+- [x] 14 audios en quechua cusqueño (`quz`) y castellano (actualización 3 oct, noche: no hubo hablante a tiempo, así que se activó el respaldo de §11. Textos en quechua traducidos por el equipo y **sin validar**; voz sintética Meta MMS-TTS `mms-tts-quz` con `audio/tts_quz.py`; castellano con TTS de Windows. Todo con `sintetico: true`. La regla del reto pide al menos una interacción en lengua local; el castellano es la lengua nacional y no bastaba)
 - [ ] Ficha de 5 fincas de ejemplo: CHIRPS v3 + NASA POWER T2M + alertas manuales
 - [ ] Cola offline → `POST /casos` idempotente → panel de 1 página
 - [ ] Panel: lista por prioridad, foto con cajas, reglas que se aplicaron con su fuente, botón "llamar a Noor"
-- [ ] Llamada real a un teléfono básico con el audio en quechua
+- [ ] Llamada real a un teléfono básico con el audio en quechua (sintético)
 - [ ] Tarjeta A5 impresa: marco de 10×10 cm por un lado y 20 círculos por el otro
 - [ ] README, `FUENTES.md`, `LIMITES_DE_DATOS.md`, video de 4 minutos
 
@@ -201,12 +201,12 @@ Con 3 personas: P2 hace la ficha mientras entrena el modelo, y P4 se queda con T
 1. Android barato real con el **modo avión visible**: foto → cajas → resultado en ≤ 15 s.
 2. El **tamaño total medido** en pantalla: modelo + runtime + audios.
 3. El **fail-safe en vivo**: foto mala o caso dudoso → audio del técnico → el caso aparece en el panel cuando vuelve la señal.
-4. Voz **grabada por una persona**, con subtítulos. Para la entrega es en castellano; el quechua cusqueño se presenta como el siguiente paso, con el guion ya listo (`GUION_AUDIOS.md`) y la app preparada para `audio/quz/`.
+4. Voz en **quechua cusqueño**, con subtítulos en castellano y el rótulo "voz sintética (Meta MMS), texto sin validar por hablante nativo". La grabación por personas de la cooperativa se presenta como el siguiente paso.
 5. Un **teléfono básico real** que suena y reproduce el mensaje.
 6. La frase del problema exacta, con evidencia peruana verificada (§12).
 7. La lámina de datos: licencias, límites, error de conteo (separando sustituto y broca), cuántas reglas son supuestos y la tabla binomial.
 8. El cambio de época: "caso de agosto" frente a "caso de enero", con el selector de fecha.
-9. Nuestra mirada sobre localizar la IA, con sus contrapartes: que la entrega va en castellano porque no conseguimos un hablante de quechua cusqueño a tiempo (y las variantes del quechua), que el modelo no ha visto broca peruana y que dependemos del teléfono de la hija.
+9. Nuestra mirada sobre localizar la IA, con sus contrapartes: que el quechua es sintético y sin validar porque no conseguimos un hablante cusqueño a tiempo (el modelo abierto existe, la confianza la tienen que poner personas; y las variantes del quechua), que el modelo no ha visto broca peruana y que dependemos del teléfono de la hija.
 
 ### Guion del video (4:00)
 

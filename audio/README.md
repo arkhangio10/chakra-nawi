@@ -10,9 +10,9 @@ Cada audio va en **dos formatos**: `audio/<es|quz>/<CODIGO>.opus` para la PWA y 
 | Idioma | Estado | `sintetico` |
 |---|---|---|
 | Castellano (`es/`) | **PROVISIONAL Y SINTÉTICO**: voz TTS de Windows *Microsoft Sabina Desktop* (es-MX), generada con `tts_provisional.py`. 14 audios de 2,4 a 7,8 s; 188 KB en Opus y 416 KB en MP3 | `true` (la `nota` de cada mensaje dice la voz) |
-| Quechua (`quz/`) | **Fuera de la entrega del hackathon** (decisión del 3 oct: sin hablante a tiempo; ver `docs/LO_QUE_SIGUE.md`). `texto_quz` vacío | — |
+| Quechua (`quz/`) | **SINTÉTICO Y SIN VALIDAR**: textos traducidos por el equipo (`texto_quz` en `contracts/mensajes.example.json`) con la voz Meta MMS-TTS `facebook/mms-tts-quz` (CC-BY-NC 4.0), generada con `tts_quz.py`. 14 audios de 2,0 a 7,8 s; 217 KB en Opus y 462 KB en MP3 | `true`, `revisado_por` vacío |
 
-**Respaldo:** mientras `texto_quz` esté vacío (o falte el archivo `quz`), la PWA y la llamada usan el castellano. La API lo hace sola, archivo por archivo, y el panel avisa "respaldo". En el demo y el video, todo audio con `sintetico: true` se rotula "sintético".
+**Respaldo:** si falta el archivo `quz`, la PWA y la llamada usan el castellano. La API lo hace sola, archivo por archivo, y el panel avisa "respaldo". En el demo y el video, todo audio con `sintetico: true` se rotula "sintético".
 
 ## Convertir grabaciones (notas de voz de WhatsApp)
 
@@ -37,3 +37,12 @@ python audio/tts_provisional.py            # usa la primera voz TTS "es-*" insta
 ```
 
 Sobrescribe `audio/es/*` y `audio/mensajes.json`; se niega si el catálogo ya tiene mensajes con `sintetico: false` (usar `--forzar` solo a propósito). El respaldo `mms-tts-quz` para el quechua (PLAN §11) también va con `sintetico: true` y su licencia CC-BY-NC en la `nota`.
+
+## Regenerar el quechua sintético (Meta MMS-TTS)
+
+```bash
+ml/.venv/Scripts/python -m pip install "transformers>=4.40,<5" scipy   # usa el torch de ml/.venv
+ml/.venv/Scripts/python audio/tts_quz.py            # --velocidad 1.0 si algo pasa de 8 s (por defecto 0,9)
+```
+
+Lee `texto_quz` de `contracts/mensajes.example.json`, sintetiza frase por frase (MMS no lee puntuación) y escribe `audio/quz/*` y `texto_quz` en `mensajes.json`. Se niega si algún mensaje ya tiene `revisado_por`. La primera vez descarga el modelo (~145 MB) de Hugging Face; los audios generados se suben al repo, así que la app no lo necesita.

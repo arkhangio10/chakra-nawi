@@ -48,6 +48,7 @@ flowchart LR
 - **Runs fully offline** on a cheap Android as an installable PWA: model + runtime + audio are cached on the device.
 - **The model is small and has a narrow job.** It only measures the *trend* of the trap count. The strong evidence for borer is the 20-bean question, because the trap measures flight, not infestation. **There is no official per-trap threshold**: the official metric is % of bored fruit, with 5% as the economic damage threshold (INIA).
 - **A transparent triage engine** in TypeScript: Bayesian log-likelihood ratios, cited rules (each labeled *official*, *literature* or *assumption*), weights that change by season, and a cap on the combined LR per cause so that dependent evidence is not double-counted. No LLM anywhere in the system.
+- **Speaks the farmer's language: Cusco Quechua (`quz`), by voice.** Every instruction, question and result in the app, and the phone call to her basic phone, play in Quechua (Spanish as file-by-file fallback). No reading needed. The Quechua voice is **synthetic** (Meta MMS-TTS) over texts drafted by the team; see the limits below.
 - **Fail-safe by design.** When the system is unsure (bad photo, unreliable count, "I don't know"), it says so and sends the case to a person.
 
 ## Statistical honesty: why "0 of 20" is never green
@@ -69,6 +70,7 @@ With 0 out of 20, true infestation can still be as high as **16.8%** (Clopper-Pe
 | Rainfall | **CHIRPS v3** (monthly COGs, Cusco clip) | Rain anomaly during flowering |
 | Temperature, rainy days | **NASA POWER** daily `T2M`, `T2M_MAX`, `PRECTOTCORR`, altitude-corrected (−6.5 °C/km) | Rust-favorable temperature days and rainy-day anomaly vs 1991–2020; heat during flowering |
 | Regional alerts | `data/alertas_activas.json`, curated by hand from official sources (SENASA, SENAMHI, ENFEN) with URL and literal quote. **Currently empty**; the engine works the same without it | Prior only |
+| Quechua voice | **Meta MMS-TTS** `facebook/mms-tts-quz` (VITS, 36 M params, CC-BY-NC 4.0), run offline at build time with `audio/tts_quz.py`; 14 clips, 216 KB in Opus | Voice of the app and the call |
 | Counter training data | **Synthetic** trap images generated in `ml/sintetico.py` | YOLOv8n, 1 class |
 
 Rust rules use **anomalies, not absolute values**. La Convención is humid every year, so absolute thresholds fired on all farms every year. What carries information is whether *this* year departs from the 1991–2020 normal.
@@ -81,7 +83,7 @@ We take this part seriously. Full list (in Spanish): [`docs/LIMITES_DE_DATOS.md`
 - **Climate is a regional signal for the year, not a farm-level one.** All 5 farms fall in the same NASA POWER cell (~55 km), so only altitude differs between them. NASA POWER humidity and NDVI are deliberately left out: the cells are too coarse, the crop grows under shade, and Nov–Mar cloud cover is 79–90%.
 - **9 of the 15 engine rules are assumptions**, and even for the cited ones the LR magnitude is an assumption, to be stress-tested with a ±50% sensitivity analysis.
 - **The 5 farms are fictional examples** with plausible locations and altitudes in La Convención.
-- **Voice: this hackathon delivery is in Spanish only.** We could not find a Cusco Quechua speaker in time. The current Spanish audio is provisional text-to-speech, labeled *synthetic*. The script for 14 messages is ready ([`docs/GUION_AUDIOS.md`](docs/GUION_AUDIOS.md)), and the app and the call already look for `audio/quz/` and fall back to Spanish file by file. For the pilot, Quechua must be recorded by a person and validated by a second speaker.
+- **Voice: the Quechua is synthetic and not yet validated by a native speaker.** We could not find a Cusco Quechua speaker in time, so the 14 messages were translated by the team (drafts, in `contracts/mensajes.example.json` → `texto_quz`) and voiced with Meta MMS-TTS. MMS was trained mostly on read religious text, so its prosody is flat and may mispronounce loanwords; a wrong word in a farming instruction is a real risk, which is why every message stays short, has a drawing, and the technician confirms anything beyond cultural practices. The Spanish audio is also provisional TTS. All clips are labeled `sintetico: true`. **This is what localizing AI looks like for a less-supported language:** the open model exists, but the trust has to come from people — for the pilot, co-op members record the messages and a second speaker validates them ([`docs/GUION_AUDIOS.md`](docs/GUION_AUDIOS.md)); `audio/convertir.py` swaps them in without touching the app.
 - Flowering and harvest months come from regional literature (±1 month by altitude) and are not yet confirmed with a co-op.
 
 ## Repository
@@ -136,7 +138,7 @@ No printed card? Use `docs/demo/foto_tarjeta_sintetica.jpg` (synthetic photo in 
 
 ## Next steps
 
-- Record the 14 messages in Cusco Quechua (human voice, second-speaker validation).
+- Replace the synthetic Quechua with messages recorded by co-op members and validated by a second speaker.
 - Retrain the counter on real photos of substitute insects on the card, then evaluate on real borer photos with permission from CATIE/CIRAD.
 - Pilot with one co-op, measured by two indicators: % of members doing sanitation picking within 2 weeks, and % of bored beans at collection.
 
@@ -144,4 +146,4 @@ Ideas deliberately left out of the MVP (in Spanish): [`docs/LO_QUE_SIGUE.md`](do
 
 ## License
 
-The counter uses Ultralytics YOLO (AGPL-3.0), so this repository is public under AGPL-3.0. Data sources are public (CHIRPS, NASA POWER). The fallback Quechua voice model `mms-tts-quz` (if used) is CC-BY-NC, for non-commercial use only.
+The counter uses Ultralytics YOLO (AGPL-3.0), so this repository is public under AGPL-3.0. Data sources are public (CHIRPS, NASA POWER). The Quechua voice model `mms-tts-quz` (Meta MMS) is CC-BY-NC 4.0: the generated clips may only be used non-commercially, so a commercial deployment needs human recordings (planned anyway).

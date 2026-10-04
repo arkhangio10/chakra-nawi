@@ -2,7 +2,7 @@
 
 Versión 0.2 · 3 oct 2026 · Alineada con `PLAN.md` v1.0, que manda si hay contradicción.
 
-> Triaje offline que prioriza las visitas del técnico. Un smartphone, sin internet, convierte la foto de la trampa de broca y una pregunta con dibujos en un semáforo con voz grabada en quechua. Los casos que necesitan una persona pasan al técnico, que llama a Noor a su teléfono básico.
+> Triaje offline que prioriza las visitas del técnico. Un smartphone, sin internet, convierte la foto de la trampa de broca y una pregunta con dibujos en un semáforo con voz en quechua (sintética en la entrega del hackathon). Los casos que necesitan una persona pasan al técnico, que llama a Noor a su teléfono básico.
 
 ---
 

@@ -12,7 +12,7 @@
         "quz": "audio/quz/G_FOTO_TRAMPA.mp3"
       },
       "texto_es": "Vacía la trampa en el cuadrado. Que se vean las cuatro esquinas negras.",
-      "texto_quz": "",
+      "texto_quz": "Trampapi kaqta tawa k'uchu ukhuman hich'ay. Tawantin yana k'uchukuna rikhurichun.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -27,7 +27,7 @@
         "quz": "audio/quz/G_FOTO_HOJAS.mp3"
       },
       "texto_es": "Voltea tres hojas y tómales foto por debajo, sobre la tarjeta.",
-      "texto_quz": "",
+      "texto_quz": "Kimsa raphita tikray. Tarjeta patapi, uranmanta fotota hurquy.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -42,7 +42,7 @@
         "quz": "audio/quz/G_OTRA_VEZ.mp3"
       },
       "texto_es": "No se ve bien. Acércate a la puerta, hay más luz, y toma la foto otra vez.",
-      "texto_quz": "",
+      "texto_quz": "Mana allintachu rikhukun. Punkuman asuykuy, watiqmanta fotota hurquy.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -57,7 +57,7 @@
         "quz": "audio/quz/G_ESPERA.mp3"
       },
       "texto_es": "Estoy contando, espera un ratito.",
-      "texto_quz": "",
+      "texto_quz": "Yupashani, huk chikanta suyaykuy.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -72,7 +72,7 @@
         "quz": "audio/quz/P_GRANOS.mp3"
       },
       "texto_es": "Pon un grano en cada círculo. ¿Cuántos tienen huequito?",
-      "texto_quz": "",
+      "texto_quz": "Sapa muyuman huk kafe rurullata churay. ¿Hayk'an t'uquyuq kashan?",
       "revisado_por": "",
       "sintetico": false
     },
@@ -87,7 +87,7 @@
         "quz": "audio/quz/P_ROYA.mp3"
       },
       "texto_es": "¿Ves polvo naranja debajo de las hojas?",
-      "texto_quz": "",
+      "texto_quz": "¿Raphikunaq uranpi naranha llimp'i ñut'uta rikunkichu?",
       "revisado_por": "",
       "sintetico": false
     },
@@ -102,7 +102,7 @@
         "quz": "audio/quz/R_VERDE.mp3"
       },
       "texto_es": "Todo está bien en tu chacra. Sigue cuidándola así.",
-      "texto_quz": "",
+      "texto_quz": "Chakraykipiqa tukuy allinmi kashan. Hinallata qhawarillay.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -117,7 +117,7 @@
         "quz": "audio/quz/R_BROCA.mp3"
       },
       "texto_es": "Hay broca. Haz repase y recoge los granos caídos al suelo.",
-      "texto_quz": "",
+      "texto_quz": "Brocam kashan. Repaseta ruway, pampaman urmasqa rurukunatapas pallay.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -132,7 +132,7 @@
         "quz": "audio/quz/R_ROYA.mp3"
       },
       "texto_es": "Puede ser roya. Ya le mandé tu caso al técnico; él lo confirmará.",
-      "texto_quz": "",
+      "texto_quz": "Royachá kanman. Técnicomanña casoykita apachini; paymi chiqaqta yachanqa.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -147,7 +147,7 @@
         "quz": "audio/quz/R_CLIMA.mp3"
       },
       "texto_es": "No es tu chacra, fue el clima. No gastes en remedios.",
-      "texto_quz": "",
+      "texto_quz": "Manan chakraykichu, timpun karqan. Ama hampikunapi qullqiykita tukuychu.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -162,7 +162,7 @@
         "quz": "audio/quz/R_TECNICO.mp3"
       },
       "texto_es": "Esto lo tiene que ver el técnico. Ya le mandé tu caso; él te llamará.",
-      "texto_quz": "",
+      "texto_quz": "Kaytaqa técnicon qhawanan. Casoykita apachiniña; paymi waqyasunki.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -177,7 +177,7 @@
         "quz": "audio/quz/R_TECNICO_URGENTE.mp3"
       },
       "texto_es": "Hay mucha broca. Ya avisé al técnico. Mientras tanto, recoge los granos caídos.",
-      "texto_quz": "",
+      "texto_quz": "Ancha brocam kashan. Técnicomanña willarqani. Kunanqa urmasqa rurukunata pallay.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -192,7 +192,7 @@
         "quz": "audio/quz/L_INTRO.mp3"
       },
       "texto_es": "Cooperativa X, para Noor.",
-      "texto_quz": "",
+      "texto_quz": "Cooperativa X, Noorpaq.",
       "revisado_por": "",
       "sintetico": false
     },
@@ -207,7 +207,7 @@
         "quz": "audio/quz/C_CONSENTIMIENTO.mp3"
       },
       "texto_es": "La cooperativa guardará tus fotos y respuestas para que el técnico te ayude. ¿Estás de acuerdo?",
-      "texto_quz": "",
+      "texto_quz": "Cooperativaqa fotoykita kutichisqaykitapas waqaychanqa, técnico yanapasunanpaq. ¿Munankichu?",
       "revisado_por": "",
       "sintetico": false
     }
