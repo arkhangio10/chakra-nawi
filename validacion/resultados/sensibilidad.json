@@ -1,0 +1,409 @@
+{
+  "generado": "2026-10-04",
+  "reglas": "2026-10-03.1",
+  "config": "2026-10-03.1",
+  "escenarios": 4740,
+  "escenarios_que_dependen_de_lr": 3660,
+  "urgentes_por_regla_fija": 1080,
+  "perturbacion": "cada LR × factor en [0.5; 1.5]",
+  "sorteos": 300,
+  "todos_a_la_vez": {
+    "nunca_cambia_color_pct": 57.5,
+    "estable_en_95pct_de_sorteos_pct": 60.8,
+    "por_estado_base": {
+      "amarillo": {
+        "n": 1075,
+        "estables95_pct": 38.6
+      },
+      "verde": {
+        "n": 310,
+        "estables95_pct": 0
+      },
+      "tecnico": {
+        "n": 2275,
+        "estables95_pct": 79.6
+      }
+    },
+    "transiciones_mas_frecuentes": [
+      {
+        "transicion": "amarillo → tecnico",
+        "pct_de_evaluaciones": 5.4
+      },
+      {
+        "transicion": "verde → tecnico",
+        "pct_de_evaluaciones": 2.5
+      },
+      {
+        "transicion": "tecnico → verde",
+        "pct_de_evaluaciones": 2.3
+      },
+      {
+        "transicion": "tecnico → amarillo",
+        "pct_de_evaluaciones": 1.6
+      }
+    ],
+    "escenarios_mas_fragiles": [
+      {
+        "escenario": "LC-001|edad=true|mes=8|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-001|edad=true|mes=9|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-001|edad=true|mes=10|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-002|edad=true|mes=8|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-002|edad=true|mes=9|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-002|edad=true|mes=10|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-003|edad=true|mes=8|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-003|edad=true|mes=9|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-003|edad=true|mes=10|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      },
+      {
+        "escenario": "LC-004|edad=true|mes=8|baja|granos=0|polvo=no",
+        "base": "verde",
+        "cambia_en_pct_de_sorteos": 54
+      }
+    ]
+  },
+  "uno_a_la_vez": [
+    {
+      "regla": "R-GRANOS-01",
+      "tipo": "literatura",
+      "evidencia": "E_GRANOS",
+      "x1.5": {
+        "cambia_color": 260,
+        "cambia_color_pct": 7.1,
+        "cambia_causa": 315,
+        "ejemplos": [
+          "LC-001|edad=false|mes=1|hojas|granos=0|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=2|hojas|granos=0|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=3|hojas|granos=0|polvo=si: amarillo → tecnico"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 330,
+        "cambia_color_pct": 9,
+        "cambia_causa": 435,
+        "ejemplos": [
+          "LC-001|edad=false|mes=1|hojas|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=false|mes=2|hojas|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=false|mes=3|hojas|granos=0|polvo=no: verde → tecnico"
+        ]
+      }
+    },
+    {
+      "regla": "R-GRANOS-02",
+      "tipo": "literatura",
+      "evidencia": "E_GRANOS",
+      "x1.5": {
+        "cambia_color": 115,
+        "cambia_color_pct": 3.1,
+        "cambia_causa": 0,
+        "ejemplos": [
+          "LC-001|edad=false|mes=1|hojas|granos=1-2|polvo=si: tecnico → amarillo",
+          "LC-001|edad=false|mes=2|hojas|granos=1-2|polvo=si: tecnico → amarillo",
+          "LC-001|edad=false|mes=3|hojas|granos=1-2|polvo=si: tecnico → amarillo"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 520,
+        "cambia_color_pct": 14.2,
+        "cambia_causa": 40,
+        "ejemplos": [
+          "LC-001|edad=false|mes=5|igual|granos=1-2|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=5|baja|granos=1-2|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=5|baja|granos=1-2|polvo=no: amarillo → tecnico"
+        ]
+      }
+    },
+    {
+      "regla": "R-GRANOS-03",
+      "tipo": "literatura",
+      "evidencia": "E_GRANOS",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-TRAMPA-01",
+      "tipo": "supuesto",
+      "evidencia": "E_TRAMPA_TENDENCIA",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 150,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-TRAMPA-02",
+      "tipo": "supuesto",
+      "evidencia": "E_TRAMPA_TENDENCIA",
+      "x1.5": {
+        "cambia_color": 105,
+        "cambia_color_pct": 2.9,
+        "cambia_causa": 105,
+        "ejemplos": [
+          "LC-001|edad=true|mes=5|baja|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=true|mes=5|baja|granos=1-2|polvo=si: tecnico → amarillo",
+          "LC-001|edad=true|mes=6|baja|granos=0|polvo=no: verde → tecnico"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 210,
+        "cambia_color_pct": 5.7,
+        "cambia_causa": 60,
+        "ejemplos": [
+          "LC-001|edad=false|mes=5|baja|granos=1-2|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=5|baja|granos=1-2|polvo=no_se: amarillo → tecnico",
+          "LC-001|edad=false|mes=5|baja|granos=1-2|polvo=-: amarillo → tecnico"
+        ]
+      }
+    },
+    {
+      "regla": "R-ROYA-01",
+      "tipo": "literatura",
+      "evidencia": "E_POLVO_NARANJA",
+      "x1.5": {
+        "cambia_color": 110,
+        "cambia_color_pct": 3,
+        "cambia_causa": 70,
+        "ejemplos": [
+          "LC-001|edad=true|mes=1|hojas|granos=0|polvo=si: tecnico → amarillo",
+          "LC-001|edad=true|mes=1|hojas|granos=no_se|polvo=si: tecnico → amarillo",
+          "LC-001|edad=true|mes=1|hojas|granos=-|polvo=si: tecnico → amarillo"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 165,
+        "cambia_color_pct": 4.5,
+        "cambia_causa": 150,
+        "ejemplos": [
+          "LC-001|edad=false|mes=1|hojas|granos=0|polvo=si: amarillo → tecnico",
+          "LC-001|edad=false|mes=1|hojas|granos=1-2|polvo=si: tecnico → amarillo",
+          "LC-001|edad=false|mes=1|hojas|granos=no_se|polvo=si: amarillo → tecnico"
+        ]
+      }
+    },
+    {
+      "regla": "R-ROYA-02",
+      "tipo": "supuesto",
+      "evidencia": "E_POLVO_NARANJA",
+      "x1.5": {
+        "cambia_color": 15,
+        "cambia_color_pct": 0.4,
+        "cambia_causa": 15,
+        "ejemplos": [
+          "LC-001|edad=true|mes=5|baja|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=true|mes=6|baja|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=true|mes=7|baja|granos=0|polvo=no: verde → tecnico"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 30,
+        "cambia_color_pct": 0.8,
+        "cambia_causa": 30,
+        "ejemplos": [
+          "LC-001|edad=true|mes=5|igual|granos=0|polvo=no: tecnico → verde",
+          "LC-001|edad=true|mes=5|sin_anterior|granos=0|polvo=no: tecnico → verde",
+          "LC-001|edad=true|mes=6|igual|granos=0|polvo=no: tecnico → verde"
+        ]
+      }
+    },
+    {
+      "regla": "R-LLUVIA-01",
+      "tipo": "supuesto",
+      "evidencia": "E_LLUVIA_DIAS",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-TEMP-01",
+      "tipo": "supuesto",
+      "evidencia": "E_TEMP_ROYA",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-FLOR-01",
+      "tipo": "supuesto",
+      "evidencia": "E_LLUVIA_FLORACION",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-FLOR-02",
+      "tipo": "supuesto",
+      "evidencia": "E_LLUVIA_FLORACION",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-CALOR-01",
+      "tipo": "supuesto",
+      "evidencia": "E_CALOR_FLORACION",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-EDAD-01",
+      "tipo": "supuesto",
+      "evidencia": "E_EDAD",
+      "x1.5": {
+        "cambia_color": 125,
+        "cambia_color_pct": 3.4,
+        "cambia_causa": 215,
+        "ejemplos": [
+          "LC-001|edad=true|mes=1|hojas|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=true|mes=2|hojas|granos=0|polvo=no: verde → tecnico",
+          "LC-001|edad=true|mes=3|hojas|granos=0|polvo=no: verde → tecnico"
+        ]
+      },
+      "x0.5": {
+        "cambia_color": 270,
+        "cambia_color_pct": 7.4,
+        "cambia_causa": 825,
+        "ejemplos": [
+          "LC-001|edad=true|mes=5|sube|granos=0|polvo=no: tecnico → verde",
+          "LC-001|edad=true|mes=5|igual|granos=0|polvo=no: tecnico → verde",
+          "LC-001|edad=true|mes=5|igual|granos=0|polvo=no_se: tecnico → verde"
+        ]
+      }
+    },
+    {
+      "regla": "R-ALERTA-01",
+      "tipo": "oficial",
+      "evidencia": "A_REGIONAL",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    },
+    {
+      "regla": "R-ALERTA-02",
+      "tipo": "oficial",
+      "evidencia": "A_REGIONAL",
+      "x1.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      },
+      "x0.5": {
+        "cambia_color": 0,
+        "cambia_color_pct": 0,
+        "cambia_causa": 0,
+        "ejemplos": []
+      }
+    }
+  ],
+  "limites": [
+    "Los escenarios son todas las combinaciones de entradas, no casos reales: cada combinación pesa lo mismo.",
+    "alertas_activas.json está vacío: R-ALERTA-01/02 no se activan en ningún escenario.",
+    "Las 5 fichas comparten la celda de NASA POWER: el clima casi no varía entre fincas.",
+    "No se perturban los umbrales de decisión ni los pesos por época, solo la magnitud de los LR."
+  ]
+}
