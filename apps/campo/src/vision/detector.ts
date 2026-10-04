@@ -19,17 +19,25 @@ export interface EstadoModelo {
   error?: string;
 }
 
+let ultimoPedido = 0;
+
 export async function cargarModelo(nombre: string): Promise<EstadoModelo> {
   const t0 = performance.now();
   const hilos = ort.env.wasm.numThreads as number;
   if (sesion && modeloActual === nombre) return { nombre, ok: true, msCarga: 0, hilos };
+  const pedido = ++ultimoPedido;
   try {
-    sesion = await ort.InferenceSession.create(`${BASE}models/${nombre}.onnx`, { executionProviders: ['wasm'] });
+    const nueva = await ort.InferenceSession.create(`${BASE}models/${nombre}.onnx`, { executionProviders: ['wasm'] });
+    // Si mientras tanto se pidió otro modelo, esta carga ya no manda.
+    if (pedido !== ultimoPedido) return { nombre, ok: false, msCarga: performance.now() - t0, hilos, error: 'reemplazado' };
+    sesion = nueva;
     modeloActual = nombre;
     return { nombre, ok: true, msCarga: performance.now() - t0, hilos };
   } catch (e) {
-    sesion = null;
-    modeloActual = '';
+    if (pedido === ultimoPedido) {
+      sesion = null;
+      modeloActual = '';
+    }
     return { nombre, ok: false, msCarga: performance.now() - t0, hilos, error: String(e) };
   }
 }

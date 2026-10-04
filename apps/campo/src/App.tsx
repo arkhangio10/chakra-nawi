@@ -18,7 +18,7 @@ import { ModoTecnico, type Ajustes, type Diagnostico } from './ui/ModoTecnico';
 import { PantallaContando, PantallaFoto, PantallaPregunta, PantallaResultado } from './ui/Pantallas';
 
 const MAX_REINTENTOS = 2;
-const MODELO_POR_DEFECTO = 'broca-y8n-v0-sint-int8';
+const MODELO_POR_DEFECTO = 'broca-y8n-v0-semireal-int8';
 
 type Paso =
   | { tipo: 'foto'; otraVez: boolean }
@@ -62,18 +62,30 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const guardados = await leerAjuste<Partial<Ajustes>>('ajustes', {});
-      setAjustes((a) => ({ ...a, ...guardados, calidad: { ...a.calidad, ...guardados.calidad } }));
-      await pedirPersistencia();
+      // Un modelo guardado que ya no viene en el catálogo (p. ej. tras reemplazarlo) pasa al preferido,
+      // antes de aplicar los ajustes: así nunca se intenta cargar un .onnx que ya no existe.
       try {
         const r = await fetch(`${import.meta.env.BASE_URL}models/modelos.json`);
-        if (r.ok) setModelos((await r.json()).modelos.map((m: { nombre: string }) => m.nombre));
-      } catch { /* sin catálogo: se queda el modelo por defecto */ }
+        if (r.ok) {
+          const cat: { preferido?: string; modelos: { nombre: string }[] } = await r.json();
+          const nombres = cat.modelos.map((m) => m.nombre);
+          setModelos(nombres);
+          if (guardados.modelo && !nombres.includes(guardados.modelo)) {
+            guardados.modelo = cat.preferido ?? nombres[0] ?? MODELO_POR_DEFECTO;
+          }
+        }
+      } catch { /* sin catálogo: se queda el modelo guardado o el por defecto */ }
+      setAjustes((a) => ({ ...a, ...guardados, calidad: { ...a.calidad, ...guardados.calidad } }));
+      await pedirPersistencia();
     })();
   }, []);
 
   useEffect(() => {
-    cargarModelo(ajustes.modelo).then((e) =>
-      setDiag((d) => ({ ...d, hilos: e.hilos, modeloOk: e.ok, modeloError: e.error, msCargaModelo: e.msCarga })));
+    let vigente = true;
+    cargarModelo(ajustes.modelo).then((e) => {
+      if (vigente) setDiag((d) => ({ ...d, hilos: e.hilos, modeloOk: e.ok, modeloError: e.error, msCargaModelo: e.msCarga }));
+    });
+    return () => { vigente = false; };
   }, [ajustes.modelo]);
 
   const sincronizar = useCallback(async () => {

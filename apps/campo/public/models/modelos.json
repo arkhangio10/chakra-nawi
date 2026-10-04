@@ -1,7 +1,7 @@
 {
-  "nota": "Modelos que la PWA puede cargar desde /models/. Entrenados SOLO con datos sintéticos: su error no es desempeño en broca real (ml/README.md).",
-  "preferido": "broca-y8n-v0-sint-int8",
+  "nota": "Modelos que la PWA puede cargar desde /models/. Entrenados con sintéticos + recortes de escarabajos Scolytinae reales (sustituto, NO broca): su error no es desempeño en broca real (ml/README.md, ml/resultados/semireal/RESUMEN.md).",
+  "preferido": "broca-y8n-v0-semireal-int8",
   "modelos": [
-    { "nombre": "broca-y8n-v0-sint-int8", "arquitectura": "YOLOv8n", "variante": "int8", "mb": 3.2, "umbral_conteo": 0.6 }
+    { "nombre": "broca-y8n-v0-semireal-int8", "arquitectura": "YOLOv8n", "variante": "int8", "mb": 3.2, "umbral_conteo": 0.6 }
   ]
 }
