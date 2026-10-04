@@ -27,9 +27,24 @@ function copiarOrt(): Plugin {
   };
 }
 
+/**
+ * onnxruntime-web referencia su .wasm con new URL(), y Vite emite una segunda copia en assets/ (14 MB).
+ * La app lo carga desde /ort/ (wasmPaths en vision/detector.ts), así que esa copia sobra: se quita del build.
+ */
+function sinWasmDuplicado(): Plugin {
+  return {
+    name: 'sin-wasm-duplicado',
+    apply: 'build',
+    generateBundle(_, bundle) {
+      for (const archivo of Object.keys(bundle)) if (/^assets\/ort-wasm.*\.wasm$/.test(archivo)) delete bundle[archivo];
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => ({
   plugins: [
     copiarOrt(),
+    sinWasmDuplicado(),
     react(),
     ...(mode === 'lan' ? [basicSsl()] : []),
     VitePWA({
@@ -55,7 +70,7 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json,onnx,wasm,mjs,opus}'],
         // El límite por defecto (2 MiB) deja fuera el modelo y el WASM.
         maximumFileSizeToCacheInBytes: 40 * 1024 * 1024,
-        // onnxruntime-web se carga desde /ort/; la copia que Vite emite en /assets/ no se precachea (14 MB duplicados).
+        // Por si acaso: onnxruntime-web se carga solo desde /ort/ (ver sinWasmDuplicado).
         globIgnores: ['assets/ort-wasm*'],
         navigateFallback: 'index.html',
       },
