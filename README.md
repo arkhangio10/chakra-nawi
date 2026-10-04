@@ -91,7 +91,7 @@ We take this part seriously. Full list (in Spanish): [`docs/LIMITES_DE_DATOS.md`
 | Folder | What it is | Tests |
 |---|---|---|
 | [`packages/motor`](packages/motor) | Triage engine (TypeScript): cited rules, seasonal weights, LR cap, traffic-light decision | 17 |
-| [`apps/campo`](apps/campo) | Offline 3-screen PWA: photo quality control, perspective correction, tiled ONNX inference, offline queue, voice | 23 (incl. "zero numbers" test) |
+| [`apps/campo`](apps/campo) | Offline 3-screen PWA: photo quality control, perspective correction, tiled ONNX inference, offline queue, voice and screen in Spanish or Quechua | 35 (incl. "zero numbers" test in both languages) |
 | [`api`](api) | FastAPI + SQLite: idempotent `POST /casos`, serves the technician panel, places Twilio calls | 15 |
 | [`apps/panel`](apps/panel) | One-page technician panel (no framework) | — |
 | [`pipeline/ficha`](pipeline/ficha) | Farm climate profile from CHIRPS v3 + NASA POWER, as anomalies vs 1991–2020 | — |

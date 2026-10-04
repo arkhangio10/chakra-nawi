@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  --fondo: #f3f4ee;
+  --fondo: #f4f1e8;       /* el mismo crema del manifiesto: la app abre sin salto de color */
   --superficie: #ffffff;
   --texto: #18261e;
   --suave: #4c5c52;
@@ -12,11 +12,13 @@
   --linea: #d5dbd2;
   --acento: #1f5135;      /* hoja de café */
   --acento-texto: #ffffff;
-  --verde: #2e8b45;
+  --acento-suave: #e1ebe2;
+  --verde: #23753a;
   --amarillo: #f2b705;
-  --urgente: #e8710a;     /* naranja: escala que Noor ya oye en los avisos de SENAMHI */
+  --urgente: #c25500;     /* naranja: escala que Noor ya oye en los avisos de SENAMHI; oscurecido para leerse a pleno sol */
   --tecnico: #3d5a80;
-  --radio: 18px;
+  --radio: 20px;
+  --sombra: 0 1px 2px rgba(24, 38, 30, .08), 0 4px 14px rgba(24, 38, 30, .08);
   font-family: 'Atkinson Hyperlegible', 'Segoe UI', Roboto, system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.4;
@@ -30,76 +32,201 @@ body { margin: 0; background: var(--fondo); }
 button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, select:focus-visible, input:focus-visible { outline: 4px solid var(--amarillo); outline-offset: 2px; }
 
-.app { min-height: 100%; display: flex; flex-direction: column; padding-inline: 16px; }
+.app {
+  min-height: 100%; display: flex; flex-direction: column; padding-inline: 16px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
 .barra {
   position: sticky; top: env(safe-area-inset-top, 0px);
   display: flex; align-items: center; justify-content: space-between;
-  padding-block: 10px; background: var(--fondo); z-index: 2;
+  padding-block: 10px 6px; background: var(--fondo); z-index: 2;
 }
 .logo {
   display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 4px;
-  font-weight: 700; font-size: 1.05rem; color: var(--acento); user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  font-weight: 700; font-size: 1.1rem; color: var(--acento); user-select: none; -webkit-user-select: none; touch-action: manipulation;
 }
-.logo img { width: 36px; height: 36px; pointer-events: none; }
-.nube { width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--acento); }
-.nube.al-dia { background: var(--acento); }
-.nube.esperando { background: transparent; border-style: dashed; }
+.logo img { width: 48px; height: 48px; margin: -4px 0; pointer-events: none; }
+.logo span { white-space: nowrap; }
+/* En celulares angostos el selector de voz necesita el sitio: queda solo el ojo */
+@media (max-width: 400px) { .logo span { display: none; } }
 
-main { flex: 1; display: flex; justify-content: center; padding-block: 8px 24px; }
+.barra-derecha { display: flex; align-items: center; gap: 10px; }
+.barra-derecha > span { display: flex; }
+.idioma {
+  min-height: 48px; padding: 0 14px 0 10px; border-radius: 24px; border: 2px solid var(--acento);
+  background: var(--superficie); color: var(--acento); display: flex; align-items: center; gap: 6px;
+  font-size: 1rem; font-weight: 700;
+}
+.idioma .icono { width: 24px; height: 24px; }
+.idioma:active { background: var(--acento-suave); }
+
+.nube { width: 34px; height: 34px; flex: none; }
+.nube path { stroke-linecap: round; stroke-linejoin: round; }
+.nube.al-dia > path:first-of-type { fill: var(--acento); }
+.nube.al-dia .signo { fill: none; stroke: #fff; stroke-width: 4; }
+.nube.esperando > path:first-of-type { fill: var(--superficie); stroke: var(--acento); stroke-width: 3; stroke-dasharray: 4 5; }
+.nube.esperando .signo { fill: none; stroke: var(--acento); stroke-width: 4; }
+
+/* Avance: foto · pregunta · resultado */
+.pasos { list-style: none; margin: 0 auto; padding: 0 0 6px; display: flex; gap: 8px; width: 100%; max-width: 440px; }
+.pasos li { flex: 1; height: 6px; border-radius: 3px; background: #dcd8cb; transition: background .3s; }
+.pasos li.hecho { background: var(--acento); }
+
+main { flex: 1; display: flex; justify-content: center; padding-block: 10px 16px; }
 
 .pantalla {
   width: 100%; max-width: 440px;
-  display: flex; flex-direction: column; align-items: stretch; gap: 16px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 18px;
+}
+
+/* La acción principal queda abajo, donde llega el pulgar */
+.acciones {
+  margin-top: auto; position: sticky; bottom: 0; padding-block: 8px 4px;
+  display: flex; flex-direction: column; gap: 12px;
+  background: linear-gradient(to bottom, transparent, var(--fondo) 30%);
 }
 
 .ilustracion {
-  background: var(--superficie); border: 2px solid var(--linea); border-radius: var(--radio);
-  padding: 12px; display: grid; place-items: center;
+  background: var(--superficie); border-radius: var(--radio); box-shadow: var(--sombra);
+  padding: 16px; display: grid; place-items: center;
 }
-.ilustracion .dibujo { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1; }
-.ilustracion.marco canvas { width: 100%; height: auto; aspect-ratio: 1; border-radius: 8px; display: block; }
+.ilustracion .dibujo { width: 100%; max-width: 280px; height: auto; aspect-ratio: 1; }
+.ilustracion.marco canvas { width: 100%; height: auto; aspect-ratio: 1; border-radius: 10px; display: block; }
 
-.subtitulo { margin: 0; text-align: center; font-size: 1.35rem; font-weight: 700; text-wrap: balance; }
+.titulo-voz { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; }
+.subtitulo { margin: 0; font-size: 1.5rem; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+.pantalla > .subtitulo { text-align: center; }
+.boton-voz {
+  width: 64px; height: 64px; border-radius: 50%; border: 0; flex: none;
+  display: grid; place-items: center; background: var(--acento-suave); color: var(--acento);
+}
+.boton-voz:active { background: #cddccf; }
 
-.boton-principal, .boton-secundario, .boton-escuchar {
+.boton-principal, .boton-secundario {
   min-height: 76px; border-radius: var(--radio); border: 0;
   display: flex; align-items: center; justify-content: center; gap: 14px;
   font-size: 1.35rem; font-weight: 700;
 }
-.boton-principal { background: var(--acento); color: var(--acento-texto); }
+.boton-principal { --visto-trazo: var(--acento); background: var(--acento); color: var(--acento-texto); box-shadow: 0 6px 18px rgba(31, 81, 53, .3); }
+.boton-principal:active { transform: translateY(1px); box-shadow: 0 3px 10px rgba(31, 81, 53, .3); }
 .boton-secundario { background: var(--superficie); border: 3px solid var(--acento); color: var(--acento); }
-.boton-escuchar { min-height: 64px; background: #e3ebe4; color: var(--acento); }
 .icono { width: 36px; height: 36px; flex: none; }
 
 .opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .opciones-3 .opcion:last-child { grid-column: 1 / -1; }
+.opciones-3 .opcion:last-child .dibujo { max-width: 96px; }
 .opcion {
-  background: var(--superficie); border: 3px solid var(--linea); border-radius: var(--radio);
-  padding: 10px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  font-size: 1.1rem; font-weight: 700; min-height: 150px;
+  background: var(--superficie); border: 3px solid transparent; border-radius: var(--radio); box-shadow: var(--sombra);
+  padding: 10px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-size: 1.1rem; font-weight: 700; line-height: 1.2; min-height: 150px;
 }
-.opcion .dibujo { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1; }
-.opcion:active { border-color: var(--acento); background: #eef4ef; }
+.opcion .dibujo { width: 100%; max-width: 130px; height: auto; aspect-ratio: 1; }
+.opcion:active { border-color: var(--acento); background: #eef4ef; transform: scale(.98); }
 
-/* Resultado: semáforo */
-.semaforo {
-  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
-  border-radius: var(--radio); color: #fff; font-size: 1.5rem;
+/* Resultado: el color del semáforo envuelve todo; la acción es el titular */
+.resultado { --res: var(--acento); --res-texto: #fff; --res-luz: #fff; }
+.resultado.verde { --res: var(--verde); --res-luz: #b8f0c4; }
+.resultado.amarillo { --res: var(--amarillo); --res-texto: #2a2100; --res-luz: #fff6c8; }
+.resultado.tecnico { --res: var(--tecnico); --res-luz: #cfdcef; }
+.resultado.urgente { --res: var(--urgente); --res-luz: #ffd6b0; }
+.tarjeta-resultado {
+  background: var(--res); color: var(--res-texto); border-radius: 26px; box-shadow: var(--sombra);
+  padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 14px;
 }
-.semaforo .luz { width: 54px; height: 54px; border-radius: 50%; background: #fff; flex: none; box-shadow: inset 0 0 0 8px rgba(0, 0, 0, .12); }
-.resultado.verde .semaforo { background: var(--verde); }
-.resultado.verde .luz { background: #b8f0c4; }
-.resultado.amarillo .semaforo { background: var(--amarillo); color: #2a2100; }
-.resultado.amarillo .luz { background: #fff3b8; }
-.resultado.tecnico .semaforo { background: var(--tecnico); }
-.resultado.tecnico .luz { background: #cfdcef; }
-.resultado.urgente .semaforo { background: var(--urgente); }
-.resultado.urgente .luz { background: #ffd6b0; }
+.semaforo { display: flex; align-items: center; gap: 14px; padding: 2px 4px; font-size: 1.6rem; }
+.semaforo .luz {
+  width: 46px; height: 46px; border-radius: 50%; background: var(--res-luz); flex: none;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, .35), inset 0 0 0 6px rgba(0, 0, 0, .1);
+}
+.tarjeta-resultado .ilustracion { box-shadow: none; padding: 8px; }
+.tarjeta-resultado .ilustracion .dibujo { max-width: 190px; }
+/* Celulares bajos: el dibujo cede espacio para que el aviso y los botones no se monten */
+@media (max-height: 760px) {
+  .tarjeta-resultado .ilustracion .dibujo { max-width: 150px; }
+  .tarjeta-resultado { gap: 10px; }
+}
+.titulo-voz.accion { padding-inline: 4px; }
+.titulo-voz.accion .subtitulo { font-size: 1.65rem; }
+.titulo-voz.accion .boton-voz { background: rgba(255, 255, 255, .92); color: var(--trazo); }
+
+/* Voz que se ve: ondas del altavoz y frase resaltada mientras suena */
+.subtitulo { border-radius: 10px; margin-inline: -6px; padding: 2px 6px; transition: background .25s; }
+.hablando .subtitulo { background: var(--acento-suave); }
+.titulo-voz.accion.hablando .subtitulo { background: rgba(255, 255, 255, .22); }
+.titulo-voz.accion .subtitulo { font-size: 1.5rem; }
+.hablando .boton-voz { box-shadow: 0 0 0 5px rgba(255, 255, 255, .5), 0 0 0 9px rgba(31, 81, 53, .18); }
+.hablando .onda { animation: onda 1s ease-in-out infinite; }
+.hablando .onda-2 { animation-delay: .25s; }
+@keyframes onda { 50% { opacity: .15; } }
+
+/* La luz del semáforo se enciende al llegar */
+.semaforo .luz { animation: encender .7s ease-out both; }
+@keyframes encender {
+  0% { opacity: .25; transform: scale(.6); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  60% { opacity: 1; transform: scale(1.12); box-shadow: 0 0 0 14px rgba(255, 255, 255, .35); }
+}
+
+/* Dibujos con vida */
+.mece { transform-box: view-box; transform-origin: 100px 180px; animation: mecer 3.2s ease-in-out infinite; }
+@keyframes mecer { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+.grano-viaje { display: none; }
+@supports (offset-path: path('M0 0')) {
+  .grano-viaje {
+    display: inline;
+    offset-path: path('M74 162 Q66 128 88 112 Q118 86 148 100'); offset-rotate: 0deg;
+    animation: viajar 2.6s ease-in-out infinite;
+  }
+}
+@keyframes viajar {
+  0%, 12% { offset-distance: 0%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { offset-distance: 100%; opacity: 1; }
+  92%, 100% { offset-distance: 100%; opacity: 0; }
+}
+.late { transform-box: fill-box; transform-origin: center; animation: latir 1.4s ease-in-out infinite; }
+@keyframes latir { 50% { transform: scale(1.12); } }
+
+/* El caso y el técnico */
+.aviso-tecnico {
+  margin: 0; display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--superficie); border-radius: 16px; box-shadow: var(--sombra);
+  font-weight: 700; line-height: 1.25; color: var(--suave);
+}
+.aviso-tecnico.enviado { color: var(--acento); }
+
+/* Ya lo hice */
+.tarea-hecha {
+  margin: 0; min-height: 76px; border-radius: var(--radio); display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: var(--acento-suave); color: var(--acento); font-size: 1.35rem; font-weight: 700;
+  animation: aparecer .4s ease-out both;
+}
+@keyframes aparecer { from { transform: scale(.92); opacity: 0; } }
+
+/* Transiciones: cada pantalla entra desde la derecha (se avanza), sus partes llegan escalonadas */
+.pantalla { animation: entrar-pantalla .38s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes entrar-pantalla { from { opacity: 0; transform: translateX(32px); } }
+.opcion { animation: subir .42s cubic-bezier(.2, .8, .2, 1) both; }
+.opcion:nth-child(1) { animation-delay: .08s; }
+.opcion:nth-child(2) { animation-delay: .14s; }
+.opcion:nth-child(3) { animation-delay: .20s; }
+.opcion:nth-child(4) { animation-delay: .26s; }
+@keyframes subir { from { opacity: 0; transform: translateY(18px) scale(.97); } }
+.tarjeta-resultado { animation: aparecer-resultado .5s cubic-bezier(.2, .9, .3, 1.15) both; }
+@keyframes aparecer-resultado { from { opacity: 0; transform: scale(.92); } }
+.resultado .aviso-tecnico { animation: subir .4s .3s cubic-bezier(.2, .8, .2, 1) both; }
+.acciones { animation: subir .4s .18s cubic-bezier(.2, .8, .2, 1) both; }
+.ilustracion.marco canvas { animation: enfocar .5s ease-out both; }
+@keyframes enfocar { from { opacity: 0; filter: blur(6px); } }
 
 .puntos::after { content: '•••'; letter-spacing: 4px; animation: pulso 1.2s infinite; }
 @keyframes pulso { 50% { opacity: .3; } }
-@media (prefers-reduced-motion: reduce) { .puntos::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .puntos::after, .semaforo .luz, .mece, .late, .hablando .onda, .tarea-hecha,
+  .pantalla, .opcion, .tarjeta-resultado, .resultado .aviso-tecnico, .acciones, .ilustracion.marco canvas { animation: none; }
+  .grano-viaje { display: none; }
+  .pasos li, .subtitulo { transition: none; }
+}
 
 /* Modo técnico: aquí sí hay números */
 .tecnico-fondo { position: fixed; inset: 0; background: rgba(10, 20, 14, .55); display: flex; justify-content: center; z-index: 10; }

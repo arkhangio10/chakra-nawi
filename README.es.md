@@ -12,7 +12,7 @@ Hack-Nation 7 · Challenge 04 "Small AI for Development" (World Bank) · Agricul
 | Carpeta | Qué es | Estado |
 |---|---|---|
 | `packages/motor` | Motor de triaje en TypeScript (PLAN §5): reglas citadas, pesos por época, tope de LR, decisión del semáforo | 17 tests |
-| `apps/campo` | PWA offline de 3 pantallas: foto de la trampa → pregunta con dibujos → semáforo con voz | 23 tests |
+| `apps/campo` | PWA offline de 3 pantallas: foto de la trampa → pregunta con dibujos → semáforo con voz; voz y pantalla en castellano o quechua | 35 tests |
 | `api` | FastAPI + SQLite: recibe casos, sirve el panel del técnico y llama a Noor por Twilio | tests en `api/` |
 | `apps/panel` | Panel del técnico, una sola página | — |
 | `pipeline/ficha` | Ficha de clima por finca: CHIRPS v3 + NASA POWER, como anomalías frente a 1991–2020 | — |

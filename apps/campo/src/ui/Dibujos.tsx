@@ -48,13 +48,26 @@ export function HojasEnTarjeta() {
   );
 }
 
+/**
+ * Cereza vista de frente, con la corona (el ombligo) hacia quien mira.
+ * Sana: corona ocre con su estrellita. Con huequito: un hoyo negro grande con borde claro y aserrín,
+ * para que se distinga a simple vista aun en un celular chico.
+ */
 function Cereza({ x, y, s = 1, hueco = false }: { x: number; y: number; s?: number; hueco?: boolean }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <ellipse cx="0" cy="0" rx="26" ry="30" fill="#b0322a" {...T} />
-      <ellipse cx="-9" cy="-10" rx="6" ry="9" fill="#e07a6e" opacity=".7" />
-      <circle cx="0" cy="-24" r="7" fill="#7d1f19" {...T} strokeWidth={3} />
-      {hueco && <circle cx="0" cy="-24" r="3.6" fill="#120a08" />}
+      <ellipse cx="0" cy="0" rx="30" ry="33" fill="#b0322a" {...T} />
+      <ellipse cx="-14" cy="-6" rx="6" ry="11" fill="#e07a6e" opacity=".75" />
+      <ellipse cx="2" cy="-4" rx="14" ry="12" fill="#d9a05b" {...T} strokeWidth={3} />
+      {hueco ? (
+        <>
+          <circle cx="2" cy="-4" r="8.5" fill="#fff4dc" />
+          <circle cx="2" cy="-4" r="6.5" fill="#120a08" />
+          {[[-12, 14], [14, 12], [20, -16]].map(([dx, dy]) => <circle key={dx} cx={dx} cy={dy} r="2.4" fill="#f3dfb8" />)}
+        </>
+      ) : (
+        <path d="M2 -4 L2 -11 M2 -4 L9 -6 M2 -4 L6 3 M2 -4 L-2 3 M2 -4 L-5 -6" stroke="#7a4a1e" strokeWidth={2.6} strokeLinecap="round" />
+      )}
     </g>
   );
 }
@@ -63,13 +76,13 @@ function Cereza({ x, y, s = 1, hueco = false }: { x: number; y: number; s?: numb
 export function Granos({ tipo }: { tipo: 'sano' | 'pocos' | 'muchos' }) {
   const titulo = { sano: 'Granos sanos', pocos: 'Pocos granos con huequito', muchos: 'Muchos granos con huequito' }[tipo];
   return (
-    <Lienzo titulo={titulo}>
-      {tipo === 'sano' && <><Cereza x={72} y={110} /><Cereza x={130} y={104} /></>}
-      {tipo === 'pocos' && <><Cereza x={72} y={110} hueco /><Cereza x={130} y={104} /></>}
+    <Lienzo titulo={titulo} vb="22 26 160 160">
+      {tipo === 'sano' && <><Cereza x={66} y={104} s={1.15} /><Cereza x={136} y={104} s={1.15} /></>}
+      {tipo === 'pocos' && <><Cereza x={66} y={104} s={1.15} hueco /><Cereza x={136} y={104} s={1.15} /></>}
       {tipo === 'muchos' && (
         <>
-          <Cereza x={60} y={84} s={0.8} hueco /><Cereza x={102} y={70} s={0.8} hueco /><Cereza x={144} y={88} s={0.8} hueco />
-          <Cereza x={78} y={136} s={0.8} hueco /><Cereza x={124} y={138} s={0.8} hueco />
+          <Cereza x={58} y={72} s={0.85} hueco /><Cereza x={142} y={72} s={0.85} hueco /><Cereza x={100} y={100} s={0.85} hueco />
+          <Cereza x={58} y={136} s={0.85} hueco /><Cereza x={142} y={136} s={0.85} hueco />
         </>
       )}
     </Lienzo>
@@ -92,16 +105,13 @@ export function Hoja({ polvo }: { polvo: boolean }) {
   );
 }
 
+/** No sé: un signo de pregunta grande, en el mismo estilo de trazo que el resto. */
 export function NoSe() {
   return (
     <Lienzo titulo="No sé">
-      <circle cx="100" cy="100" r="62" fill="#f1d9b5" {...T} />
-      <path d="M76 78 Q84 70 92 78 M108 78 Q116 70 124 78" {...T} fill="none" />
-      <circle cx="84" cy="94" r="5" fill="var(--trazo)" />
-      <circle cx="116" cy="94" r="5" fill="var(--trazo)" />
-      <path d="M84 128 Q100 120 116 128" {...T} fill="none" />
-      <path d="M150 52 Q150 34 166 34 Q182 34 182 50 Q182 62 168 66 L168 76" {...T} fill="none" stroke="var(--acento)" />
-      <circle cx="168" cy="90" r="4" fill="var(--acento)" />
+      <circle cx="100" cy="100" r="66" fill="#e3ebe4" {...T} />
+      <path d="M76 80 Q76 52 100 52 Q124 52 124 76 Q124 94 106 102 Q100 106 100 118 L100 124" {...T} strokeWidth={14} stroke="var(--acento)" fill="none" />
+      <circle cx="100" cy="148" r="9" fill="var(--acento)" />
     </Lienzo>
   );
 }
@@ -110,25 +120,38 @@ export function NoSe() {
 export function PlantaSana() {
   return (
     <Lienzo titulo="Planta de café sana">
+      <g className="mece">
       <path d="M100 180 L100 70" {...T} fill="none" />
       {[[-1, 150], [1, 128], [-1, 106], [1, 86]].map(([lado, y]) => (
         <path key={y} d={`M100 ${y} q${lado * 30} -20 ${lado * 62} -6 q${lado * -30} 24 ${lado * -62} 6 Z`} fill="#5f9e4c" {...T} strokeWidth={3} />
       ))}
       <path d="M100 70 q-14 -30 0 -48 q14 18 0 48 Z" fill="#5f9e4c" {...T} strokeWidth={3} />
       {[[78, 140], [124, 118], [84, 98]].map(([x, y]) => <circle key={x} cx={x} cy={y} r="8" fill="#b0322a" {...T} strokeWidth={2.5} />)}
+      </g>
     </Lienzo>
   );
 }
 
-/** Broca: recoger los granos caídos del suelo. */
+/** Broca: recoger los granos caídos del suelo y echarlos al balde. */
 export function RecogerGranos() {
   return (
     <Lienzo titulo="Recoger los granos caídos del suelo">
-      <path d="M14 164 Q100 152 186 164" {...T} fill="none" />
-      {[[48, 156], [72, 160], [132, 158], [156, 155]].map(([x, y]) => <ellipse key={x} cx={x} cy={y} rx="9" ry="7" fill="#7b2a1e" {...T} strokeWidth={2.5} />)}
-      <path d="M86 46 L86 104 Q86 128 104 132 L122 132 Q140 128 140 106 L140 76 Q140 68 132 68 Q124 68 124 76 L124 92 L124 60 Q124 52 116 52 Q108 52 108 60 L108 90 L108 50 Q108 42 100 42 Q92 42 92 50 L92 94 L92 62 Q92 54 86 54 Z" fill="#e8b98c" {...T} strokeWidth={3} />
-      <ellipse cx="114" cy="146" rx="10" ry="8" fill="#7b2a1e" {...T} strokeWidth={2.5} />
-      <path d="M114 134 L114 140" {...T} strokeWidth={3} />
+      <path d="M10 170 Q100 160 190 170" {...T} fill="none" />
+      {[[26, 164], [50, 167], [74, 164]].map(([x, y]) => <ellipse key={x} cx={x} cy={y} rx="8" ry="6.5" fill="#7b2a1e" {...T} strokeWidth={2.5} />)}
+      {/* balde con granos */}
+      <path d="M118 110 L178 110 L170 166 L126 166 Z" fill="#6f8fa8" {...T} />
+      <path d="M118 110 Q148 92 178 110" {...T} fill="none" strokeWidth={3} />
+      {[[134, 108], [148, 104], [162, 108], [141, 100], [156, 99]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="6.5" fill="#7b2a1e" {...T} strokeWidth={2.5} />)}
+      {/* mano que pellizca un grano */}
+      <path d="M50 62 Q58 46 76 50 L102 58 Q112 62 108 70 Q104 76 94 74 L84 72 L92 90 Q96 100 88 104 Q80 106 76 98 L60 92 Q46 86 50 62 Z" fill="#e8b98c" {...T} strokeWidth={3} />
+      <path d="M84 72 L74 74" {...T} strokeWidth={3} />
+      <circle cx="88" cy="112" r="7" fill="#7b2a1e" {...T} strokeWidth={2.5} />
+      {/* recorrido: del suelo al balde */}
+      <path d="M58 150 Q62 122 84 120" {...T} strokeWidth={3} strokeDasharray="2 9" fill="none" stroke="var(--acento)" />
+      <path d="M100 100 Q116 78 136 86" {...T} strokeWidth={3} strokeDasharray="2 9" fill="none" stroke="var(--acento)" />
+      <path d="M128 78 L138 86 L127 92" {...T} strokeWidth={3.5} fill="none" stroke="var(--acento)" />
+      {/* el grano que viaja (solo con movimiento; ver .grano-viaje en estilos.css) */}
+      <circle className="grano-viaje" r="6.5" fill="#7b2a1e" {...T} strokeWidth={2.5} />
     </Lienzo>
   );
 }
@@ -159,8 +182,8 @@ export function Tecnico({ urgente = false }: { urgente?: boolean }) {
       <circle cx="114" cy="98" r="4.5" fill="var(--trazo)" />
       <path d="M86 116 Q100 126 114 116" {...T} fill="none" />
       {urgente && (
-        <g>
-          <circle cx="160" cy="46" r="24" fill="#e8710a" {...T} />
+        <g className="late">
+          <circle cx="160" cy="46" r="24" fill="var(--urgente)" {...T} />
           <path d="M160 32 L160 50" {...T} stroke="#fff" strokeWidth={6} />
           <circle cx="160" cy="60" r="3.6" fill="#fff" />
         </g>
@@ -173,7 +196,8 @@ export function Altavoz() {
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="icono">
       <path d="M8 18 L16 18 L26 9 L26 39 L16 30 L8 30 Z" fill="currentColor" />
-      <path d="M32 17 Q37 24 32 31 M36 12 Q45 24 36 36" stroke="currentColor" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+      <path className="onda onda-1" d="M32 17 Q37 24 32 31" stroke="currentColor" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+      <path className="onda onda-2" d="M36 12 Q45 24 36 36" stroke="currentColor" strokeWidth="3.5" fill="none" strokeLinecap="round" />
     </svg>
   );
 }
@@ -184,6 +208,27 @@ export function Camara() {
       <path d="M6 16 Q6 12 10 12 L16 12 L20 7 L28 7 L32 12 L38 12 Q42 12 42 16 L42 36 Q42 40 38 40 L10 40 Q6 40 6 36 Z" fill="currentColor" />
       <circle cx="24" cy="25" r="8.5" fill="var(--fondo)" />
       <circle cx="24" cy="25" r="4.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function Visto() {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" className="icono">
+      <circle cx="24" cy="24" r="21" fill="currentColor" />
+      <path d="M14 25 L21 32 L34 17" stroke="var(--visto-trazo, var(--fondo))" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Estado del envío: nube con visto (ya llegó) o con flecha y borde punteado (guardado, se enviará con señal). */
+export function Nube({ esperando }: { esperando: boolean }) {
+  return (
+    <svg viewBox="0 0 48 48" className={`nube ${esperando ? 'esperando' : 'al-dia'}`} aria-hidden="true">
+      <path d="M14 36 Q5 36 5 28 Q5 20 13 19 Q15 10 25 10 Q35 10 37 19 Q44 20 44 28 Q44 36 36 36 Z" />
+      {esperando
+        ? <path d="M24 31 L24 19 M18 24 L24 18 L30 24" className="signo" />
+        : <path d="M17 24 L22 29 L31 19" className="signo" />}
     </svg>
   );
 }
