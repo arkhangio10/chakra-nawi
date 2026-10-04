@@ -38,9 +38,20 @@ Salida (por defecto en ml/datasets/sint_v0/)
     data.yaml                        para Ultralytics (entrena con mosaicos)
     LEEME_SINTETICO.txt              rótulo "datos sintéticos"
 
+Modo semi-real (--recortes)
+---------------------------
+Con `--recortes datasets/recortes_scolytinae` (de `recortes_reales.py`), una
+fracción `--p-real` de las "brocas" se pega desde recortes de escarabajos
+Scolytinae REALES (fotos CC-BY-SA-4.0, no broca), reescalados a 1,7 mm, rotados
+y oscurecidos hacia el color de la broca; los "otros escarabajos" también salen
+de recortes reales de especies grandes. Entrenamiento y validación usan unas
+especies y la PRUEBA usa otra especie que el modelo nunca vio. Sigue siendo un
+sustituto: el error medido NO es desempeño en broca real.
+
 Uso
 ---
     python sintetico.py --salida datasets/sint_v0 --train 400 --val 60 --test 60
+    python sintetico.py --salida datasets/semireal_v1 --recortes datasets/recortes_scolytinae
     python sintetico.py --vista 4      # solo guarda 4 ejemplos con cajas en datasets/vista/
 """
 
@@ -444,6 +455,78 @@ def resto_vegetal(rng, img, cx, cy, escala):
     pegar(img, p)
 
 
+def cargar_banco(carpeta) -> dict:
+    """Recortes reales por grupo: {grupo: [(rgb, alfa, cuerpo, largo_px, color_medio)]}."""
+    carpeta = Path(carpeta)
+    meta = json.loads((carpeta / "recortes.json").read_text(encoding="utf-8"))["recortes"]
+    banco: dict = {}
+    for m in meta:
+        d = carpeta / "recortes" / m["grupo"]
+        rgba = cv2.imread(str(d / f"{m['id']}.png"), cv2.IMREAD_UNCHANGED)
+        cu = cv2.imread(str(d / f"{m['id']}_cuerpo.png"), cv2.IMREAD_GRAYSCALE)
+        if rgba is None or cu is None:
+            continue
+        rgb = cv2.cvtColor(rgba[..., :3], cv2.COLOR_BGR2RGB).astype(np.float32)
+        a = rgba[..., 3].astype(np.float32) / 255
+        c = cu.astype(np.float32) / 255
+        media = (rgb * c[..., None]).sum((0, 1)) / max(float(c.sum()), 1.0)
+        banco.setdefault(m["grupo"], []).append((rgb, a, c, float(m["largo_cuerpo_px"]), media))
+    return banco
+
+
+def recorte_real(rng, cx, cy, L, pieza, color_obj=None):
+    """Pega un recorte real: escala a largo L (px), rota, espeja y ajusta el color.
+
+    Devuelve (parche, mascara_cuerpo) como `elipsoide`, para usar la misma
+    colocación, sombra y caja (la caja sale del cuerpo, sin patas).
+    """
+    rgb, a, c, largo, media = pieza
+    s = L / largo
+    if rng.random() < 0.5:
+        rgb, a, c = rgb[:, ::-1], a[:, ::-1], c[:, ::-1]
+    h, w = a.shape
+    nw, nh = max(3, int(round(w * s))), max(3, int(round(h * s)))
+    rgb = cv2.resize(np.ascontiguousarray(rgb), (nw, nh), interpolation=cv2.INTER_AREA)
+    a = cv2.resize(np.ascontiguousarray(a), (nw, nh), interpolation=cv2.INTER_AREA)
+    c = cv2.resize(np.ascontiguousarray(c), (nw, nh), interpolation=cv2.INTER_AREA)
+    if color_obj is not None:                      # oscurecer hacia el color pedido
+        ganancia = np.clip(np.asarray(color_obj, np.float32) / np.maximum(media, 1), 0.08, 2.5)
+        mezcla = rng.uniform(0.6, 1.0)
+        rgb = rgb * (mezcla * ganancia + (1 - mezcla) * ganancia.mean())
+    rgb = np.clip(rgb * rng.uniform(0.85, 1.15), 0, 255).astype(np.float32)
+    half = int(math.ceil(0.5 * math.hypot(nw, nh))) + 2
+    p = Parche(cx, cy, half, 1)
+    M = cv2.getRotationMatrix2D(((nw - 1) / 2, (nh - 1) / 2), float(rng.uniform(0, 360)), 1.0)
+    M[0, 2] += p.pcx - 0.5 - (nw - 1) / 2
+    M[1, 2] += p.pcy - 0.5 - (nh - 1) / 2
+    t = (p.n, p.n)
+    p.colp = cv2.warpAffine(rgb * a[..., None], M, t, flags=cv2.INTER_LINEAR)
+    p.alfa = cv2.warpAffine(a, M, t, flags=cv2.INTER_LINEAR)
+    return p, np.clip(cv2.warpAffine(c, M, t, flags=cv2.INTER_LINEAR), 0, 1)
+
+
+def broca_real(rng, cx, cy, escala, piezas):
+    L = rng.normal(1.7, 0.11)
+    if rng.random() < 0.06:
+        L = rng.uniform(1.1, 1.35)
+    L = float(np.clip(L, 1.15, 2.1)) * PX_MM * escala
+    r = rng.random()
+    if r < 0.1:
+        base = tono(rng, (75, 120), (0.6, 0.72), (0.35, 0.5))
+    elif r < 0.22:
+        base = None                                # color original del recorte (marrón rojizo)
+    else:
+        base = tono(rng, (18, 62), (0.7, 0.9), (0.5, 0.8))
+    return recorte_real(rng, cx, cy, L, piezas[rng.integers(len(piezas))], base)
+
+
+def escarabajo_real(rng, cx, cy, escala, piezas):
+    """Otro escarabajo real más grande (2,6–4,5 mm): no es broca."""
+    L = rng.uniform(2.6, 4.5) * PX_MM * escala
+    base = None if rng.random() < 0.5 else tono(rng, (40, 130), (0.5, 0.8), (0.3, 0.6))
+    return recorte_real(rng, cx, cy, L, piezas[rng.integers(len(piezas))], base)
+
+
 # ---------------------------------------------------------------------------
 # Fondo y fotometría
 # ---------------------------------------------------------------------------
@@ -613,9 +696,17 @@ def colocar(rng, img, ocupado, crear, grupos, p_grupo, max_solape, intentos=15):
     return None
 
 
-def generar_marco(semilla: int, densidad: str):
-    """Devuelve (imagen uint8 RGB 1216×1216, cajas [x0,y0,x1,y1] en px del marco, info)."""
+def generar_marco(semilla: int, densidad: str, banco: dict | None = None, p_real: float = 0.0,
+                  grupo: str = "entrenamiento"):
+    """Devuelve (imagen uint8 RGB 1216×1216, cajas [x0,y0,x1,y1] en px del marco, info).
+
+    Con `banco` (recortes reales), una fracción `p_real` de brocas y de otros
+    escarabajos sale de recortes reales del `grupo` ("entrenamiento" o "prueba").
+    """
     rng = np.random.default_rng(semilla)
+    piezas_b = (banco or {}).get(grupo, [])
+    piezas_d = (banco or {}).get(f"distractor_{grupo}", [])
+    n_real = 0
     img = fondo(rng)
     manchas_agua(rng, img)
     escala = rng.uniform(0.9, 1.1)                 # error de escala de la homografía/impresión
@@ -659,6 +750,8 @@ def generar_marco(semilla: int, densidad: str):
             "claro": lambda x, y: insecto_claro(rng, x, y, luz, escala),
             "escarabajo": lambda x, y: escarabajo_otro(rng, x, y, luz, escala),
         }[t]
+        if t == "escarabajo" and piezas_d and rng.random() < p_real:
+            crear = lambda x, y: escarabajo_real(rng, x, y, escala, piezas_d)
         r = colocar(rng, img, ocupado, crear, grupos, p_grupo * 0.5, 0.2)
         if r is None:
             continue
@@ -669,8 +762,10 @@ def generar_marco(semilla: int, densidad: str):
 
     cajas = []
     for _ in range(n_broca):
-        r = colocar(rng, img, ocupado, lambda x, y: broca(rng, x, y, luz, escala, estilo),
-                    grupos, p_grupo, max_solape)
+        real = bool(piezas_b) and rng.random() < p_real
+        crear = ((lambda x, y: broca_real(rng, x, y, escala, piezas_b)) if real
+                 else (lambda x, y: broca(rng, x, y, luz, escala, estilo)))
+        r = colocar(rng, img, ocupado, crear, grupos, p_grupo, max_solape)
         if r is None:
             continue
         p, m = r
@@ -687,6 +782,7 @@ def generar_marco(semilla: int, densidad: str):
         if (cx1 - cx0) * (cy1 - cy0) < 0.5 * (bx1 - bx0) * (by1 - by0):
             continue
         cajas.append([float(cx0), float(cy0), float(cx1), float(cy1)])
+        n_real += real
 
     borde_marco(rng, img)
     img *= iluminacion(rng, arrugas(rng))[..., None]
@@ -696,7 +792,9 @@ def generar_marco(semilla: int, densidad: str):
     img = cv2.cvtColor(cv2.imdecode(buf, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
     info = {"conteo": len(cajas), "densidad": densidad_de(len(cajas)), "densidad_pedida": densidad,
             "cafe": n_cafe, "cafe_alargado_dificil": n_cafe_dificil,
-            "generador": "sint_dificiles_v1", "vegetal": n_veg, "otros_insectos": tipos, "jpeg": calidad,
+            "generador": "sint_semireal_v1" if piezas_b else "sint_dificiles_v1",
+            "brocas_de_recorte_real": int(n_real), "grupo_recortes": grupo if piezas_b else None,
+            "vegetal": n_veg, "otros_insectos": tipos, "jpeg": calidad,
             "escala": round(float(escala), 3)}
     return img, cajas, info
 
@@ -727,9 +825,20 @@ def yolo_txt(cajas, lado):
     return "\n".join(lineas) + ("\n" if lineas else "")
 
 
+_BANCO: dict | None = None
+_P_REAL = 0.0
+
+
+def _iniciar(recortes, p_real):
+    global _BANCO, _P_REAL
+    _BANCO = cargar_banco(recortes) if recortes else None
+    _P_REAL = p_real
+
+
 def _trabajo(args):
     salida, split, nombre, semilla, densidad = args
-    img, cajas, info = generar_marco(semilla, densidad)
+    grupo = "prueba" if split == "test" else "entrenamiento"
+    img, cajas, info = generar_marco(semilla, densidad, _BANCO, _P_REAL, grupo)
     base = Path(salida)
     bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     cv2.imwrite(str(base / "marcos" / split / "images" / f"{nombre}.jpg"), bgr, [cv2.IMWRITE_JPEG_QUALITY, 97])
@@ -763,7 +872,12 @@ def main():
     ap.add_argument("--semilla", type=int, default=20261003)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
     ap.add_argument("--vista", type=int, default=0, help="solo genera N ejemplos con cajas dibujadas")
+    ap.add_argument("--recortes", default=None,
+                    help="carpeta de recortes_reales.py: activa el modo semi-real")
+    ap.add_argument("--p-real", type=float, default=0.7,
+                    help="fracción de brocas/escarabajos tomados de recortes reales (modo semi-real)")
     a = ap.parse_args()
+    _iniciar(a.recortes, a.p_real)
 
     if a.vista:
         out = Path(__file__).parent / "datasets" / "vista"
@@ -771,7 +885,8 @@ def main():
         for i in range(a.vista):
             d = DENSIDADES[i % 4]
             t = time.time()
-            img, cajas, info = generar_marco(a.semilla + 1000 + i, d)
+            img, cajas, info = generar_marco(a.semilla + 1000 + i, d, _BANCO, _P_REAL,
+                                             "prueba" if i % 2 else "entrenamiento")
             v = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             cv2.imwrite(str(out / f"vista_{i}_{d.replace('>', 'mas')}.jpg"), v)
             for x0, y0, x1, y1 in cajas:
@@ -793,7 +908,7 @@ def main():
 
     t0 = time.time()
     res = {"train": {}, "val": {}, "test": {}}
-    with Pool(a.workers) as pool:
+    with Pool(a.workers, initializer=_iniciar, initargs=(a.recortes, a.p_real)) as pool:
         for j, (nombre, info) in enumerate(pool.imap_unordered(_trabajo, tareas, chunksize=2)):
             res[nombre.split("_")[1]][nombre] = info
             if (j + 1) % 50 == 0:
@@ -803,6 +918,10 @@ def main():
         d = dict(sorted(d.items()))
         (base / "marcos" / split / "conteos.json").write_text(json.dumps(
             {"sintetico": True, "nota": "Datos SINTÉTICOS generados por ml/sintetico.py; no son fotos reales.",
+             **({"semireal": True, "recortes": a.recortes, "p_real": a.p_real,
+                 "grupo_recortes": "prueba" if split == "test" else "entrenamiento",
+                 "nota_semireal": "Parte de los insectos son recortes de Scolytinae reales (CC-BY-SA-4.0), "
+                                  "NO broca. Sustituto."} if a.recortes else {}),
              "marcos": d}, ensure_ascii=False, indent=1), encoding="utf-8")
     (base / "data.yaml").write_text(
         "# Datos SINTÉTICOS (ml/sintetico.py). Entrenamiento con mosaicos 640x640.\n"
@@ -810,7 +929,10 @@ def main():
         "train: mosaicos/train/images\nval: mosaicos/val/images\nnames:\n  0: broca\n", encoding="utf-8")
     (base / "LEEME_SINTETICO.txt").write_text(
         "TODOS los datos de esta carpeta son SINTÉTICOS (ml/sintetico.py).\n"
-        "No son fotos reales de broca ni de gorgojos. El error medido aquí NO es desempeño en broca real.\n",
+        "No son fotos reales de broca ni de gorgojos. El error medido aquí NO es desempeño en broca real.\n"
+        + ("Modo semi-real: parte de los insectos son recortes de escarabajos Scolytinae reales\n"
+           "(Marais et al. 2024, CC-BY-SA-4.0), NO broca. La prueba usa una especie no vista.\n"
+           if a.recortes else ""),
         encoding="utf-8")
     tot = {s: sum(v["conteo"] for v in d.values()) for s, d in res.items()}
     print(f"Listo en {time.time() - t0:.0f}s. Marcos: { {s: len(d) for s, d in res.items()} }  brocas: {tot}")

@@ -48,6 +48,7 @@ def main():
     ap.add_argument("--fraccion", type=float, default=1.0)
     ap.add_argument("--nombre", default="y8n_sint_v0")
     ap.add_argument("--cache", default="ram")
+    ap.add_argument("--nota", default="Entrenado SOLO con datos sintéticos (ml/sintetico.py).")
     a = ap.parse_args()
 
     import torch
@@ -72,7 +73,7 @@ def main():
     run = ML / "runs" / a.nombre
     resumen = {
         "sintetico": True,
-        "nota": "Entrenado SOLO con datos sintéticos (ml/sintetico.py).",
+        "nota": a.nota,
         "modelo_inicial": Path(a.modelo).name,
         "modelo_inicial_ruta": str(Path(a.modelo).resolve()),
         "datos": a.datos,

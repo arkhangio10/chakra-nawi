@@ -191,3 +191,33 @@ Cierre P2: YOLO11n fp32 ocupa **10 604 660 bytes (10,60 MB; 10,11 MiB)**: no alc
 En el mismo test dificil, el reentrenamiento int8 reduce los falsos positivos en los seis marcos vacios de **21,00 a 0,33 por marco**, y el MAE a score 0,60 de **25,65 a 12,27**. Sigue existiendo subconteo (sesgo -12,03). A 0,60 ninguna variante nueva satisface simultaneamente tamano y tolerancia de error: fp32 supera 10 MB; int8 supera el MAE tolerado de 10,54. La recomendacion fp32 del evaluador es solo una alternativa experimental fuera de los criterios completos, no una aprobacion para despliegue.
 
 La propuesta int8 **score 0,40** se eligio en validacion (MAE 4,92) y obtuvo MAE **4,77** en test separado. No esta activada y requiere revisar el contrato con el equipo. El contador clasico obtuvo MAE 27,28 en validacion y 27,80 en test. **Todo es sintetico: no demuestra desempeno en broca real ni en el sustituto.**
+
+## Modo semi-real: recortes de escarabajos reales (sustituto, no broca)
+
+`python semireal.py` corre todo sin intervención (~1,5–2 h en CPU):
+
+1. `recortes_reales.py` descarga ~80 fotos de **escarabajos Scolytinae reales** (la subfamilia de la broca) de
+   [Marais et al. 2024](https://huggingface.co/datasets/ChristopherMarais/Andrew_Alpha_training_data)
+   (PLOS ONE, doi:10.1371/journal.pone.0310716, **CC-BY-SA-4.0**). Son fotos de insectos en etanol sobre una baldosa blanca;
+   cada escarabajo aislado se recorta con su alfa (patas incluidas) y con la máscara del cuerpo (define la caja).
+   Se descartan la bolita de referencia, los restos y los insectos que se tocan.
+2. `sintetico.py --recortes` pega esos recortes como "brocas" (70 %): los reescala a 1,7 mm, los rota y los oscurece hacia el color de la broca.
+   Los "otros escarabajos" (distractores) salen de especies más grandes.
+3. Separación por **especie**. Entrenamiento y validación: *Coccotrypes dactyliperda*, *Pityophthorus juglandis*,
+   *Xyleborinus saxesenii* y *Xyleborus affinis* (distractores *Hylesinus varius* y *Platypus cylindrus*).
+   **Prueba**: *Xylosandrus compactus* (distractor *Phloeosinus dentatus*), especies que el modelo nunca vio.
+4. Afinamiento desde `y8n_sint_dificiles_v1`, exportación `broca-y8n-v0-semireal` (**no se copia a la PWA**) y evaluación
+   del modelo vigente, del de difíciles y del semi-real en los mismos marcos. Resultado en `resultados/semireal/RESUMEN.md`.
+
+Qué mide y qué no: mide si el modelo generaliza a **insectos reales de una especie no vista**, parecida a la broca.
+No mide broca real, ni la luz del celular, ni la homografía (las fotos de origen tienen flash de anillo y están en etanol).
+Si se redistribuyen los recortes o las imágenes derivadas, llevan la atribución de `datasets/recortes_scolytinae/ATRIBUCION.txt`
+y la misma licencia.
+
+Otras fuentes revisadas (2026-10-03):
+- **CATIE / SVMendoza** ([GitHub](https://github.com/SVMendoza/Detection-and-count-CBB)): broca real en trampas BROCAP.
+  En el repositorio solo hay 3 fotos completas y 13 recortes, y **no tiene licencia**. El dataset completo (Broca2000) no es público:
+  se pide por correo y, sin permiso, no se usa.
+- **iNaturalist**: 45 fotos de *H. hampei* con licencia CC. Son fotos sueltas (no de trampa) con otra escala; no sirven para medir el conteo.
+- Descartadas: Chaullay/Cusco (fotos de frutos, fuera de alcance), figshare Tribolium/Sitophilus (recortes de 224 px para clasificar),
+  Hawái/Dryad (solo conteos, sin imágenes).

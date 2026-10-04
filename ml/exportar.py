@@ -92,6 +92,7 @@ def main():
     ap.add_argument("--nombre", default="broca-y8n-v0-sint")
     ap.add_argument("--arquitectura", default=None)
     ap.add_argument("--evaluacion", default=None, help="JSON de evaluación de ESTE modelo, si ya existe")
+    ap.add_argument("--leyenda", default="entrenado solo con datos sintéticos")
     ap.add_argument("--no-copiar", action="store_true", help="no copiar a apps/campo/public/models/")
     a = ap.parse_args()
 
@@ -144,7 +145,7 @@ def main():
     mb = lambda p: round(p.stat().st_size / 2 ** 20, 2)
     meta = {
         "modelo": a.nombre,
-        "leyenda": "entrenado solo con datos sintéticos",
+        "leyenda": a.leyenda,
         "arquitectura": a.arquitectura or (
             "YOLO11n" if "yolo11" in str(modelo.model.yaml.get("yaml_file", "")) else "YOLOv8n"),
         "clases": {"0": "broca"},
