@@ -1,58 +1,147 @@
 # Chakra Ñawi
 
-Triaje offline que prioriza las visitas del técnico de la cooperativa para pequeños productores de café de La Convención (Cusco). **No es un diagnóstico autónomo.**
-Hack-Nation 7 · Challenge 04 "Small AI for Development" (World Bank) · Agricultura, Perú.
+**Offline triage that prioritizes co-op technician visits for smallholder coffee farmers in La Convención, Cusco (Peru). It is not an autonomous diagnosis.**
 
-- Plan (manda): [`docs/PLAN.md`](docs/PLAN.md) · Arquitectura: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- Contratos (congelados en H1): [`contracts/`](contracts/) · validar con `python scripts/validar_contratos.py`
-- Antes de cualquier tarea: brújula anti-desvío (PLAN §1). Lo que no pase va a [`docs/LO_QUE_SIGUE.md`](docs/LO_QUE_SIGUE.md).
+Hack-Nation 7th Global AI Hackathon · Challenge 04 "Small AI for Development" (World Bank) · Agriculture, Peru.
 
-## Qué hay
+*Chakra Ñawi* means "eye of the field" in Quechua. *Español: [README.es.md](README.es.md).*
 
-| Carpeta | Qué es | Estado |
+---
+
+## The problem
+
+In La Convención, coffee co-op technicians reach each farm only once or twice a year. Farmers usually find out that **coffee berry borer** (*broca*, *Hypothenemus hampei*) has spread in their plot at the point of sale, when the buyer discounts the bored beans. **Coffee leaf rust** (*roya*) and bad weather during flowering cause losses that farmers can easily confuse with each other.
+
+Many of these farmers are older women. They have a basic phone, and a daughter or son with a cheap Android. In rural Peru, illiteracy is **33% among native-language women versus 9.3% among men** (INEI, 2017 Census), and almost nobody reads written Quechua. A text-heavy app, or a generic calendar SMS sent to every member, does not help them.
+
+**The decision we improve:** *"What do I do on my farm this week: nothing, sanitation picking, or call the technician?"* At the same time, the technician gets a ranked list of who to visit first.
+
+## How it works
+
+Every two weeks, with no internet connection:
+
+1. **Photo.** The farmer empties the borer trap onto a printed A5 card with four black corners, and the phone takes a photo. A small on-device **YOLO model (ONNX, int8, 3.2 MB)** counts the insects tile by tile. Boxes appear on screen while it counts.
+2. **One question with drawings.** "Put one bean in each of the 20 circles. How many have a little hole?" → *none / 1–2 / many / I don't know*. In the rainy season: "Do you see orange powder under the leaves?" → *yes / no / I don't know*. A second question appears only if it could change the result.
+3. **Result.** A traffic light, a drawing and a voice message. **No numbers, no percentages, no history** on the farmer's screens (this is enforced by an automated test).
+
+| Result | Meaning | Recommendation |
 |---|---|---|
-| `packages/motor` | Motor de triaje en TypeScript (PLAN §5): reglas citadas, pesos por época, tope de LR, decisión del semáforo | 17 tests |
-| `apps/campo` | PWA offline de 3 pantallas: foto de la trampa → pregunta con dibujos → semáforo con voz | 23 tests |
-| `api` | FastAPI + SQLite: recibe casos, sirve el panel del técnico y llama a Noor por Twilio | tests en `api/` |
-| `apps/panel` | Panel del técnico, una sola página | — |
-| `pipeline/ficha` | Ficha de clima por finca: CHIRPS v3 + NASA POWER, como anomalías frente a 1991–2020 | — |
-| `ml` | Contador de broca: datos sintéticos, YOLO nano, exportación ONNX | ver `ml/README.md` |
-| `audio` | Catálogo de 14 mensajes y conversión a `.opus` (app) y `.mp3` (llamada) | provisionales sintéticos |
+| 🟢 Green | No problem detected | Keep going. "0 bored beans" alone **never** gives green |
+| 🟡 Yellow | Likely borer, rust or weather | Cultural practices only (sanitation picking, collecting fallen beans). Chemical or biological control always goes through the technician |
+| 👤 Technician | Uncertain case, old plants, "other cause", unreliable count | The case is sent to the technician |
+| 👤 Technician (urgent) | Many bored beans while fruit can be attacked | The technician is alerted |
 
-## Correr en local
+The case is stored on the phone and synced when there is signal. The technician sees it in a one-page panel ranked by priority, with the photo and boxes, the answers, and **every rule that fired, with its source**. One button **calls the farmer's basic phone** (Twilio) and plays the message.
 
-Requisitos: Python 3.11+ y Node 20.19+ (probado con Node 24).
+```mermaid
+flowchart LR
+  A["Trap photo<br/>(on-device YOLO)"] --> M["Triage engine<br/>(offline, in the phone)"]
+  Q["Question with drawings<br/>(20 beans / orange powder)"] --> M
+  F["Farm climate profile<br/>(CHIRPS v3 + NASA POWER)"] --> M
+  M --> R["Traffic light + voice<br/>no numbers"]
+  R -->|"when there is signal"| P["Technician panel<br/>ranked by priority"]
+  P -->|"one button"| T["Call to the farmer's<br/>basic phone"]
+```
+
+## Why this is "small AI"
+
+- **Runs fully offline** on a cheap Android as an installable PWA: model + runtime + audio are cached on the device.
+- **The model is small and has a narrow job.** It only measures the *trend* of the trap count. The strong evidence for borer is the 20-bean question, because the trap measures flight, not infestation. **There is no official per-trap threshold**: the official metric is % of bored fruit, with 5% as the economic damage threshold (INIA).
+- **A transparent triage engine** in TypeScript: Bayesian log-likelihood ratios, cited rules (each labeled *official*, *literature* or *assumption*), weights that change by season, and a cap on the combined LR per cause so that dependent evidence is not double-counted. No LLM anywhere in the system.
+- **Fail-safe by design.** When the system is unsure (bad photo, unreliable count, "I don't know"), it says so and sends the case to a person.
+
+## Statistical honesty: why "0 of 20" is never green
+
+The farmer samples 20 beans (binomial):
+
+| True infestation | P(0 bored) | P(1–2) | P(3+) |
+|---|---|---|---|
+| 2% | 67% | 33% | < 1% |
+| 5% (INIA threshold) | 36% | 57% | 8% |
+| 15% | 4% | 37% | 60% |
+
+With 0 out of 20, true infestation can still be as high as **16.8%** (Clopper-Pearson upper bound, two-sided 95%). That is why the answer options are 0 / 1–2 / 3+ and why "0" alone never produces green. Reproduce with `python validacion/binomial.py`.
+
+## Data sources
+
+| Data | Source | Use |
+|---|---|---|
+| Rainfall | **CHIRPS v3** (monthly COGs, Cusco clip) | Rain anomaly during flowering |
+| Temperature, rainy days | **NASA POWER** daily `T2M`, `T2M_MAX`, `PRECTOTCORR`, altitude-corrected (−6.5 °C/km) | Rust-favorable temperature days and rainy-day anomaly vs 1991–2020; heat during flowering |
+| Regional alerts | `data/alertas_activas.json`, curated by hand from official sources (SENASA, SENAMHI, ENFEN) with URL and literal quote. **Currently empty**; the engine works the same without it | Prior only |
+| Counter training data | **Synthetic** trap images generated in `ml/sintetico.py` | YOLOv8n, 1 class |
+
+Rust rules use **anomalies, not absolute values**. La Convención is humid every year, so absolute thresholds fired on all farms every year. What carries information is whether *this* year departs from the 1991–2020 normal.
+
+## What we do NOT claim (data limits)
+
+We take this part seriously. Full list (in Spanish): [`docs/LIMITES_DE_DATOS.md`](docs/LIMITES_DE_DATOS.md).
+
+- **The model has never seen Peruvian coffee berry borer.** v0 is trained **only on synthetic images**. Its synthetic count error (MAE ≈ 4.9 insects per frame at the adopted 0.60 score threshold) is an optimistic bound from the same generator, **not field performance**. Results with substitute insects (small dark grain weevils) will be reported separately and never presented as borer performance.
+- **Climate is a regional signal for the year, not a farm-level one.** All 5 farms fall in the same NASA POWER cell (~55 km), so only altitude differs between them. NASA POWER humidity and NDVI are deliberately left out: the cells are too coarse, the crop grows under shade, and Nov–Mar cloud cover is 79–90%.
+- **9 of the 15 engine rules are assumptions**, and even for the cited ones the LR magnitude is an assumption, to be stress-tested with a ±50% sensitivity analysis.
+- **The 5 farms are fictional examples** with plausible locations and altitudes in La Convención.
+- **Voice: this hackathon delivery is in Spanish only.** We could not find a Cusco Quechua speaker in time. The current Spanish audio is provisional text-to-speech, labeled *synthetic*. The script for 14 messages is ready ([`docs/GUION_AUDIOS.md`](docs/GUION_AUDIOS.md)), and the app and the call already look for `audio/quz/` and fall back to Spanish file by file. For the pilot, Quechua must be recorded by a person and validated by a second speaker.
+- Flowering and harvest months come from regional literature (±1 month by altitude) and are not yet confirmed with a co-op.
+
+## Repository
+
+| Folder | What it is | Tests |
+|---|---|---|
+| [`packages/motor`](packages/motor) | Triage engine (TypeScript): cited rules, seasonal weights, LR cap, traffic-light decision | 17 |
+| [`apps/campo`](apps/campo) | Offline 3-screen PWA: photo quality control, perspective correction, tiled ONNX inference, offline queue, voice | 23 (incl. "zero numbers" test) |
+| [`api`](api) | FastAPI + SQLite: idempotent `POST /casos`, serves the technician panel, places Twilio calls | 15 |
+| [`apps/panel`](apps/panel) | One-page technician panel (no framework) | — |
+| [`pipeline/ficha`](pipeline/ficha) | Farm climate profile from CHIRPS v3 + NASA POWER, as anomalies vs 1991–2020 | — |
+| [`ml`](ml) | Synthetic data generator, YOLOv8n/11n training, ONNX export (fp32/int8), evaluation, classic blob counter for comparison | — |
+| [`contracts`](contracts) | JSON Schemas shared by all parts (frozen at hour 1) | `scripts/validar_contratos.py` |
+| [`audio`](audio) | 14-message catalog and conversion to `.opus` (app) and `.mp3` (call) | — |
+| [`docs`](docs) | Plan, architecture, data limits, printable A5 card (internal working docs are in Spanish) | — |
+
+## Run it locally
+
+Requirements: Python 3.11+ and Node 20.19+ (tested with Node 24).
 
 ```bash
-# 1. Python: API, pipeline y validador
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # Windows
-python scripts/validar_contratos.py                                     # debe decir TODO VÁLIDO
-uvicorn api.app:app --reload                                            # http://localhost:8000 · panel en /panel
+# Python: API, pipeline, contract validator
+python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # Windows (use .venv/bin on Linux/macOS)
+python scripts/validar_contratos.py      # should print TODO VÁLIDO ("all valid")
+uvicorn api.app:app --reload             # http://localhost:8000 · technician panel at /panel
+python -m api.demo_casos                 # optional: load 5 demo cases (synthetic photos labeled DEMO)
 
-# 2. JavaScript: motor y PWA
+# JavaScript: engine and PWA
 npm install
-npm test                                  # tests del motor y de la PWA
-npm run dev                               # PWA en http://localhost:5173 (usa /api → localhost:8000)
+npm test                                 # engine + PWA tests
+npm run dev                              # PWA at http://localhost:5173 (proxies /api to localhost:8000)
 ```
 
-### Probar en un Android real
+Without Twilio credentials in `api/.env` (see `api/.env.example`), calls are **simulated** and the panel says so.
 
-La cámara, el service worker y `crypto.randomUUID` exigen HTTPS:
+### Try it on a real Android phone
+
+The camera, the service worker and `crypto.randomUUID` require HTTPS:
 
 ```bash
-npm run dev:lan -w apps/campo             # https://<IP-de-la-laptop>:5173 con certificado propio (aceptar el aviso)
+npm run dev:lan -w apps/campo            # https://<laptop-IP>:5173 with a self-signed certificate
+# or the production build:
+npm run build && npm run preview -w apps/campo
 ```
 
-O compila y sirve la versión de producción: `npm run build && npm run preview -w apps/campo`.
+1. Open the address, wait for everything to load, and install the app ("Add to Home screen").
+2. Turn on **airplane mode** and run a full triage.
+3. **Long-press the logo** to open technician mode: farm, language, demo month (e.g. an August case versus a January case), ms per tile, total stored size and the case queue.
+4. Turn airplane mode off: queued cases are sent to the API and appear in the panel.
 
-En el teléfono:
-1. Abrir la dirección, esperar a que cargue todo e instalar la app ("Agregar a pantalla de inicio").
-2. Poner el **modo avión** y comprobar que el triaje funciona completo.
-3. **Mantener presionado el logo** para abrir el modo técnico: finca, idioma, mes del demo ("caso de agosto"), ms por mosaico, tamaño total guardado y cola de casos.
-4. Quitar el modo avión: los casos se envían solos a la API y aparecen en el panel.
+No printed card? Use `docs/demo/foto_tarjeta_sintetica.jpg` (synthetic photo in perspective). The printable card is [`docs/tarjeta/tarjeta_A5.pdf`](docs/tarjeta/tarjeta_A5.pdf).
 
-Para probar sin tarjeta impresa: `docs/demo/foto_tarjeta_sintetica.jpg` (foto sintética en perspectiva).
+## Next steps
 
-## Honestidad de los datos
+- Record the 14 messages in Cusco Quechua (human voice, second-speaker validation).
+- Retrain the counter on real photos of substitute insects on the card, then evaluate on real borer photos with permission from CATIE/CIRAD.
+- Pilot with one co-op, measured by two indicators: % of members doing sanitation picking within 2 weeks, and % of bored beans at collection.
 
-El contador se entrena con **datos sintéticos** y, más adelante, con fotos de gorgojos sobre la tarjeta. **Su error no es desempeño en broca real.** Límites completos en [`docs/LIMITES_DE_DATOS.md`](docs/LIMITES_DE_DATOS.md).
+Ideas deliberately left out of the MVP (in Spanish): [`docs/LO_QUE_SIGUE.md`](docs/LO_QUE_SIGUE.md).
+
+## License
+
+The counter uses Ultralytics YOLO (AGPL-3.0), so this repository is public under AGPL-3.0. Data sources are public (CHIRPS, NASA POWER). The fallback Quechua voice model `mms-tts-quz` (if used) is CC-BY-NC, for non-commercial use only.
