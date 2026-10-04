@@ -38,14 +38,14 @@
   const fmtMes = new Intl.DateTimeFormat('en-US', { month: 'numeric', timeZone: ZONA });
   const fmtNum = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 2 });
   const fmtPct = new Intl.NumberFormat('es-PE', { style: 'percent', maximumFractionDigits: 0 });
-  const anchoGrande = matchMedia('(min-width: 900px)');
+  const anchoGrande = matchMedia('(min-width: 760px)');
 
   const $ = (id) => document.getElementById(id);
   const ui = {
     lista: $('lista'), casos: $('casos'), resumen: $('resumen'), detalle: $('detalle'),
     actualizar: $('actualizar'), sello: $('sello'), aviso: $('aviso'), origen: $('origen-api'),
   };
-  const st = { casos: [], reglas: null, mensajes: null, sel: idDelHash(), ampliada: false, cajas: true, cargado: false };
+  const st = { casos: [], reglas: null, mensajes: null, sel: idDelHash(), ampliada: false, cajas: true, cargado: false, filtro: null };
 
   // ---------- utilidades ----------
   function h(tag, props, ...hijos) {
@@ -70,6 +70,12 @@
   const seccion = (titulo, ...hijos) => h('section', { class: 'seccion' }, h('h3', {}, titulo), ...hijos);
   const datos = (pares) => h('dl', { class: 'datos' },
     pares.filter(Boolean).map(([dt, dd]) => [h('dt', {}, dt), h('dd', {}, dd)]));
+
+  function iconoTelefono() {
+    const i = svg('svg', { viewBox: '0 0 24 24', 'aria-hidden': 'true' });
+    i.append(svg('path', { d: 'M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z', fill: 'currentColor' }));
+    return i;
+  }
 
   function chip(estado, texto, grande) {
     return h('span', { class: `chip e-${estado}${grande ? ' grande' : ''}` },
@@ -130,25 +136,36 @@
       ui.actualizar.disabled = false;
     }
     if (!st.sel && anchoGrande.matches && st.casos.length) st.sel = st.casos[0].caso_id;
-    pintarLista();
+    pintarLista(true);
     pintarDetalle();
   }
 
   // ---------- lista ----------
-  function pintarLista() {
+  /** animar: las tarjetas entran escalonadas (al cargar o al filtrar; no al elegir un caso). */
+  function pintarLista(animar = false) {
+    ui.casos.classList.toggle('animar', animar);
     const n = st.casos.length;
-    const cuenta = Object.keys(ESTADOS)
+    const presentes = Object.keys(ESTADOS)
       .map((e) => [e, st.casos.filter((c) => c.resultado.estado === e).length])
-      .filter(([, k]) => k)
-      .map(([e, k]) => `${k} ${ESTADOS[e].cuenta[k === 1 ? 0 : 1]}`);
-    ui.resumen.textContent = st.cargado ? `${n} ${n === 1 ? 'caso' : 'casos'}${cuenta.length ? ' · ' + cuenta.join(' · ') : ''}` : '';
+      .filter(([, k]) => k);
+    if (st.filtro && !presentes.some(([e]) => e === st.filtro)) st.filtro = null;
+    // Filtros: "Todos" y uno por estado presente, con su cuenta. Tocar uno deja solo esos casos.
+    const filtro = (estado, texto) => h('button', {
+      type: 'button', class: `filtro${estado ? ` e-${estado}` : ''}`, 'aria-pressed': String(st.filtro === estado),
+      onclick: () => { st.filtro = estado; pintarLista(true); },
+    }, estado ? h('span', { class: 'forma', 'aria-hidden': 'true' }) : null, texto);
+    ui.resumen.replaceChildren(...(st.cargado && n ? [
+      filtro(null, `Todos · ${n}`),
+      ...presentes.map(([e, k]) => filtro(e, `${ESTADOS[e].etiqueta} · ${k}`)),
+    ] : []));
 
     if (!n) {
       ui.casos.replaceChildren(h('li', { class: 'vacio' }, st.cargado
         ? 'No hay casos todavía. Llegan cuando el teléfono de campo tiene señal.' : ''));
       return;
     }
-    ui.casos.replaceChildren(...st.casos.map((c) => {
+    const visibles = st.filtro ? st.casos.filter((c) => c.resultado.estado === st.filtro) : st.casos;
+    ui.casos.replaceChildren(...visibles.map((c, i) => {
       const r = c.resultado;
       const ultima = c.llamadas?.[0];
       const marcas = [
@@ -158,7 +175,7 @@
         ultima ? h('span', {}, `${ultima.simulada ? 'llamada simulada' : 'llamada'} ${corta(ultima.fecha)}`)
           : h('span', {}, 'sin llamar'),
       ];
-      return h('li', {}, h('button', {
+      return h('li', { style: `--i: ${Math.min(i, 12)}` }, h('button', {
         type: 'button', class: `caso e-${r.estado}`, 'aria-current': c.caso_id === st.sel ? 'true' : null,
         onclick: () => seleccionar(c.caso_id),
       },
@@ -192,7 +209,7 @@
     }
     const r = c.resultado;
     ui.detalle.className = `detalle e-${r.estado}`;
-    ui.detalle.replaceChildren(
+    ui.detalle.replaceChildren(h('div', { class: 'det-contenido' },
       h('button', {
         type: 'button', class: 'boton chico volver',
         onclick: () => { ui.lista.scrollIntoView({ behavior: 'smooth' }); },
@@ -207,7 +224,7 @@
       seccionResultado(c),
       seccionReglas(c),
       h('p', { class: 'meta' },
-        `Caso ${c.caso_id} · app ${c.app_version} · ficha ${c.ficha_version} · recibido ${fecha(c.recibido)}`));
+        `Caso ${c.caso_id} · app ${c.app_version} · ficha ${c.ficha_version} · recibido ${fecha(c.recibido)}`)));
   }
 
   function mesSimulado(c) {
@@ -225,7 +242,7 @@
         : 'Todavía no se la llamó por este caso.';
     };
     pintarHistorial();
-    const boton = h('button', { type: 'button', class: 'boton primario' }, 'Llamar a Noor');
+    const boton = h('button', { type: 'button', class: 'boton primario con-icono' }, iconoTelefono(), h('span', {}, 'Llamar a Noor'));
     boton.addEventListener('click', () => llamar(c, boton, salida, pintarHistorial));
     return h('section', { class: 'seccion llamada' },
       h('div', { class: 'llamada-fila' }, boton,
@@ -234,8 +251,10 @@
   }
 
   async function llamar(c, boton, salida, pintarHistorial) {
+    const texto = boton.querySelector('span');
     boton.disabled = true;
-    boton.textContent = 'Llamando…';
+    boton.classList.add('llamando');
+    texto.textContent = 'Llamando…';
     salida.className = 'llamada-resultado';
     salida.replaceChildren('Enviando la llamada…');
     try {
@@ -261,7 +280,8 @@
       salida.replaceChildren(h('strong', {}, 'No se pudo llamar'), ` · ${motivo}`);
     } finally {
       boton.disabled = false;
-      boton.textContent = 'Llamar a Noor';
+      boton.classList.remove('llamando');
+      texto.textContent = 'Llamar a Noor';
     }
   }
 
@@ -326,12 +346,16 @@
         ? `${k.clasico} (el modelo no cargó en el teléfono; conteo sin calibrar)`
         : `${k.clasico}${k.yolo ? ` (difiere ${fmtPct.format(Math.abs(k.clasico - k.yolo) / k.yolo)} del YOLO; solo comparación)` : ''}`
       : '—';
-    return seccion('Conteo de la trampa', datos([
-      [sinYolo ? 'Conteo (contador clásico)' : 'Conteo YOLO', h('span', { class: 'grande-num' }, String(k.yolo))],
+    const tarjeta = (etiqueta, valor, clase = '') => h('div', { class: `dato-grande ${clase}` },
+      h('span', { class: 'dato-etiqueta' }, etiqueta), h('span', { class: 'dato-valor' }, valor));
+    return seccion('Conteo de la trampa',
+      h('div', { class: 'datos-grandes' },
+        tarjeta(sinYolo ? 'Brocas (contador clásico)' : 'Brocas (YOLO)', String(k.yolo)),
+        tarjeta('Tendencia', `${TENDENCIA[k.tendencia] ?? k.tendencia}${dif != null ? ` (${dif >= 0 ? '+' : ''}${dif})` : ''}`, 'chico'),
+        k.dudoso ? tarjeta('Conteo dudoso', 'Revisar la foto', 'chico alerta-fondo') : tarjeta('Conteo', 'Confiable', 'chico')),
+      datos([
       ['Conteo anterior', k.anterior != null ? String(k.anterior) : 'sin dato'],
-      ['Tendencia', `${TENDENCIA[k.tendencia] ?? k.tendencia}${dif != null ? ` (${dif >= 0 ? '+' : ''}${dif})` : ''}`],
       ['Contador clásico', clasico],
-      ['Conteo dudoso', k.dudoso ? h('span', { class: 'alerta' }, 'Sí: revisar la foto') : 'No'],
       k.cajas.length !== k.yolo && ['Cajas recibidas', String(k.cajas.length)],
       ['Modelo', h('code', {}, k.modelo)],
     ]), h('p', { class: 'nota' }, 'La trampa mide vuelo, no infestación: solo marca la tendencia (SENASA). La evidencia fuerte son los granos.'));
@@ -352,9 +376,11 @@
     const m = st.mensajes?.mensajes?.[r.mensaje];
     const tabla = h('div', { class: 'tabla-env' }, h('table', {},
       h('caption', {}, 'Probabilidades del motor: para el técnico, nunca se muestran a la productora.'),
-      h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Causa'), h('th', { scope: 'col', class: 'num' }, 'Probabilidad'))),
+      h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Causa'), h('td', { 'aria-hidden': 'true' }), h('th', { scope: 'col', class: 'num' }, 'Probabilidad'))),
       h('tbody', {}, probs.map(([causa, p]) => h('tr', { class: causa === r.causa ? 'principal' : null },
         h('td', {}, CAUSAS[causa] ?? causa, causa === r.causa ? ' (principal)' : ''),
+        h('td', { class: 'barra-celda', 'aria-hidden': 'true' },
+          h('span', { class: 'barra-prob', style: `--p: ${(p * 100).toFixed(1)}%` })),
         h('td', { class: 'num' }, fmtPct.format(p)))))));
     const mensaje = h('div', { class: 'mensaje' },
       h('span', {}, 'Lo que escuchó Noor: ', h('code', {}, r.mensaje),

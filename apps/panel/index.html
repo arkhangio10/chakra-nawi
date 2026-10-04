@@ -5,19 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Chakra Ñawi · Panel del técnico</title>
+  <link rel="icon" href="icono.svg">
+  <!-- Las mismas letras que la app de campo. Sin internet, el panel cae a la fuente del sistema. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@800&display=swap">
   <link rel="stylesheet" href="panel.css">
   <script src="panel.js" defer></script>
 </head>
 <body>
-  <header class="barra">
-    <div class="marca">
-      <h1>Chakra Ñawi</h1>
-      <p>Panel del técnico · casos por prioridad</p>
+  <header class="cabecera">
+    <div class="barra">
+      <div class="marca">
+        <img src="icono.svg" alt="">
+        <div>
+          <h1>Chakra Ñawi</h1>
+          <p>Panel del técnico · casos por prioridad</p>
+        </div>
+      </div>
+      <div class="barra-acciones">
+        <span id="sello" class="tenue" aria-live="polite"></span>
+        <button id="actualizar" class="boton con-icono" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Actualizar
+        </button>
+      </div>
     </div>
-    <div class="barra-acciones">
-      <span id="sello" class="tenue" aria-live="polite"></span>
-      <button id="actualizar" class="boton" type="button">Actualizar</button>
-    </div>
+    <!-- Franja tejida (pallay), la misma de la app de campo -->
+    <svg class="pallay" width="100%" height="10" aria-hidden="true">
+      <defs>
+        <pattern id="pallay" width="24" height="10" patternUnits="userSpaceOnUse">
+          <rect width="24" height="10" fill="#b4471e"/>
+          <path d="M0 10V7.5h3V5h3V2.5h3V0h6v2.5h3V5h3v2.5h3V10z" fill="#f2b705"/>
+          <rect x="10.5" y="5" width="3" height="2.5" fill="#b4471e"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="10" fill="url(#pallay)"/>
+    </svg>
   </header>
 
   <div id="aviso" class="aviso" role="alert" hidden></div>
@@ -25,8 +49,10 @@
   <main class="marco">
     <section id="lista" class="lista" aria-labelledby="titulo-lista">
       <h2 id="titulo-lista" class="solo-lector">Casos</h2>
-      <p id="resumen" class="resumen"></p>
-      <ol id="casos" class="casos"></ol>
+      <div id="resumen" class="filtros" role="group" aria-label="Filtrar casos por estado"></div>
+      <ol id="casos" class="casos">
+        <li class="esqueleto"></li><li class="esqueleto"></li><li class="esqueleto"></li>
+      </ol>
     </section>
     <article id="detalle" class="detalle" tabindex="-1">
       <p class="vacio">Cargando casos…</p>
