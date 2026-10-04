@@ -1,0 +1,139 @@
+fp32: 10/60 marcos de prueba SINTÉTICOS
+fp32: 20/60 marcos de prueba SINTÉTICOS
+fp32: 30/60 marcos de prueba SINTÉTICOS
+fp32: 40/60 marcos de prueba SINTÉTICOS
+fp32: 50/60 marcos de prueba SINTÉTICOS
+fp32: 60/60 marcos de prueba SINTÉTICOS
+fp32 {"archivo": "broca-y8n-v0-sint.onnx", "mb": 11.7, "unidad": "MiB", "bytes": 12265771, "cumple_10_MB_decimal": false, "conteo_total": {"n": 60, "mae": 26.72, "sesgo": 24.78, "error_relativo_medio_%": 98.9}, "por_densidad": {"<50": {"n": 24, "mae": 24.62, "sesgo": 24.62, "error_relativo_medio_%": 267.0}, "50-300": {"n": 20, "mae": 34.75, "sesgo": 34.75, "error_relativo_medio_%": 23.0}, ">300": {"n": 16, "mae": 19.81, "sesgo": 12.56, "error_relativo_medio_%": 4.8}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 26.67}, "marcos_dudosos_%": 15.0, "deteccion_iou50": {"precision": 0.814, "recall": 0.918, "f1": 0.863}, "latencia_ms_mosaico": {"durante_eval_media": 75.2, "hilos_por_defecto_mediana": 72.2, "1_hilo_mediana": 102.0}}
+int8: 10/60 marcos de prueba SINTÉTICOS
+int8: 20/60 marcos de prueba SINTÉTICOS
+int8: 30/60 marcos de prueba SINTÉTICOS
+int8: 40/60 marcos de prueba SINTÉTICOS
+int8: 50/60 marcos de prueba SINTÉTICOS
+int8: 60/60 marcos de prueba SINTÉTICOS
+int8 {"archivo": "broca-y8n-v0-sint-int8.onnx", "mb": 3.2, "unidad": "MiB", "bytes": 3356012, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 26.28, "sesgo": 24.08, "error_relativo_medio_%": 87.7}, "por_densidad": {"<50": {"n": 24, "mae": 23.29, "sesgo": 23.29, "error_relativo_medio_%": 233.7}, "50-300": {"n": 20, "mae": 34.3, "sesgo": 34.3, "error_relativo_medio_%": 22.6}, ">300": {"n": 16, "mae": 20.75, "sesgo": 12.5, "error_relativo_medio_%": 5.0}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 25.17}, "marcos_dudosos_%": 16.7, "deteccion_iou50": {"precision": 0.814, "recall": 0.915, "f1": 0.861}, "latencia_ms_mosaico": {"durante_eval_media": 102.3, "hilos_por_defecto_mediana": 100.7, "1_hilo_mediana": 118.0}}
+w8: 10/60 marcos de prueba SINTÉTICOS
+w8: 20/60 marcos de prueba SINTÉTICOS
+w8: 30/60 marcos de prueba SINTÉTICOS
+w8: 40/60 marcos de prueba SINTÉTICOS
+w8: 50/60 marcos de prueba SINTÉTICOS
+w8: 60/60 marcos de prueba SINTÉTICOS
+w8 {"archivo": "broca-y8n-v0-sint-w8.onnx", "mb": 3.15, "unidad": "MiB", "bytes": 3308224, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 26.43, "sesgo": 24.7, "error_relativo_medio_%": 94.2}, "por_densidad": {"<50": {"n": 24, "mae": 24.08, "sesgo": 24.08, "error_relativo_medio_%": 253.0}, "50-300": {"n": 20, "mae": 34.55, "sesgo": 34.55, "error_relativo_medio_%": 22.7}, ">300": {"n": 16, "mae": 19.81, "sesgo": 13.31, "error_relativo_medio_%": 4.8}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 26.33}, "marcos_dudosos_%": 13.3, "deteccion_iou50": {"precision": 0.81, "recall": 0.913, "f1": 0.858}, "latencia_ms_mosaico": {"durante_eval_media": 89.2, "hilos_por_defecto_mediana": 89.2, "1_hilo_mediana": 131.8}}
+fp32: 10/60 marcos de validación SINTÉTICOS
+fp32: 20/60 marcos de validación SINTÉTICOS
+fp32: 30/60 marcos de validación SINTÉTICOS
+fp32: 40/60 marcos de validación SINTÉTICOS
+fp32: 50/60 marcos de validación SINTÉTICOS
+fp32: 60/60 marcos de validación SINTÉTICOS
+int8: 10/60 marcos de validación SINTÉTICOS
+int8: 20/60 marcos de validación SINTÉTICOS
+int8: 30/60 marcos de validación SINTÉTICOS
+int8: 40/60 marcos de validación SINTÉTICOS
+int8: 50/60 marcos de validación SINTÉTICOS
+int8: 60/60 marcos de validación SINTÉTICOS
+w8: 10/60 marcos de validación SINTÉTICOS
+w8: 20/60 marcos de validación SINTÉTICOS
+w8: 30/60 marcos de validación SINTÉTICOS
+w8: 40/60 marcos de validación SINTÉTICOS
+w8: 50/60 marcos de validación SINTÉTICOS
+w8: 60/60 marcos de validación SINTÉTICOS
+umbral propuesto {'fp32': 0.65, 'int8': 0.6, 'w8': 0.65} {'fp32': {'n': 60, 'mae': 22.62, 'sesgo': 13.65, 'error_relativo_medio_%': 85.0}, 'int8': {'n': 60, 'mae': 26.28, 'sesgo': 24.08, 'error_relativo_medio_%': 87.7}, 'w8': {'n': 60, 'mae': 22.27, 'sesgo': 13.9, 'error_relativo_medio_%': 83.4}}
+{
+ "recomendacion": {
+  "variante": "int8",
+  "cumple_tamano_y_tolerancia": true,
+  "estado": "cumple",
+  "criterio": "entre las variantes del contrato (fp32, int8): MAE ≤ 1,1×MAE fp32 + 0,5 (= 29.89), tamaño < 10 MB y, de esas, la más rápida a 1 hilo (como WASM sin aislamiento). Si ninguna cumple el tamaño, la más rápida con precisión aceptable.",
+  "tabla": {
+   "fp32": {
+    "mae": 26.72,
+    "mb": 11.7,
+    "latencia_1_hilo_ms": 102.0,
+    "latencia_hilos_def_ms": 72.2,
+    "precision_ok": true,
+    "cumple_10mb": false
+   },
+   "int8": {
+    "mae": 26.28,
+    "mb": 3.2,
+    "latencia_1_hilo_ms": 118.0,
+    "latencia_hilos_def_ms": 100.7,
+    "precision_ok": true,
+    "cumple_10mb": true
+   },
+   "w8": {
+    "mae": 26.43,
+    "mb": 3.15,
+    "latencia_1_hilo_ms": 131.8,
+    "latencia_hilos_def_ms": 89.2,
+    "precision_ok": true,
+    "cumple_10mb": true
+   }
+  }
+ },
+ "barrido_score_fp32": [
+  {
+   "score": 0.25,
+   "n": 60,
+   "mae": 71.42,
+   "sesgo": 71.42,
+   "error_relativo_medio_%": 178.1
+  },
+  {
+   "score": 0.3,
+   "n": 60,
+   "mae": 65.7,
+   "sesgo": 65.7,
+   "error_relativo_medio_%": 169.0
+  },
+  {
+   "score": 0.35,
+   "n": 60,
+   "mae": 59.93,
+   "sesgo": 59.93,
+   "error_relativo_medio_%": 156.0
+  },
+  {
+   "score": 0.4,
+   "n": 60,
+   "mae": 54.15,
+   "sesgo": 54.15,
+   "error_relativo_medio_%": 146.1
+  },
+  {
+   "score": 0.5,
+   "n": 60,
+   "mae": 41.93,
+   "sesgo": 41.93,
+   "error_relativo_medio_%": 124.1
+  },
+  {
+   "score": 0.6,
+   "n": 60,
+   "mae": 26.72,
+   "sesgo": 24.78,
+   "error_relativo_medio_%": 98.9
+  },
+  {
+   "score": 0.7,
+   "n": 60,
+   "mae": 23.42,
+   "sesgo": -1.22,
+   "error_relativo_medio_%": 67.3
+  },
+  {
+   "score": 0.8,
+   "n": 60,
+   "mae": 57.47,
+   "sesgo": -52.83,
+   "error_relativo_medio_%": 43.1
+  },
+  {
+   "score": 0.9,
+   "n": 60,
+   "mae": 183.07,
+   "sesgo": -183.07,
+   "error_relativo_medio_%": 94.4
+  }
+ ]
+}

@@ -221,3 +221,17 @@ Otras fuentes revisadas (2026-10-03):
 - **iNaturalist**: 45 fotos de *H. hampei* con licencia CC. Son fotos sueltas (no de trampa) con otra escala; no sirven para medir el conteo.
 - Descartadas: Chaullay/Cusco (fotos de frutos, fuera de alcance), figshare Tribolium/Sitophilus (recortes de 224 px para clasificar),
   Hawái/Dryad (solo conteos, sin imágenes).
+
+### Resultados semi-real (2026-10-04) · SUSTITUTO, NO BROCA
+
+Prueba con *Xylosandrus compactus* (especie no vista), int8, posprocesado del contrato. Detalle en `resultados/semireal/RESUMEN.md`.
+
+| Modelo | MAE a 0,60 | FP por marco vacío | Recall | MAE con score elegido en val |
+|---|---:|---:|---:|---:|
+| `broca-y8n-v0-sint` (el de la PWA) | 26,3 (sobrecuenta) | 25,2 | 0,92 | 26,3 (0,60) |
+| `broca-y8n-v0-sint-dificiles` | 44,0 (subcuenta) | 0,17 | 0,74 | 10,1 (0,25) |
+| **`broca-y8n-v0-semireal`** | **11,2** | **0,17** | **0,92** | **6,0 (0,45)** |
+
+En el test difícil 100 % dibujado, el semi-real (5,4 con score 0,40) queda casi igual que el de difíciles (4,8): no empeora.
+A 0,60 el semi-real subcuenta (sesgo −10,8); el score 0,45 es una **propuesta** que cambia el contrato y requiere el acuerdo de los cuatro.
+Pesa lo mismo (3,2 MiB int8) y tiene la misma E/S. **Todavía no reemplaza al modelo de la PWA.**

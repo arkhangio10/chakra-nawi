@@ -1,0 +1,118 @@
+fp32: 10/60 marcos de prueba SINTÉTICOS
+fp32: 20/60 marcos de prueba SINTÉTICOS
+fp32: 30/60 marcos de prueba SINTÉTICOS
+fp32: 40/60 marcos de prueba SINTÉTICOS
+fp32: 50/60 marcos de prueba SINTÉTICOS
+fp32: 60/60 marcos de prueba SINTÉTICOS
+fp32 {"archivo": "broca-y8n-v0-sint-dificiles.onnx", "mb": 11.7, "unidad": "MiB", "bytes": 12265710, "cumple_10_MB_decimal": false, "conteo_total": {"n": 60, "mae": 32.45, "sesgo": -32.08, "error_relativo_medio_%": 21.3}, "por_densidad": {"<50": {"n": 24, "mae": 4.67, "sesgo": -3.75, "error_relativo_medio_%": 29.6}, "50-300": {"n": 20, "mae": 33.6, "sesgo": -33.6, "error_relativo_medio_%": 18.8}, ">300": {"n": 16, "mae": 72.69, "sesgo": -72.69, "error_relativo_medio_%": 15.1}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.17}, "marcos_dudosos_%": 25.0, "deteccion_iou50": {"precision": 0.949, "recall": 0.792, "f1": 0.863}, "latencia_ms_mosaico": {"durante_eval_media": 76.7, "hilos_por_defecto_mediana": 72.2, "1_hilo_mediana": 102.9}}
+int8: 10/60 marcos de prueba SINTÉTICOS
+int8: 20/60 marcos de prueba SINTÉTICOS
+int8: 30/60 marcos de prueba SINTÉTICOS
+int8: 40/60 marcos de prueba SINTÉTICOS
+int8: 50/60 marcos de prueba SINTÉTICOS
+int8: 60/60 marcos de prueba SINTÉTICOS
+int8 {"archivo": "broca-y8n-v0-sint-dificiles-int8.onnx", "mb": 3.2, "unidad": "MiB", "bytes": 3355948, "cumple_10_MB_decimal": true, "conteo_total": {"n": 60, "mae": 44.0, "sesgo": -43.93, "error_relativo_medio_%": 26.3}, "por_densidad": {"<50": {"n": 24, "mae": 5.46, "sesgo": -5.29, "error_relativo_medio_%": 31.7}, "50-300": {"n": 20, "mae": 47.4, "sesgo": -47.4, "error_relativo_medio_%": 26.2}, ">300": {"n": 16, "mae": 97.56, "sesgo": -97.56, "error_relativo_medio_%": 20.4}}, "marcos_con_0_brocas": {"n": 6, "falsos_positivos_medios": 0.17}, "marcos_dudosos_%": 30.0, "deteccion_iou50": {"precision": 0.959, "recall": 0.742, "f1": 0.836}, "latencia_ms_mosaico": {"durante_eval_media": 102.2, "hilos_por_defecto_mediana": 108.0, "1_hilo_mediana": 116.0}}
+fp32: 10/60 marcos de validación SINTÉTICOS
+fp32: 20/60 marcos de validación SINTÉTICOS
+fp32: 30/60 marcos de validación SINTÉTICOS
+fp32: 40/60 marcos de validación SINTÉTICOS
+fp32: 50/60 marcos de validación SINTÉTICOS
+fp32: 60/60 marcos de validación SINTÉTICOS
+int8: 10/60 marcos de validación SINTÉTICOS
+int8: 20/60 marcos de validación SINTÉTICOS
+int8: 30/60 marcos de validación SINTÉTICOS
+int8: 40/60 marcos de validación SINTÉTICOS
+int8: 50/60 marcos de validación SINTÉTICOS
+int8: 60/60 marcos de validación SINTÉTICOS
+umbral propuesto {'fp32': 0.25, 'int8': 0.25} {'fp32': {'n': 60, 'mae': 14.43, 'sesgo': 12.5, 'error_relativo_medio_%': 25.1}, 'int8': {'n': 60, 'mae': 10.13, 'sesgo': 3.37, 'error_relativo_medio_%': 13.5}}
+{
+ "recomendacion": {
+  "variante": "fp32",
+  "cumple_tamano_y_tolerancia": false,
+  "estado": "alternativa experimental fuera de los criterios completos",
+  "criterio": "entre las variantes del contrato (fp32, int8): MAE ≤ 1,1×MAE fp32 + 0,5 (= 36.2), tamaño < 10 MB y, de esas, la más rápida a 1 hilo (como WASM sin aislamiento). Si ninguna cumple el tamaño, la más rápida con precisión aceptable.",
+  "tabla": {
+   "fp32": {
+    "mae": 32.45,
+    "mb": 11.7,
+    "latencia_1_hilo_ms": 102.9,
+    "latencia_hilos_def_ms": 72.2,
+    "precision_ok": true,
+    "cumple_10mb": false
+   },
+   "int8": {
+    "mae": 44.0,
+    "mb": 3.2,
+    "latencia_1_hilo_ms": 116.0,
+    "latencia_hilos_def_ms": 108.0,
+    "precision_ok": false,
+    "cumple_10mb": true
+   }
+  }
+ },
+ "barrido_score_fp32": [
+  {
+   "score": 0.25,
+   "n": 60,
+   "mae": 14.43,
+   "sesgo": 12.5,
+   "error_relativo_medio_%": 25.1
+  },
+  {
+   "score": 0.3,
+   "n": 60,
+   "mae": 10.3,
+   "sesgo": 6.2,
+   "error_relativo_medio_%": 16.1
+  },
+  {
+   "score": 0.35,
+   "n": 60,
+   "mae": 8.67,
+   "sesgo": 0.5,
+   "error_relativo_medio_%": 14.2
+  },
+  {
+   "score": 0.4,
+   "n": 60,
+   "mae": 8.92,
+   "sesgo": -5.32,
+   "error_relativo_medio_%": 10.6
+  },
+  {
+   "score": 0.5,
+   "n": 60,
+   "mae": 18.72,
+   "sesgo": -18.15,
+   "error_relativo_medio_%": 13.8
+  },
+  {
+   "score": 0.6,
+   "n": 60,
+   "mae": 32.45,
+   "sesgo": -32.08,
+   "error_relativo_medio_%": 21.3
+  },
+  {
+   "score": 0.7,
+   "n": 60,
+   "mae": 51.87,
+   "sesgo": -51.7,
+   "error_relativo_medio_%": 30.0
+  },
+  {
+   "score": 0.8,
+   "n": 60,
+   "mae": 79.57,
+   "sesgo": -79.53,
+   "error_relativo_medio_%": 42.0
+  },
+  {
+   "score": 0.9,
+   "n": 60,
+   "mae": 154.3,
+   "sesgo": -154.3,
+   "error_relativo_medio_%": 80.9
+  }
+ ]
+}

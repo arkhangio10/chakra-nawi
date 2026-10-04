@@ -1,0 +1,187 @@
+{
+ "advertencia": "Sintéticos + recortes de escarabajos Scolytinae reales (no broca). La prueba semi-real usa una especie (Xylosandrus compactus) que el entrenamiento no vio. NO es desempeño en broca real.",
+ "contrato_modificado": false,
+ "pwa_modificada": false,
+ "filas": [
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "prueba": "semireal_v1",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_060": 26.72,
+   "sesgo_060": 24.78,
+   "mae_por_densidad_060": {
+    "<50": 24.62,
+    "50-300": 34.75,
+    ">300": 19.81
+   },
+   "fp_marcos_vacios": 26.67,
+   "precision": 0.814,
+   "recall": 0.918,
+   "score_val": 0.65,
+   "mae_prueba_score_val": 22.62
+  },
+  {
+   "modelo": "broca-y8n-v0-sint",
+   "prueba": "semireal_v1",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_060": 26.28,
+   "sesgo_060": 24.08,
+   "mae_por_densidad_060": {
+    "<50": 23.29,
+    "50-300": 34.3,
+    ">300": 20.75
+   },
+   "fp_marcos_vacios": 25.17,
+   "precision": 0.814,
+   "recall": 0.915,
+   "score_val": 0.6,
+   "mae_prueba_score_val": 26.28
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "prueba": "semireal_v1",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_060": 32.45,
+   "sesgo_060": -32.08,
+   "mae_por_densidad_060": {
+    "<50": 4.67,
+    "50-300": 33.6,
+    ">300": 72.69
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.949,
+   "recall": 0.792,
+   "score_val": 0.25,
+   "mae_prueba_score_val": 14.43
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "prueba": "semireal_v1",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_060": 44.0,
+   "sesgo_060": -43.93,
+   "mae_por_densidad_060": {
+    "<50": 5.46,
+    "50-300": 47.4,
+    ">300": 97.56
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.959,
+   "recall": 0.742,
+   "score_val": 0.25,
+   "mae_prueba_score_val": 10.13
+  },
+  {
+   "modelo": "broca-y8n-v0-semireal",
+   "prueba": "semireal_v1",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_060": 10.98,
+   "sesgo_060": -10.65,
+   "mae_por_densidad_060": {
+    "<50": 1.54,
+    "50-300": 8.95,
+    ">300": 27.69
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.977,
+   "recall": 0.924,
+   "score_val": 0.45,
+   "mae_prueba_score_val": 5.92
+  },
+  {
+   "modelo": "broca-y8n-v0-semireal",
+   "prueba": "semireal_v1",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_060": 11.2,
+   "sesgo_060": -10.83,
+   "mae_por_densidad_060": {
+    "<50": 1.67,
+    "50-300": 9.7,
+    ">300": 27.38
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.977,
+   "recall": 0.922,
+   "score_val": 0.45,
+   "mae_prueba_score_val": 6.0
+  },
+  {
+   "modelo": "broca-y8n-v0-semireal",
+   "prueba": "sint_dificiles_v1",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_060": 13.03,
+   "sesgo_060": -12.53,
+   "mae_por_densidad_060": {
+    "<50": 1.64,
+    "50-300": 11.0,
+    ">300": 30.78
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.977,
+   "recall": 0.914,
+   "score_val": 0.4,
+   "mae_prueba_score_val": 5.47
+  },
+  {
+   "modelo": "broca-y8n-v0-semireal",
+   "prueba": "sint_dificiles_v1",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_060": 13.55,
+   "sesgo_060": -13.15,
+   "mae_por_densidad_060": {
+    "<50": 2.0,
+    "50-300": 12.12,
+    ">300": 30.94
+   },
+   "fp_marcos_vacios": 0.17,
+   "precision": 0.977,
+   "recall": 0.91,
+   "score_val": 0.4,
+   "mae_prueba_score_val": 5.42
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "prueba": "sint_dificiles_v1",
+   "variante": "fp32",
+   "mb": 11.7,
+   "mae_060": 9.13,
+   "sesgo_060": -8.53,
+   "mae_por_densidad_060": {
+    "<50": 1.84,
+    "50-300": 7.94,
+    ">300": 20.39
+   },
+   "fp_marcos_vacios": 0.33,
+   "precision": 0.975,
+   "recall": 0.932,
+   "score_val": 0.45,
+   "mae_prueba_score_val": 5.13
+  },
+  {
+   "modelo": "broca-y8n-v0-sint-dificiles",
+   "prueba": "sint_dificiles_v1",
+   "variante": "int8",
+   "mb": 3.2,
+   "mae_060": 12.27,
+   "sesgo_060": -12.03,
+   "mae_por_densidad_060": {
+    "<50": 1.88,
+    "50-300": 11.53,
+    ">300": 27.39
+   },
+   "fp_marcos_vacios": 0.33,
+   "precision": 0.978,
+   "recall": 0.917,
+   "score_val": 0.4,
+   "mae_prueba_score_val": 4.77
+  }
+ ]
+}
