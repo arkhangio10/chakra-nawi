@@ -26,4 +26,4 @@ Formato para agregar: `- [fecha · quién] idea — por qué quedó fuera (qué 
 
 ## Ideas nuevas durante el hackathon
 
-_(vacío)_
+- [3 oct · equipo] Audios en quechua cusqueño (grabados por una persona y validados por un segundo hablante) — no se consiguió hablante a tiempo; la entrega va en castellano. El guion (`docs/GUION_AUDIOS.md`) y el soporte de `audio/quz/` en la app y la API ya están listos. Contactos posibles: UNSAAC (EIB, Lingüística), Academia Mayor de la Lengua Quechua, Centro Bartolomé de las Casas, Registro de Intérpretes de Lenguas Indígenas (Ministerio de Cultura).

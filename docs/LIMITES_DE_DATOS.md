@@ -53,5 +53,5 @@ Lo que **no** sabemos o no podemos afirmar. Va tal cual a la lámina de datos de
 
 ## Voz
 
-- Variantes del quechua: los audios son de quechua cusqueño, validados por un segundo hablante. Si no llegan, el respaldo `mms-tts-quz` se rotula "sintético" (licencia CC-BY-NC, uso no comercial).
+- Idioma: **la entrega del hackathon va solo en castellano.** No conseguimos un hablante de quechua cusqueño a tiempo. Para el piloto, el quechua debe grabarlo una persona y validarlo un segundo hablante (`docs/GUION_AUDIOS.md`); la app y la llamada ya buscan `audio/quz/` y, si no existe, usan el castellano. Mientras no esté, la usuaria que no entiende castellano depende de un familiar.
 - Dependemos del teléfono de la hija para la app; la llamada al teléfono básico es el único canal que llega directo a Noor.

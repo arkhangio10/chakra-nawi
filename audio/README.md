@@ -10,7 +10,7 @@ Cada audio va en **dos formatos**: `audio/<es|quz>/<CODIGO>.opus` para la PWA y 
 | Idioma | Estado | `sintetico` |
 |---|---|---|
 | Castellano (`es/`) | **PROVISIONAL Y SINTÉTICO**: voz TTS de Windows *Microsoft Sabina Desktop* (es-MX), generada con `tts_provisional.py`. 14 audios de 2,4 a 7,8 s; 188 KB en Opus y 416 KB en MP3 | `true` (la `nota` de cada mensaje dice la voz) |
-| Quechua (`quz/`) | **Pendiente**: no hay texto ni grabación. `texto_quz` vacío | — |
+| Quechua (`quz/`) | **Fuera de la entrega del hackathon** (decisión del 3 oct: sin hablante a tiempo; ver `docs/LO_QUE_SIGUE.md`). `texto_quz` vacío | — |
 
 **Respaldo:** mientras `texto_quz` esté vacío (o falte el archivo `quz`), la PWA y la llamada usan el castellano. La API lo hace sola, archivo por archivo, y el panel avisa "respaldo". En el demo y el video, todo audio con `sintetico: true` se rotula "sintético".
 

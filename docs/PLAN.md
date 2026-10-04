@@ -56,7 +56,7 @@ Antes de empezar cualquier tarea, responder las cinco preguntas. Si alguna da "n
 - [ ] Motor TypeScript: 4 causas + "otra", pesos por temporada, tope de LR, reglas con fuente y tipo
 - [ ] Preguntas con dibujos: sí / no / no sé, y 0 / 1–2 / 3+ granos
 - [ ] Semáforo: verde · amarillo (broca, roya o clima) · técnico (duda) · técnico (urgente)
-- [ ] 14 audios grabados por personas (quechua cusqueño y castellano), validados por un segundo hablante
+- [ ] 14 audios grabados por personas en castellano (actualización 3 oct: no se consiguió hablante de quechua cusqueño a tiempo; el quechua pasa a `LO_QUE_SIGUE.md`)
 - [ ] Ficha de 5 fincas de ejemplo: CHIRPS v3 + NASA POWER T2M + alertas manuales
 - [ ] Cola offline → `POST /casos` idempotente → panel de 1 página
 - [ ] Panel: lista por prioridad, foto con cajas, reglas que se aplicaron con su fuente, botón "llamar a Noor"
@@ -201,12 +201,12 @@ Con 3 personas: P2 hace la ficha mientras entrena el modelo, y P4 se queda con T
 1. Android barato real con el **modo avión visible**: foto → cajas → resultado en ≤ 15 s.
 2. El **tamaño total medido** en pantalla: modelo + runtime + audios.
 3. El **fail-safe en vivo**: foto mala o caso dudoso → audio del técnico → el caso aparece en el panel cuando vuelve la señal.
-4. Voz en quechua **grabada por una persona**, con subtítulos.
+4. Voz **grabada por una persona**, con subtítulos. Para la entrega es en castellano; el quechua cusqueño se presenta como el siguiente paso, con el guion ya listo (`GUION_AUDIOS.md`) y la app preparada para `audio/quz/`.
 5. Un **teléfono básico real** que suena y reproduce el mensaje.
 6. La frase del problema exacta, con evidencia peruana verificada (§12).
 7. La lámina de datos: licencias, límites, error de conteo (separando sustituto y broca), cuántas reglas son supuestos y la tabla binomial.
 8. El cambio de época: "caso de agosto" frente a "caso de enero", con el selector de fecha.
-9. Nuestra mirada sobre localizar la IA, con sus contrapartes: variantes del quechua, que el modelo no ha visto broca peruana y que dependemos del teléfono de la hija.
+9. Nuestra mirada sobre localizar la IA, con sus contrapartes: que la entrega va en castellano porque no conseguimos un hablante de quechua cusqueño a tiempo (y las variantes del quechua), que el modelo no ha visto broca peruana y que dependemos del teléfono de la hija.
 
 ### Guion del video (4:00)
 
